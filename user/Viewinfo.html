@@ -119,8 +119,6 @@
             transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
         }
 
-        /* No dropdown specific styles as dropdown removed */
-
         .logout a {
             background: var(--primary-pink);
             color: var(--white);
@@ -504,17 +502,6 @@
                 text-align: center;
                 margin: 0 15px;
             }
-            /* Dropdown menu is no longer dynamically displayed, so static position is not an issue */
-            /* .dropdown-menu {
-                position: static;
-                width: 100%;
-                border-radius: 0;
-                box-shadow: none;
-                padding: 0;
-            }
-            .dropdown-menu li a {
-                padding: 10px 15px;
-            } */
             .logout {
                 width: 100%;
                 text-align: center;
@@ -726,6 +713,10 @@
             const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
             const btnStartConsultation = document.getElementById('btnStartConsultation'); // ปุ่มเริ่มเข้าการปรึกษา
 
+            // Welcome Modal elements
+            const welcomeModal = document.getElementById('welcomeModal');
+            const countdownSpan = document.getElementById('countdown');
+
             // Close Modal when clicking the close button
             if (btnCloseDetailModal) {
                 btnCloseDetailModal.addEventListener('click', function() {
@@ -748,11 +739,25 @@
                 detailStatus.textContent = status || '-';
 
                 // Show/Hide "เริ่มเข้าการปรึกษา" button based on status
-                if ( status === 'เริ่มเข้าปรึกษา!') {
+                if (status === 'เริ่มเข้าปรึกษา!') {
                     btnStartConsultation.style.display = 'block';
-                    // Set up button click to go to chat page
+                    // Set up button click to show welcome modal and then go to chat page
                     btnStartConsultation.onclick = () => {
-                        window.location.href = `Chat.html?psy=${psychologistId}&appId=${appId}`;
+                        appointmentDetailModal.classList.remove('show'); // Hide detail modal
+                        welcomeModal.classList.add('show'); // Show welcome modal
+
+                        let countdown = 3;
+                        countdownSpan.textContent = countdown;
+
+                        const timer = setInterval(() => {
+                            countdown--;
+                            countdownSpan.textContent = countdown;
+                            if (countdown <= 0) {
+                                clearInterval(timer);
+                                // Redirect to chat page after countdown
+                                window.location.href = `Chat.html?psy=${psychologistId}&appId=${appId}`;
+                            }
+                        }, 1000);
                     };
                 } else {
                     btnStartConsultation.style.display = 'none';
@@ -875,6 +880,7 @@
         </div>
     </main>
 
+    <!-- Modal for displaying full appointment details -->
     <div id="appointmentDetailModal" class="confirmation-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -894,6 +900,19 @@
             <div class="modal-footer">
                 <button type="button" class="btn-primary" id="btnCloseDetailModal">ปิด</button>
                 <button type="button" class="btn-start-consultation" id="btnStartConsultation">เริ่มเข้าการปรึกษา</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Modal -->
+    <div id="welcomeModal" class="confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ยินดีต้อนรับสู่ห้องแชท</h3>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center; margin-bottom: 15px;">กำลังนำคุณเข้าสู่การปรึกษา...</p>
+                <p style="text-align: center; font-size: 2.5em; font-weight: bold; color: var(--primary-pink);" id="countdown">3</p>
             </div>
         </div>
     </div>
