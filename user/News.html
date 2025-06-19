@@ -305,7 +305,130 @@
             box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
         }
 
+        /* Image Carousel */
+        .image-carousel {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; 
+            margin: 40px auto 30px auto; /* Center carousel and add bottom margin */
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            padding: 15px; /* Padding for the carousel container itself */
+            background-color: var(--white);
+        }
+
+        .carousel-inner {
+            display: flex;
+            width: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide-group {
+            min-width: 100%; /* Each group takes full width */
+            display: flex;
+            justify-content: space-around; /* Distribute items within the group */
+            gap: 20px; /* Space between cards */
+            padding: 20px 0; /* Padding for the group items */
+            box-sizing: border-box; /* Include padding in width */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens if items don't fit */
+        }
+
+        .carousel-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            flex: 1 1 calc(33.33% - 20px); /* Base for 3 items, accounting for gap */
+            max-width: calc(33.33% - 20px); /* Max width for 3 items */
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none; /* Remove underline from card link */
+            color: var(--text-dark); /* Ensure text color */
+        }
+
+        .carousel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .carousel-card-img {
+            width: 100%;
+            height: 180px; /* Fixed height for image */
+            object-fit: cover; /* Cover the area, crop if needed */
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .carousel-card-body {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carousel-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--deep-blue);
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* แสดงได้ไม่เกิน 2 บรรทัด */
+            line-clamp: 2; /* Standard property for modern browsers */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .carousel-card-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* แสดงได้ไม่เกิน 3 บรรทัด */
+            line-clamp: 3; /* Standard property for modern browsers */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .carousel-card-date {
+            font-size: 0.8rem;
+            color: var(--primary-pink);
+            margin-top: auto; /* ดันวันที่ไปด้านล่าง */
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: -5px; /* Adjust as needed */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(0,0,0,0.3); /* Darker dots for white background */
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .dot.active {
+            background-color: var(--primary-pink);
+            transform: scale(1.2);
+        }
+
         /* ========== Responsive Adjustments - การปรับสไตล์สำหรับขนาดหน้าจอต่างๆ ========== */
+        /* Removed @media (max-width: 1200px) as default is now 3 items */
+
         @media (max-width: 992px) {
             .nav-con {
                 flex-direction: column;
@@ -366,6 +489,11 @@
             .news-content h3 {
                 font-size: 1.3rem;
             }
+
+            .carousel-card {
+                flex: 1 1 calc(50% - 20px); /* 2 items per row */
+                max-width: calc(50% - 20px);
+            }
         }
 
         @media (max-width: 768px) {
@@ -392,6 +520,20 @@
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
+
+            .carousel-card {
+                flex: 1 1 calc(50% - 15px); /* Adjusted for slightly smaller gap */
+                max-width: calc(50% - 15px);
+            }
+            .carousel-slide-group {
+                gap: 15px;
+            }
+            .image-carousel {
+                padding: 10px;
+            }
+            .carousel-card-img {
+                height: 150px;
+            }
         }
 
         @media (max-width: 576px) {
@@ -400,6 +542,13 @@
             }
             .news-item img {
                 height: 150px;
+            }
+            .carousel-card {
+                flex: 1 1 100%; /* 1 item per row */
+                max-width: 100%;
+            }
+            .carousel-slide-group {
+                padding: 10px 0;
             }
         }
     </style>
@@ -424,35 +573,168 @@
                     arrow.textContent = '▼';
                 }
             });
+
+            // JavaScript สำหรับ Image Carousel
+            const carouselInner = document.querySelector('.carousel-inner');
+            const carouselDotsContainer = document.querySelector('.carousel-dots');
+            const slideGroups = document.querySelectorAll('.carousel-slide-group');
+            let currentIndex = 0;
+
+            // สร้างจุด (dots) สำหรับแต่ละกลุ่มสไลด์
+            function createDots() {
+                carouselDotsContainer.innerHTML = ''; // ล้างจุดที่มีอยู่
+                slideGroups.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    if (index === 0) {
+                        dot.classList.add('active');
+                    }
+                    dot.addEventListener('click', () => {
+                        moveToSlide(index);
+                    });
+                    carouselDotsContainer.appendChild(dot);
+                });
+            }
+
+            // อัปเดตจุดที่ใช้งานอยู่
+            function updateDots() {
+                const dots = document.querySelectorAll('.dot');
+                dots.forEach((dot, index) => {
+                    if (index === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+
+            // เลื่อนไปยังสไลด์ที่ระบุ
+            function moveToSlide(index) {
+                currentIndex = index;
+                const offset = -currentIndex * 100;
+                carouselInner.style.transform = `translateX(${offset}%)`;
+                updateDots();
+            }
+
+            // ฟังก์ชันเลื่อนสไลด์อัตโนมัติ
+            let autoSlideInterval;
+            function startAutoSlide() {
+                stopAutoSlide(); // หยุดอันเก่าก่อนเริ่มอันใหม่
+                autoSlideInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % slideGroups.length;
+                    moveToSlide(currentIndex);
+                }, 3000); // เปลี่ยนสไลด์ทุก 5 วินาที
+            }
+
+            function stopAutoSlide() {
+                clearInterval(autoSlideInterval);
+            }
+
+            // เริ่มต้นเมื่อโหลดหน้าเว็บ
+            createDots();
+            startAutoSlide(); // เริ่มการเลื่อนสไลด์อัตโนมัติเมื่อโหลดหน้าเว็บ
+
+            // หยุดและเริ่มการเลื่อนสไลด์อัตโนมัติเมื่อมีการโต้ตอบ
+            carouselInner.addEventListener('mouseover', stopAutoSlide);
+            carouselInner.addEventListener('mouseleave', startAutoSlide);
+            carouselDotsContainer.addEventListener('mouseover', stopAutoSlide);
+            carouselDotsContainer.addEventListener('mouseleave', startAutoSlide);
+
+            // Responsive adjustments for carousel
+            window.addEventListener('resize', () => {
+                // When resized, recalculate and move to the current slide to ensure correct positioning
+                moveToSlide(currentIndex); 
+            });
         });
     </script>
 
     <nav class="nav">
         <div class="nav-con">
-          <div class="logo">
-            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
-            <a href="#">LRU HeartCare</a>
-          </div>
-    
-          <div class="menu-con">
-            <ul class="menu">
-              <li><a href="index.html">หน้าแรก</a></li>
-              <li><a href="News.html">ข่าวสาร</a></li>
-              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
-              <li class="dropdown">
-                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
-                <ul class="dropdown-menu">
-                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
-                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
-                </ul>
-              </li>
-            </ul>
-            <div class="logout">
-              <a href="Login.html">ออกจากระบบ</a>
+            <div class="logo">
+                <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+                <a href="#">LRU HeartCare</a>
             </div>
-          </div>
+        
+            <div class="menu-con">
+                <ul class="menu">
+                    <li><a href="index.html">หน้าแรก</a></li>
+                    <li><a href="News.html">ข่าวสาร</a></li>
+                    <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+                    <li class="dropdown">
+                        <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                        <ul class="dropdown-menu">
+                            <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                            <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="logout">
+                    <a href="Login.html">ออกจากระบบ</a>
+                </div>
+            </div>
         </div>
-      </nav>
+    </nav>
+
+    <!-- ส่วน Image Carousel -->
+    <div class="image-carousel">
+        <div class="carousel-inner">
+            <!-- กลุ่มสไลด์ที่ 1 (4 ข่าว) -->
+            <div class="carousel-slide-group">
+                <a href="News-Detail.html" class="carousel-card">
+                    <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039854274445334/image.png?ex=6813f622&is=6812a4a2&hm=c2e4a697167002e5eed3dfe94e6e61650b7187168833f4826ba8b587144f6a1a&" alt="[Image of การจัดการความเครียด]" class="carousel-card-img">
+                    <div class="carousel-card-body">
+                        <h5 class="carousel-card-title">เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h5>
+                        <p class="carousel-card-text">มาร่วมเรียนรู้เทคนิคและวิธีการรับมือกับความเครียดจากการเรียนและการใช้ชีวิตประจำวันในยุคที่เต็มไปด้วยสิ่งเร้า...</p>
+                        <p class="carousel-card-date">15 มิ.ย. 2567</p>
+                    </div>
+                </a>
+                <a href="News-Detail.html" class="carousel-card">
+                    <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039994192236555/image.png?ex=6813f643&is=6812a4c3&hm=5386cde0bf391951324825d45c61e0333cd160a1989992b467738fa85c4eec1c&" alt="[Image of จิตวิทยาเชิงบวก]" class="carousel-card-img">
+                    <div class="carousel-card-body">
+                        <h5 class="carousel-card-title">สัมมนา: พลังของจิตวิทยาเชิงบวก สร้างสุขให้ชีวิตนักศึกษา</h5>
+                        <p class="carousel-card-text">ค้นพบวิธีการสร้างพลังบวกและพัฒนาความคิดเชิงบวกเพื่อชีวิตที่มีความสุขและประสบความสำเร็จในรั้วมหาวิทยาลัย...</p>
+                        <p class="carousel-card-date">10 มิ.ย. 2567</p>
+                    </div>
+                </a>
+                <a href="News-Detail.html" class="carousel-card">
+                    <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039953931108423/image.png?ex=6813f639&is=6812a4b9&hm=3a00f63b7a5c18aba578cd49022e6c2b83dc428f3d4cce6926a243d2556f2a45&" alt="[Image of คลินิกสุขภาพใจเคลื่อนที่]" class="carousel-card-img">
+                    <div class="carousel-card-body">
+                        <h5 class="carousel-card-title">เปิดคลินิกสุขภาพใจเคลื่อนที่: ใกล้คุณยิ่งขึ้น!</h5>
+                        <p class="carousel-card-text">พบกับนักจิตวิทยาของเราได้ที่จุดบริการพิเศษตามตารางที่ประกาศ เพื่อรับคำปรึกษาเบื้องต้นได้ทันที...</p>
+                        <p class="carousel-card-date">5 มิ.ย. 2567</p>
+                    </div>
+                </a>
+            </div>
+            <!-- กลุ่มสไลด์ที่ 2 (อีก 3 ข่าว) -->
+            <div class="carousel-slide-group">
+                <a href="News-Detail.html" class="carousel-card">
+                    <img src="https://placehold.co/800x450/87CEEB/ffffff?text=New+Article+Image+4" alt="[Image of บทความเกี่ยวกับการนอนหลับ]" class="carousel-card-img">
+                    <div class="carousel-card-body">
+                        <h5 class="carousel-card-title">บทความน่าสนใจ: นอนหลับให้เต็มที่เพื่อสุขภาพจิตที่ดี</h5>
+                        <p class="carousel-card-text">การนอนหลับมีผลอย่างมากต่อสุขภาพจิต มาดูกันว่าคุณสามารถปรับปรุงคุณภาพการนอนได้อย่างไร...</p>
+                        <p class="carousel-card-date">1 มิ.ย. 2567</p>
+                    </div>
+                </a>
+                <a href="News-Detail.html" class="carousel-card">
+                    <img src="https://placehold.co/800x450/FF69B4/ffffff?text=New+Article+Image+5" alt="[Image of กลุ่มบำบัด]" class="carousel-card-img">
+                    <div class="carousel-card-body">
+                        <h5 class="carousel-card-title">เปิดรับสมัคร: กลุ่มบำบัดสำหรับนักศึกษาใหม่</h5>
+                        <p class="carousel-card-text">สำหรับนักศึกษาชั้นปีที่ 1 ที่ต้องการปรับตัวและหาเพื่อนใหม่ในรั้วมหาวิทยาลัย...</p>
+                        <p class="carousel-card-date">28 พ.ค. 2567</p>
+                    </div>
+                </a>
+                <a href="News-Detail.html" class="carousel-card">
+                    <img src="https://placehold.co/800x450/4682B4/ffffff?text=New+Article+Image+6" alt="[Image of การให้คำปรึกษาออนไลน์]" class="carousel-card-img">
+                    <div class="carousel-card-body">
+                        <h5 class="carousel-card-title">บริการให้คำปรึกษาออนไลน์: สะดวกทุกที่ทุกเวลา</h5>
+                        <p class="carousel-card-text">คุณสามารถเข้าถึงบริการให้คำปรึกษาทางจิตวิทยาได้ง่ายๆ ผ่านแพลตฟอร์มออนไลน์ของเรา...</p>
+                        <p class="carousel-card-date">20 พ.ค. 2567</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="carousel-dots"></div>
+    </div>
 
     <section class="news-section">
         <div class="container">
@@ -502,8 +784,8 @@
                     </div>
                 </div>
 
-                 <!-- News Item 5 -->
-                 <div class="news-item">
+                <!-- News Item 5 -->
+                <div class="news-item">
                     <img src="https://placehold.co/800x450/FF69B4/ffffff?text=New+Article+Image+5" alt="รูปภาพข่าวสารกลุ่มบำบัด">
                     <div class="news-content">
                         <p class="news-date">วันที่ 28 พฤษภาคม 2567</p>
