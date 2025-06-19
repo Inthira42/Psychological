@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>LRU HeartCare Admin Dashboard - รายงานสถิติ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* CSS จาก dashboard เดิมของคุณ */
+        :root { --primary-pink:#FF69B4; --light-pink:#FFC0CB; --soft-blue:#87CEEB; --deep-blue:#4682B4; --text-dark:#343a40; --text-muted:#6c757d; --bg-light:#f8f9fa; --white:#ffffff; --border-light:#e9ecef; --shadow-light:rgba(0,0,0,0.08); --shadow-medium:rgba(0,0,0,0.15); }
+        body{font-family:'Sukhumvit Set','Kanit',sans-serif;margin:0;padding:0;background:var(--bg-light);color:var(--text-dark);}
+        .dashboard-container{display:flex;min-height:100vh;}
+        .sidebar{width:250px;background:var(--deep-blue);color:var(--white);padding:20px;box-shadow:2px 0 10px var(--shadow-light);}
+        .sidebar h5{text-align:center;margin-bottom:30px;color:var(--light-pink);font-size:1.5rem;font-weight:700;}
+        .sidebar a{display:flex;align-items:center;color:var(--white);text-decoration:none;padding:12px 15px;margin-bottom:10px;border-radius:8px;transition:0.3s;font-weight:500;}
+        .sidebar a:hover,.sidebar a.active{background:var(--primary-pink);box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+        .sidebar a i{margin-right:12px;font-size:1.1rem;}
+        .main-content{flex:1;display:flex;flex-direction:column;}
+        .navbar{background:var(--white);padding:15px 25px;box-shadow:0 2px 8px var(--shadow-light);display:flex;justify-content:flex-end;align-items:center;gap:20px;}
+        .search-input{border:1px solid var(--border-light);padding:10px 15px;border-radius:25px;max-width:280px;outline:none;transition:0.3s;}
+        .search-input:focus{border-color:var(--soft-blue);box-shadow:0 0 0 3px rgba(135,206,235,0.3);}
+        .user-dropdown{position:relative;cursor:pointer;display:flex;align-items:center;}
+        .user-dropdown img{width:38px;height:38px;border-radius:50%;margin-right:10px;border:2px solid var(--light-pink);}
+        .user-dropdown-menu{display:none;position:absolute;top:50px;right:0;background:var(--white);box-shadow:0 5px 15px var(--shadow-medium);border-radius:8px;min-width:160px;padding:8px 0;}
+        .user-dropdown.active .user-dropdown-menu,.user-dropdown:hover .user-dropdown-menu{display:block;}
+        .user-dropdown-menu a{display:block;padding:10px 18px;color:var(--text-dark);text-decoration:none;transition:0.2s;}
+        .user-dropdown-menu a:hover{background:var(--light-pink);color:var(--white);}
+        .content-area{flex:1;padding:30px;background:var(--bg-light);}
+        .content-area h4{margin-bottom:25px;color:var(--deep-blue);font-size:1.8rem;font-weight:700;}
+        .info-cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 30px;}
+        @media (max-width: 1200px) { .info-cards-grid { grid-template-columns: repeat(3, 1fr); }}
+        @media (max-width: 992px) { .info-cards-grid { grid-template-columns: repeat(2, 1fr); }}
+        @media (max-width: 576px) { .info-cards-grid { grid-template-columns: 1fr; }}
+        .info-card { background: var(--white); padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 20px; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden;}
+        .info-card:hover { transform: translateY(-12px); box-shadow: 0 15px 40px rgba(0,0,0,0.2);}
+        .icon-wrapper { background: var(--light-pink); color: var(--primary-pink); border-radius: 50%; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(255,105,180,0.3);}
+        .info-card:hover .icon-wrapper { background: var(--primary-pink); color: var(--white); transform: scale(1.1) rotate(5deg);}
+        .card-content h5 { margin: 0 0 8px 0; font-size: 1.10rem; color: var(--deep-blue); font-weight: 700;}
+        .card-content p { margin: 0; font-size: 2.2rem; color: var(--primary-pink); font-weight: 800; letter-spacing: -1px; transition: color 0.4s ease;}
+        .info-card:hover .card-content p { color: var(--deep-blue);}
+        
+        /* ปรับ grid สำหรับส่วนกราฟและตารางสรุป */
+        .sections-grid-expanded {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 คอลัมน์สำหรับกราฟและตาราง */
+            gap: 25px; /* ระยะห่างระหว่างกราฟและตาราง */
+            margin-bottom: 30px;
+        }
+
+        /* สำหรับหน้าจอเล็กมาก ให้เป็นแถวละ 1 */
+        @media (max-width: 768px) {
+            .sections-grid-expanded {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-box{background:var(--white);padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+        .section-box h5{margin-bottom:20px;color:var(--deep-blue);font-size:1.3rem;font-weight:600;border-bottom:2px solid var(--border-light);padding-bottom:10px;}
+        .quick-link-item { background: linear-gradient(135deg, var(--white), var(--bg-light)); padding: 25px 20px; border-radius: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.07); text-align: center; transition: all 0.4s ease-out; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--text-dark); border: 1px solid var(--border-light);}
+        .quick-link-item:hover { transform: scale(1.05); box-shadow: 0 12px 30px rgba(0,0,0,0.12); background: linear-gradient(135deg, var(--primary-pink), var(--soft-blue)); color: var(--white); border-color: transparent;}
+        .quick-link-item:hover .link-icon { color: var(--white);}
+        .quick-link-item:hover .link-text { color: var(--white);}
+        .link-icon { font-size: 3rem; margin-bottom: 18px; color: var(--primary-pink); transition: color 0.4s ease-out;}
+        .link-text { font-weight: 700; font-size: 1.1rem; color: var(--deep-blue); transition: color 0.4s ease-out;}
+        .quick-links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;}
+        @media (max-width: 992px) { .quick-links-grid { grid-template-columns: repeat(2, 1fr); }}
+        @media (max-width: 576px) { .quick-links-grid { grid-template-columns: 1fr; }}
+        
+        /* ปรับ Responsive ของ dashboard โดยรวม */
+        @media(max-width:768px){
+            .dashboard-container{flex-direction:column;}
+            .sidebar{width:100%;position:sticky;top:0;}
+            .sidebar h5{display:none;}
+        }
+
+        /* ส่วนเพิ่มเติมสำหรับหน้า PDF */
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--deep-blue);
+        }
+        .report-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        .report-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+        .date-selection {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap; /* ให้ขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
+        }
+        .date-selection label {
+            font-weight: 600;
+            color: var(--deep-blue);
+        }
+        .date-selection input[type="date"] {
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .date-selection input[type="date"]:focus {
+            border-color: var(--soft-blue);
+        }
+        .date-selection button {
+            padding: 10px 20px;
+            background-color: var(--soft-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .date-selection button:hover {
+            background-color: var(--deep-blue);
+        }
+
+
+        .section-box.pdf-export {
+            break-inside: avoid; /* ป้องกันไม่ให้ box ถูกตัดครึ่งเมื่อแบ่งหน้า PDF */
+            margin-bottom: 25px; /* เพิ่มระยะห่างด้านล่างสำหรับแต่ละส่วนใน PDF */
+        }
+        .print-button {
+            display: block; /* ทำให้ปุ่มอยู่บรรทัดใหม่ */
+            margin: 30px auto; /* จัดกึ่งกลางและมีระยะห่าง */
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: var(--primary-pink);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .print-button:hover {
+            background-color: #E0509B; /* สีชมพูเข้มขึ้นเมื่อ hover */
+            transform: translateY(-2px);
+        }
+
+        /* สไตล์สำหรับตารางสรุปข้อมูล (ปรับปรุงใหม่ให้มินิมอลและอ่านง่าย) */
+        .summary-table-section {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* ปรับเงาให้น้อยลง */
+        }
+        .summary-table-section h5 {
+            margin-bottom: 20px;
+            color: var(--deep-blue);
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-pink); /* เน้นเส้นคั่นด้วยสีชมพู */
+            padding-bottom: 10px;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse; /* กลับไปใช้ collapse เพื่อความเรียบง่ายของเส้น */
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid var(--border-light); /* เส้นบางๆ เบาๆ */
+            padding: 12px 15px;
+            text-align: left;
+        }
+        .summary-table th {
+            background-color: var(--deep-blue); /* สีเข้มสำหรับหัวตาราง */
+            color: var(--white);
+            font-weight: 700;
+            white-space: nowrap; /* ไม่ให้ข้อความหัวตารางขึ้นบรรทัดใหม่ */
+        }
+        .summary-table tbody tr:nth-child(even) {
+            background-color: var(--bg-light); /* สลับสีพื้นหลัง */
+        }
+        .summary-table tbody tr:hover {
+            background-color: var(--light-pink);
+            color: var(--deep-blue);
+            cursor: default;
+        }
+        /* เน้นข้อความในคอลัมน์แรก */
+        .summary-table td:first-child {
+            font-weight: 600;
+            color: var(--deep-blue);
+        }
+        /* เน้นตัวเลขหรือข้อมูลสำคัญในคอลัมน์ที่สอง */
+        .summary-table td strong {
+            color: var(--primary-pink); /* สีชมพูสำหรับตัวเลขเด่น */
+            font-weight: 700;
+        }
+        /* สไตล์สำหรับสถานะการนัดหมายแต่ละบรรทัด */
+        .summary-table td .status-line {
+            display: block; /* ทำให้แต่ละ span ขึ้นบรรทัดใหม่ */
+            margin-bottom: 5px; /* เพิ่มระยะห่างระหว่างบรรทัด */
+        }
+        .summary-table td .status-line:last-child {
+            margin-bottom: 0; /* ไม่มีระยะห่างด้านล่างสำหรับบรรทัดสุดท้าย */
+        }
+
+        .summary-table td span.status-completed { color: #28a745; font-weight: 600; } /* เขียว */
+        .summary-table td span.status-pending { color: #ffc107; font-weight: 600; } /* เหลือง */
+        .summary-table td span.status-cancelled { color: #dc3545; font-weight: 600; } /* แดง */
+
+
+        /* ซ่อน Sidebar และ Navbar เมื่อพิมพ์ */
+        @media print {
+            .sidebar, .navbar, .print-button, .date-selection {
+                display: none !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .content-area {
+                padding: 20px;
+            }
+            body {
+                background: var(--white);
+            }
+            .sections-grid-expanded {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 20px;
+            }
+            .info-cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            /* ตารางสรุปจะแสดงในรูปแบบปกติเมื่อพิมพ์ */
+            .summary-table-section {
+                box-shadow: none;
+            }
+            .summary-table th, .summary-table td {
+                border: 1px solid #ddd; /* เพิ่ม border บางๆ กลับมาเมื่อพิมพ์ */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h5>LRU HeartCare</h5>
+            <a href="index.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
+            <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+            <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+            <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+            <a href="OnlineChat.html"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+            <a href="#"><i class="bi bi-gear"></i> ข่าวสาร</a>
+            <a href="Reports.html" class="active"><i class="bi bi-newspaper"></i> รายงาน</a>
+          
+        </div>
+        <div class="main-content">
+            <nav class="navbar">
+                <input type="search" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://via.placeholder.com/30" alt="Avatar">
+                    <strong>แอดมิน</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="content-area">
+                <div class="report-header">
+                    <h1>รายงานสถิติ LRU HeartCare</h1>
+                    <p>ข้อมูลภาพรวมระบบ ณ วันที่: <span id="reportDate"></span></p>
+                </div>
+
+                <div class="date-selection">
+                    <label for="startDate">จากวันที่:</label>
+                    <input type="date" id="startDate">
+                    <label for="endDate">ถึงวันที่:</label>
+                    <input type="date" id="endDate">
+                    <button id="generateReportBtn">สร้างรายงาน</button>
+                </div>
+
+                <h4>ภาพรวมระบบ</h4>
+                <div class="info-cards-grid">
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-people"></i></div><div class="card-content"><h5>จำนวนผู้ใช้งาน</h5><p id="totalUsers">1,250</p></div></div>
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-person-vcard"></i></div><div class="card-content"><h5>นักจิตวิทยา</h5><p id="totalPsychologists">15</p></div></div>
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-calendar-check"></i></div><div class="card-content"><h5>นัดหมายวันนี้</h5><p id="appointmentsToday">8</p></div></div>
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-bell"></i></div><div class="card-content"><h5>การแจ้งเตือนใหม่</h5><p id="newNotifications">3</p></div></div>
+                </div>
+
+                <div class="sections-grid-expanded">
+                    <div class="section-box pdf-export">
+                        <h5>กราฟสถิติการนัดหมาย</h5>
+                        <canvas id="appointmentChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="section-box pdf-export">
+                        <h5>กราฟผู้ใช้งานใหม่</h5>
+                        <canvas id="userChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="section-box pdf-export">
+                        <h5>สถานะการนัดหมาย</h5>
+                        <canvas id="appointmentStatusChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="summary-table-section pdf-export">
+                        <h5>สรุปภาพรวมจากกราฟ</h5>
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>ประเภทสรุป</th>
+                                    <th>ข้อมูลสรุป</th>
+                                </tr>
+                            </thead>
+                            <tbody id="graphSummaryTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <button id="downloadPdfBtn" class="print-button">ดาวน์โหลดรายงานเป็น PDF</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let appointmentChart, userChart, appointmentStatusChart;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const generateReportBtn = document.getElementById('generateReportBtn');
+            const reportDateSpan = document.getElementById('reportDate');
+            const graphSummaryTableBody = document.getElementById('graphSummaryTableBody');
+
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            startDateInput.value = formatDate(thirtyDaysAgo);
+            endDateInput.value = formatDate(today);
+
+            updateReport(startDateInput.value, endDateInput.value);
+
+            generateReportBtn.addEventListener('click', () => {
+                const start = startDateInput.value;
+                const end = endDateInput.value;
+                updateReport(start, end);
+            });
+
+            function updateReport(startDateStr, endDateStr) {
+                const start = new Date(startDateStr);
+                const end = new Date(endDateStr);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                reportDateSpan.innerText = `${start.toLocaleDateString('th-TH', options)} ถึง ${end.toLocaleDateString('th-TH', options)}`;
+
+                const simulatedData = simulateDataForDateRange(startDateStr, endDateStr);
+
+                document.getElementById('totalUsers').innerText = simulatedData.totalUsers.toLocaleString();
+                document.getElementById('totalPsychologists').innerText = simulatedData.totalPsychologists.toLocaleString();
+                document.getElementById('appointmentsToday').innerText = simulatedData.appointmentsToday.toLocaleString();
+                document.getElementById('newNotifications').innerText = simulatedData.newNotifications.toLocaleString();
+                
+                updateGraphSummaryTable(simulatedData);
+
+                if (appointmentChart) appointmentChart.destroy();
+                if (userChart) userChart.destroy();
+                if (appointmentStatusChart) appointmentStatusChart.destroy();
+
+                const ctx1 = document.getElementById('appointmentChart').getContext('2d');
+                appointmentChart = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: simulatedData.appointmentChart.labels,
+                        datasets: [{
+                            label: 'จำนวนนัดหมาย',
+                            data: simulatedData.appointmentChart.data,
+                            backgroundColor: 'rgba(255,105,180,0.7)',
+                            borderColor: 'rgba(70,130,180,1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: true, position: 'top' } } }
+                });
+
+                const ctx2 = document.getElementById('userChart').getContext('2d');
+                userChart = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: simulatedData.userChart.labels,
+                        datasets: [{
+                            label: 'ผู้ใช้งานใหม่',
+                            data: simulatedData.userChart.data,
+                            backgroundColor: 'rgba(135,206,235,0.4)',
+                            borderColor: 'rgba(135,206,235,1)',
+                            fill: true,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: true, position: 'top' } } }
+                });
+
+                const ctx3 = document.getElementById('appointmentStatusChart').getContext('2d');
+                appointmentStatusChart = new Chart(ctx3, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['เสร็จสิ้น', 'รอดำเนินการ', 'ยกเลิก'],
+                        datasets: [{
+                            label: 'สถานะการนัดหมาย',
+                            data: simulatedData.appointmentStatusChart.data,
+                            backgroundColor: ['rgba(76, 175, 80, 0.7)', 'rgba(255, 193, 7, 0.7)', 'rgba(244, 67, 54, 0.7)'],
+                            borderColor: ['rgba(76, 175, 80, 1)', 'rgba(255, 193, 7, 1)', 'rgba(244, 67, 54, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { position: 'right' }, title: { display: false } } }
+                });
+            }
+
+            function simulateDataForDateRange(startDateStr, endDateStr) {
+                const startDate = new Date(startDateStr);
+                const endDate = new Date(endDateStr);
+
+                const labels = [];
+                const appointmentData = [];
+                const userData = [];
+                let currentDate = new Date(startDate);
+                while (currentDate <= endDate) {
+                    labels.push(currentDate.toLocaleDateString('th-TH', { month: 'short', day: 'numeric' }));
+                    appointmentData.push(Math.floor(Math.random() * 20) + 5);
+                    userData.push(Math.floor(Math.random() * 10) + 1);
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                const totalUsers = 1200 + Math.floor(Math.random() * 100);
+                const totalPsychologists = 15 + Math.floor(Math.random() * 3);
+                const appointmentsToday = Math.floor(Math.random() * 10) + 5;
+                const newNotifications = Math.floor(Math.random() * 5) + 1;
+
+                const completedAppointments = Math.floor(Math.random() * 50) + 40;
+                const pendingAppointments = Math.floor(Math.random() * 20) + 10;
+                const cancelledAppointments = 100 - completedAppointments - pendingAppointments;
+
+                return {
+                    totalUsers: totalUsers,
+                    totalPsychologists: totalPsychologists,
+                    appointmentsToday: appointmentsToday,
+                    newNotifications: newNotifications,
+                    
+                    appointmentChart: { labels: labels, data: appointmentData },
+                    userChart: { labels: labels, data: userData },
+                    appointmentStatusChart: { data: [completedAppointments, pendingAppointments, cancelledAppointments], labels: ['เสร็จสิ้น', 'รอดำเนินการ', 'ยกเลิก'] },
+                };
+            }
+
+            function updateGraphSummaryTable(data) {
+                graphSummaryTableBody.innerHTML = '';
+
+                // สรุปกราฟสถิติการนัดหมาย
+                const totalAppointments = data.appointmentChart.data.reduce((sum, val) => sum + val, 0);
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>จำนวนนัดหมายทั้งหมด</td><td>ในช่วงเวลาที่เลือกมีนัดหมายรวม <strong>${totalAppointments.toLocaleString()} ครั้ง</strong></td>`;
+                graphSummaryTableBody.appendChild(tr);
+
+                // สรุปกราฟผู้ใช้งานใหม่
+                const totalNewUsers = data.userChart.data.reduce((sum, val) => sum + val, 0);
+                tr = document.createElement('tr');
+                tr.innerHTML = `<td>ผู้ใช้งานใหม่</td><td>มีผู้ใช้งานใหม่เพิ่มขึ้น <strong>${totalNewUsers.toLocaleString()} คน</strong></td>`;
+                graphSummaryTableBody.appendChild(tr);
+
+                // สรุปสถานะการนัดหมาย (แสดง 3 บรรทัด)
+                const statusLabels = data.appointmentStatusChart.labels;
+                const statusData = data.appointmentStatusChart.data;
+                const completed = statusData[statusLabels.indexOf('เสร็จสิ้น')];
+                const pending = statusData[statusLabels.indexOf('รอดำเนินการ')];
+                const cancelled = statusData[statusLabels.indexOf('ยกเลิก')];
+
+                tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>สถานะการนัดหมาย</td>
+                    <td>
+                        <span class="status-line status-completed">เสร็จสิ้น: ${completed.toLocaleString()}%</span>
+                        <span class="status-line status-pending">รอดำเนินการ: ${pending.toLocaleString()}%</span>
+                        <span class="status-line status-cancelled">ยกเลิก: ${cancelled.toLocaleString()}%</span>
+                    </td>`;
+                graphSummaryTableBody.appendChild(tr);
+            }
+
+            document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'pt', 'a4');
+
+                const element = document.querySelector('.content-area');
+
+                // ซ่อนปุ่มและส่วนเลือกวันที่ก่อน capture
+                document.getElementById('downloadPdfBtn').style.display = 'none';
+                document.querySelector('.date-selection').style.display = 'none';
+
+
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: true,
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 595.28;
+                const pageHeight = 841.89;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // แสดงปุ่มและส่วนเลือกวันที่กลับคืน
+                document.getElementById('downloadPdfBtn').style.display = 'block';
+                document.querySelector('.date-selection').style.display = 'flex';
+
+                pdf.save('LRU_HeartCare_Report.pdf');
+            });
+        });
+    </script>
+</body>
+</html>
