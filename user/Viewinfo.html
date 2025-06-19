@@ -47,7 +47,7 @@
             padding: 0 20px; /* ระยะห่างด้านข้าง */
         }
 
-        /* ========== Navigation Bar - แถบนำทางด้านบน (จากหน้าหลัก) ========== */
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
         .nav {
             background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
             padding: 15px 0; /* ลด padding ลงเล็กน้อย */
@@ -119,65 +119,7 @@
             transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
         }
 
-        /* Dropdown specific styles */
-        .dropdown {
-            position: relative;
-        }
-
-        .dropdown-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
-            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
-            color: var(--white);
-            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
-            border-radius: 10px; /* เพิ่มขอบมน */
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            font-weight: 500;
-            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
-        }
-
-        .dropdown-toggle:hover {
-            background: var(--primary-pink);
-            color: var(--white);
-            transform: translateY(-3px);
-        }
-
-        .dropdown-menu {
-            display: none; /* ซ่อน dropdown menu เริ่มต้น */
-            position: absolute;
-            top: 110%; /* ขยับลงมาเล็กน้อย */
-            left: 0;
-            background: var(--deep-blue);
-            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
-            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
-            border-radius: 10px; /* ขอบมนมากขึ้น */
-            overflow: hidden;
-            z-index: 1000;
-            padding: 10px 0;
-            opacity: 0; /* ซ่อนด้วย opacity */
-            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
-            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
-        }
-
-        .dropdown.show .dropdown-menu {
-            display: block; /* แสดง dropdown menu */
-            opacity: 1; /* แสดงด้วย opacity */
-            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
-        }
-
-        .dropdown-menu li a {
-            color: var(--white);
-            padding: 12px 25px; /* เพิ่ม padding */
-            display: block;
-            text-decoration: none;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-
-        .dropdown-menu li a:hover {
-            background: var(--primary-pink);
-            color: var(--white);
-        }
+        /* No dropdown specific styles as dropdown removed */
 
         .logout a {
             background: var(--primary-pink);
@@ -322,9 +264,10 @@
             white-space: nowrap;
         }
 
-        .status-รอดำเนินการ {
-            background-color: #FFC107; /* Orange */
-            box-shadow: 0 2px 5px rgba(255, 193, 7, 0.3);
+        /* New status style for "รอยืนยัน" */
+        .status-รอยืนยัน {
+            background-color: #6c757d; /* Grey */
+            box-shadow: 0 2px 5px rgba(108, 117, 125, 0.3);
         }
 
         .status-เริ่มเข้าปรึกษา {
@@ -332,8 +275,14 @@
             box-shadow: 0 2px 5px rgba(135, 206, 235, 0.3);
         }
 
+        .status-ปฎิเสธ {
+            background-color: #DC3545; /* Red */
+            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.3);
+        }
+        
+        /* Updated existing status for "ปรึกษาสำเร็จ" to be green */
         .status-ปรึกษาสำเร็จ {
-            background-color: #28A745; /* Green */
+            background-color: #28a745; /* Green */
             box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
         }
 
@@ -361,6 +310,7 @@
             padding: 50px 20px;
             font-size: 1.3rem;
             color: var(--text-muted);
+            display: none; /* Hidden by default */
         }
 
         .action-buttons {
@@ -549,12 +499,13 @@
             .menu li {
                 width: 100%;
             }
-            .menu li a, .dropdown-toggle {
+            .menu li a { /* No dropdown-toggle in this version */
                 width: calc(100% - 30px);
                 text-align: center;
                 margin: 0 15px;
             }
-            .dropdown-menu {
+            /* Dropdown menu is no longer dynamically displayed, so static position is not an issue */
+            /* .dropdown-menu {
                 position: static;
                 width: 100%;
                 border-radius: 0;
@@ -563,7 +514,7 @@
             }
             .dropdown-menu li a {
                 padding: 10px 15px;
-            }
+            } */
             .logout {
                 width: 100%;
                 text-align: center;
@@ -760,38 +711,7 @@
 </head>
 <body>
     <script>
-        // JavaScript สำหรับการทำงานของ Dropdown
-        document.addEventListener('DOMContentLoaded', function () {
-            const dropdownToggle = document.querySelector('.dropdown-toggle');
-            const dropdown = dropdownToggle.closest('.dropdown');
-            const arrow = dropdownToggle.querySelector('.arrow');
-        
-            dropdownToggle.addEventListener('click', function () {
-                dropdown.classList.toggle('show');
-                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
-            });
-        
-            // ปิด dropdown เมื่อคลิกนอกพื้นที่
-            document.addEventListener('click', function (e) {
-                if (!dropdown.contains(e.target)) {
-                    dropdown.classList.remove('show');
-                    arrow.textContent = '▼';
-                }
-            });
-
-            // ข้อมูลตัวอย่างการนัดหมาย (จะถูกใช้หาก localStorage ไม่มีข้อมูล)
-            // เพิ่ม psychologistId เข้าไปในข้อมูลตัวอย่างเพื่อใช้ในการนำทางไปยังหน้าแชท
-            const exampleAppointments = [
-                { id: '1', date: '2023-01-26', time: '13:00-15:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'การตลาด', faculty: 'บริหารธุรกิจ', reason: 'ปัญหาส่วนตัวและวิธีการแก้', psychologist: 'นายสมชาย ใจดี', psychologistId: 'somchai', status: 'รอดำเนินการ' },
-                { id: '2', date: '2023-01-15', time: '09:00-10:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'วิทยาการคอมพิวเตอร์', faculty: 'วิทยาศาสตร์', reason: 'เรื่องการเรียนและความเครียด', psychologist: 'แพทย์หญิงอรอนงค์ รักษาใจ', psychologistId: 'oranong', status: 'เริ่มเข้าปรึกษา!' },
-                { id: '3', date: '2022-11-07', time: '11:00-12:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'นิติศาสตร์', faculty: 'นิติศาสตร์', reason: 'ปัญหาครอบครัวและแนวทางแก้ไข', psychologist: 'นางสาวมณีรัตน์ สุขใจ', psychologistId: 'maneerat', status: 'ปรึกษาสำเร็จ' }
-            ];
-
-            const appointmentListContainer = document.getElementById('appointmentListContainer');
-            const noAppointmentMessageDiv = document.getElementById('noAppointmentMessage');
-            const appointmentActionsDiv = document.getElementById('appointmentActions');
-            const appointmentList = document.querySelector('.appointment-list'); 
-
+        document.addEventListener('DOMContentLoaded', function() {
             // Modal elements for detailed view
             const appointmentDetailModal = document.getElementById('appointmentDetailModal');
             const detailDate = document.getElementById('detailDate');
@@ -806,129 +726,40 @@
             const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
             const btnStartConsultation = document.getElementById('btnStartConsultation'); // ปุ่มเริ่มเข้าการปรึกษา
 
-            // ปิด Modal เมื่อคลิกปุ่มปิด
+            // Close Modal when clicking the close button
             if (btnCloseDetailModal) {
                 btnCloseDetailModal.addEventListener('click', function() {
                     appointmentDetailModal.classList.remove('show');
                 });
             }
 
-            let allAppointments = [];
-            const storedAppointments = localStorage.getItem('allAppointments');
+            // Function to show appointment details in modal
+            window.showAppointmentDetails = function(
+                date, time, fullName, studentId, major, faculty, reason, psychologist, psychologistId, status, appId
+            ) {
+                detailDate.textContent = date || '-';
+                detailTime.textContent = time || '-';
+                detailFullName.textContent = fullName || '-';
+                detailStudentId.textContent = studentId || '-';
+                detailMajor.textContent = major || '-';
+                detailFaculty.textContent = faculty || '-';
+                detailReason.textContent = reason || '-';
+                detailPsychologist.textContent = psychologist || '-';
+                detailStatus.textContent = status || '-';
 
-            if (storedAppointments) {
-                try {
-                    allAppointments = JSON.parse(storedAppointments);
-                    // กรองข้อมูลที่อาจไม่สมบูรณ์
-                    allAppointments = allAppointments.filter(app => app && app.fullName && app.date && app.time);
-                    console.log("Found appointment data in localStorage:", allAppointments);
-                } catch (e) {
-                    console.error("Error parsing stored appointment data:", e);
-                    allAppointments = []; // Clear data if parsing fails
+                // Show/Hide "เริ่มเข้าการปรึกษา" button based on status
+                if ( status === 'เริ่มเข้าปรึกษา!') {
+                    btnStartConsultation.style.display = 'block';
+                    // Set up button click to go to chat page
+                    btnStartConsultation.onclick = () => {
+                        window.location.href = `Chat.html?psy=${psychologistId}&appId=${appId}`;
+                    };
+                } else {
+                    btnStartConsultation.style.display = 'none';
                 }
-            }
 
-            // If no real data or parsing failed, use example data
-            if (allAppointments.length === 0) {
-                console.log("No valid appointment data found. Displaying example data.");
-                allAppointments = exampleAppointments;
-                // ตั้งค่าใน localStorage ให้มีข้อมูลตัวอย่างสำหรับครั้งถัดไป
-                // localStorage.setItem('allAppointments', JSON.stringify(exampleAppointments)); // Only set if you want example to persist
-                noAppointmentMessageDiv.textContent = 'แสดงข้อมูลตัวอย่าง (ไม่มีการนัดหมายล่าสุด)';
-                noAppointmentMessageDiv.style.display = 'block';
-                // Hide the main list container if showing the message
-                appointmentList.style.display = 'none'; 
-            } else {
-                noAppointmentMessageDiv.style.display = 'none';
-                appointmentList.style.display = 'block'; // Show the main list container
-            }
-            
-            // Render appointments in the table-like grid
-            if (allAppointments.length > 0) {
-                // Clear only the dynamically generated data rows, not the header row
-                // Find and remove all existing .appointment-card elements within .appointment-list
-                const existingCards = appointmentList.querySelectorAll('.appointment-card');
-                existingCards.forEach(card => card.remove());
-                
-                allAppointments.forEach(appointment => {
-                    const row = document.createElement('div');
-                    row.classList.add('appointment-card');
-
-                    // Full Name Cell
-                    const fullNameCell = document.createElement('div');
-                    fullNameCell.classList.add('appointment-cell');
-                    fullNameCell.textContent = appointment.fullName || '-';
-                    row.appendChild(fullNameCell);
-
-                    // Date Cell
-                    const dateCell = document.createElement('div');
-                    dateCell.classList.add('appointment-cell');
-                    dateCell.textContent = appointment.date || '-';
-                    row.appendChild(dateCell);
-
-                    // Time Cell
-                    const timeCell = document.createElement('div');
-                    timeCell.classList.add('appointment-cell');
-                    timeCell.textContent = appointment.time || '-';
-                    row.appendChild(timeCell);
-
-                    // Status Cell
-                    const statusCell = document.createElement('div');
-                    statusCell.classList.add('appointment-cell');
-                    const statusBadge = document.createElement('span');
-                    statusBadge.classList.add('status-badge');
-                    // Ensure status exists before attempting to replace/trim
-                    if (appointment.status) {
-                        statusBadge.classList.add(`status-${appointment.status.replace(/!/g, '').trim()}`);
-                    }
-                    statusBadge.textContent = appointment.status || '-';
-                    statusCell.appendChild(statusBadge);
-                    row.appendChild(statusCell);
-
-                    // Actions Cell (ดูข้อมูลเพิ่มเติม button)
-                    const actionsCell = document.createElement('div');
-                    actionsCell.classList.add('appointment-cell');
-                    const detailButton = document.createElement('button');
-                    detailButton.classList.add('detail-button');
-                    detailButton.textContent = 'ข้อมูลเพิ่มเติม';
-                    detailButton.addEventListener('click', () => {
-                        // Populate and show the detail modal
-                        detailDate.textContent = appointment.date || '-';
-                        detailTime.textContent = appointment.time || '-';
-                        detailFullName.textContent = appointment.fullName || '-';
-                        detailStudentId.textContent = appointment.studentId || '-';
-                        detailMajor.textContent = appointment.major || '-';
-                        detailFaculty.textContent = appointment.faculty || '-';
-                        detailReason.textContent = appointment.reason || '-';
-                        detailPsychologist.textContent = appointment.psychologist || '-';
-                        detailStatus.textContent = appointment.status || '-';
-
-                        // Show/Hide "เริ่มเข้าการปรึกษา" button based on status
-                        if (appointment.status === 'รอดำเนินการ' || appointment.status === 'เริ่มเข้าปรึกษา!') {
-                            btnStartConsultation.style.display = 'block';
-                            // Set up button click to go to chat page
-                            btnStartConsultation.onclick = () => {
-                                // Pass psychologistId and appointmentId to the chat page
-                                window.location.href = `Chat.html?psy=${appointment.psychologistId}&appId=${appointment.id}`;
-                            };
-                        } else {
-                            btnStartConsultation.style.display = 'none';
-                        }
-
-                        appointmentDetailModal.classList.add('show');
-                    });
-                    actionsCell.appendChild(detailButton);
-                    row.appendChild(actionsCell);
-
-                    appointmentList.appendChild(row); // Append row directly to .appointment-list
-                });
-                appointmentActionsDiv.style.display = 'flex'; // Show action buttons
-            } else {
-                noAppointmentMessageDiv.textContent = 'ไม่มีข้อมูลการนัดหมายที่จะแสดง';
-                noAppointmentMessageDiv.style.display = 'block';
-                appointmentList.style.display = 'none'; // Hide the list
-                appointmentActionsDiv.style.display = 'flex'; // Still show action buttons
-            }
+                appointmentDetailModal.classList.add('show');
+            };
         });
     </script>
 
@@ -944,13 +775,7 @@
               <li><a href="index.html">หน้าแรก</a></li>
               <li><a href="News.html">ข่าวสาร</a></li>
               <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
-              <li class="dropdown">
-                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
-                <ul class="dropdown-menu">
-                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
-                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
-                </ul>
-              </li>
+              <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li> <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
             </ul>
             <div class="logout">
               <a href="Login.html">ออกจากระบบ</a>
@@ -964,32 +789,92 @@
             <h2 id="infoHeading">ข้อมูลการนัดหมาย</h2>
             
             <div id="appointmentListContainer" class="appointment-list-container">
-                <!-- Header row is now a direct child of this container -->
                 <div class="appointment-header-row">
                     <div class="appointment-header-cell">ชื่อ - นามสกุล</div>
                     <div class="appointment-header-cell">วันที่</div>
                     <div class="appointment-header-cell">เวลา</div>
                     <div class="appointment-header-cell">สถานะ</div>
-                    <div class="appointment-header-cell"></div> <!-- สำหรับปุ่ม "ข้อมูลเพิ่มเติม" -->
-                </div>
-                <!-- This div will now directly contain the appointment-card elements -->
+                    <div class="appointment-header-cell"></div> </div>
                 <div class="appointment-list">
-                    <!-- Appointment data (appointment-card elements) will be inserted here by JavaScript -->
+                    <div class="appointment-card">
+                        <div class="appointment-cell">นางสาวแมว สีขาว</div>
+                        <div class="appointment-cell">2023-01-26</div>
+                        <div class="appointment-cell">13:00-15:00</div>
+                        <div class="appointment-cell"><span class="status-badge status-รอยืนยัน">รอยืนยัน</span></div>
+                        <div class="appointment-cell">
+                            <button class="detail-button" onclick="showAppointmentDetails(
+                                '2023-01-26', 
+                                '13:00-15:00', 
+                                'นางสาวแมว สีขาว', 
+                                '654321001-2', 
+                                'การตลาด', 
+                                'บริหารธุรกิจ', 
+                                'ปัญหาส่วนตัวและวิธีการแก้', 
+                                'นายสมชาย ใจดี', 
+                                'somchai', 
+                                'รอยืนยัน',
+                                '1'
+                            )">ข้อมูลเพิ่มเติม</button>
+                        </div>
+                    </div>
+
+                    <div class="appointment-card">
+                        <div class="appointment-cell">นางสาวแมว สีขาว</div>
+                        <div class="appointment-cell">2023-01-15</div>
+                        <div class="appointment-cell">09:00-10:00</div>
+                        <div class="appointment-cell"><span class="status-badge status-เริ่มเข้าปรึกษา">เริ่มเข้าปรึกษา!</span></div>
+                        <div class="appointment-cell">
+                            <button class="detail-button" onclick="showAppointmentDetails(
+                                '2023-01-15', 
+                                '09:00-10:00', 
+                                'นางสาวแมว สีขาว', 
+                                '654321001-2', 
+                                'วิทยาการคอมพิวเตอร์', 
+                                'วิทยาศาสตร์', 
+                                'เรื่องการเรียนและความเครียด', 
+                                'แพทย์หญิงอรอนงค์ รักษาใจ', 
+                                'oranong', 
+                                'เริ่มเข้าปรึกษา!',
+                                '2'
+                            )">ข้อมูลเพิ่มเติม</button>
+                        </div>
+                    </div>
+
+                    <div class="appointment-card">
+                        <div class="appointment-cell">นางสาวแมว สีขาว</div>
+                        <div class="appointment-cell">2022-11-07</div>
+                        <div class="appointment-cell">11:00-12:00</div>
+                        <div class="appointment-cell"><span class="status-badge status-ปฎิเสธ">ปฎิเสธ</span></div>
+                        <div class="appointment-cell">
+                            <button class="detail-button" onclick="showAppointmentDetails(
+                                '2022-11-07', 
+                                '11:00-12:00', 
+                                'นางสาวแมว สีขาว', 
+                                '654321001-2', 
+                                'นิติศาสตร์', 
+                                'นิติศาสตร์', 
+                                'ปัญหาครอบครัวและแนวทางแก้ไข', 
+                                'นางสาวมณีรัตน์ สุขใจ', 
+                                'maneerat', 
+                                'ปฎิเสธ',
+                                '3'
+                            )">ข้อมูลเพิ่มเติม</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="noAppointmentMessage" class="no-appointment-message" style="display: none;">
-                <!-- Message will be populated by JavaScript -->
+                ไม่มีข้อมูลการนัดหมายที่จะแสดง
             </div>
 
-            <div id="appointmentActions" class="action-buttons" style="display: none;">
+            <div id="appointmentActions" class="action-buttons">
                 <a href="Psychologist.html" class="btn btn-secondary">จองนัดหมายใหม่</a>
                 <a href="appointments.html" class="btn btn-primary">ดูประวัติการนัดหมาย</a>
             </div>
         </div>
     </main>
 
-    <!-- Modal for displaying full appointment details -->
     <div id="appointmentDetailModal" class="confirmation-modal">
         <div class="modal-content">
             <div class="modal-header">
