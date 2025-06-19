@@ -1,11 +1,411 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <meta charset="UTF-8" />
+    <title>LRU HeartCare Admin Dashboard - หน้าหลัก</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ========== Variables ========== */
+:root {
+  --primary-pink: #FF69B4;
+  --light-pink: #FFC0CB;
+  --soft-blue: #87CEEB;
+  --deep-blue: #4682B4;
+  --text-dark: #343a40;
+  --text-muted: #6c757d;
+  --bg-light: #f8f9fa;
+  --white: #ffffff;
+  --border-light: #e9ecef;
+  --shadow-light: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
+}
+
+/* ========== Body ========== */
+body {
+  font-family: 'Sukhumvit Set', 'Kanit', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+/* ========== Layout ========== */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: var(--deep-blue);
+  color: var(--white);
+  padding: 20px;
+  box-shadow: 2px 0 10px var(--shadow-light);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Sidebar ========== */
+.sidebar h5 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--light-pink);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  color: var(--white);
+  text-decoration: none;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: var(--primary-pink);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar a i {
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+/* ========== Navbar ========== */
+.navbar {
+  background: var(--white);
+  padding: 15px 25px;
+  box-shadow: 0 2px 8px var(--shadow-light);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ========== Search Input ========== */
+.search-input {
+  border: 1px solid var(--border-light);
+  padding: 10px 15px;
+  border-radius: 25px;
+  max-width: 280px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.search-input:focus {
+  border-color: var(--soft-blue);
+  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+}
+
+/* ========== User Dropdown ========== */
+.user-dropdown {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.user-dropdown img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid var(--light-pink);
+}
+
+.user-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: var(--white);
+  box-shadow: 0 5px 15px var(--shadow-medium);
+  border-radius: 8px;
+  min-width: 160px;
+  padding: 8px 0;
+}
+
+.user-dropdown.active .user-dropdown-menu,
+.user-dropdown:hover .user-dropdown-menu {
+  display: block;
+}
+
+.user-dropdown-menu a {
+  display: block;
+  padding: 10px 18px;
+  color: var(--text-dark);
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.user-dropdown-menu a:hover {
+  background: var(--light-pink);
+  color: var(--white);
+}
+
+/* ========== Content Area ========== */
+.content-area {
+  flex: 1;
+  padding: 30px;
+  background: var(--bg-light);
+}
+
+.content-area h4 {
+  margin-bottom: 25px;
+  color: var(--deep-blue);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+        .info-cards-grid {
+    display: grid;
+    /* กำหนดให้มี 4 คอลัมน์ ขนาดเท่ากันในหน้าจอปกติ */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px; /* ระยะห่างระหว่างการ์ด */
+    margin-bottom: 30px;
+}
+
+/* Media Queries สำหรับหน้าจอขนาดต่างๆ เพื่อให้ Responsive */
+@media (max-width: 1200px) { /* สำหรับหน้าจอขนาดใหญ่ลงมาถึงขนาดกลาง */
+    .info-cards-grid {
+        grid-template-columns: repeat(3, 1fr); /* แสดง 3 คอลัมน์ */
+    }
+}
+
+@media (max-width: 992px) { /* สำหรับแท็บเล็ตแนวตั้งหรือหน้าจอขนาดกลาง */
+    .info-cards-grid {
+        grid-template-columns: repeat(2, 1fr); /* แสดง 2 คอลัมน์ */
+    }
+}
+
+@media (max-width: 576px) { /* สำหรับมือถือ */
+    .info-cards-grid {
+        grid-template-columns: 1fr; /* แสดง 1 คอลัมน์ */
+    }
+}
+.info-card {
+    background: var(--white);
+    padding: 30px; /* เพิ่ม padding ให้การ์ดใหญ่ขึ้น */
+    border-radius: 18px; /* โค้งมนมากขึ้น */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* เงาที่ชัดเจนและมีมิติ */
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transition ที่ smooth และมีชีวิตชีวา */
+    position: relative;
+    overflow: hidden; /* ซ่อนส่วนเกิน */
+}
+
+.info-card:hover {
+    transform: translateY(-12px); /* เด้งขึ้นมาสูงขึ้น */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2); /* เงาเข้มขึ้นและกว้างขึ้น */
+}
+
+.icon-wrapper {
+    background: var(--light-pink); /* สีพื้นหลังไอคอน */
+    color: var(--primary-pink); /* สีไอคอน */
+    border-radius: 50%;
+    width: 70px; /* เพิ่มขนาด wrapper */
+    height: 70px; /* เพิ่มขนาด wrapper */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem; /* เพิ่มขนาดไอคอน */
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(255,105,180,0.3); /* เพิ่มเงาให้ icon wrapper */
+}
+
+.info-card:hover .icon-wrapper {
+    background: var(--primary-pink); /* เปลี่ยนสีพื้นหลังไอคอนเมื่อ hover */
+    color: var(--white); /* เปลี่ยนสีไอคอนเมื่อ hover */
+    transform: scale(1.1) rotate(5deg); /* ขยายและหมุนเล็กน้อย */
+}
+
+.card-content h5 {
+    margin: 0 0 8px 0; /* เพิ่มระยะห่างด้านล่าง */
+    font-size: 1.10rem; /* เพิ่มขนาดหัวข้อ */
+    color: var(--deep-blue); /* สีหัวข้อ */
+    font-weight: 700; /* ตัวหนาขึ้น */
+}
+
+.card-content p {
+    margin: 0;
+    font-size: 2.2rem; /* เพิ่มขนาดตัวเลขให้เด่นชัด */
+    color: var(--primary-pink); /* สีตัวเลขหลัก */
+    font-weight: 800; /* ตัวหนามาก */
+    letter-spacing: -1px; /* ลดระยะห่างตัวอักษรเล็กน้อย */
+    transition: color 0.4s ease;
+}
+
+.info-card:hover .card-content p {
+    color: var(--deep-blue); /* เปลี่ยนสีตัวเลขเมื่อ hover */
+}
+        .sections-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px;}
+        .section-box{background:var(--white);padding:25px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+        .section-box h5{margin-bottom:20px;color:var(--deep-blue);font-size:1.3rem;font-weight:600;border-bottom:2px solid var(--border-light);padding-bottom:10px;}
+        .activity-list{list-style:none;padding:0;margin:0;}
+        .activity-list li{display:flex;align-items:flex-start;margin-bottom:15px;padding-bottom:15px;border-bottom:1px dashed var(--border-light);}
+        .activity-list .activity-icon{color:var(--soft-blue);font-size:1.2rem;margin-right:12px;}
+        .activity-list .activity-content strong{display:block;color:var(--primary-pink);font-weight:600;margin-bottom:3px;}
+        .activity-list .activity-content span{color:var(--text-muted);font-size:0.9rem;}
+        .quick-link-item {
+    background: linear-gradient(135deg, var(--white), var(--bg-light)); /* ไล่สีเบาๆ */
+    padding: 25px 20px; /* เพิ่ม padding ให้กว้างขึ้น */
+    border-radius: 20px; /* โค้งมนมากเป็นพิเศษ */
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    text-align: center;
+    transition: all 0.4s ease-out; /* Transition ที่นุ่มนวล */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-dark);
+    border: 1px solid var(--border-light); /* เพิ่มเส้นขอบบางๆ */
+}
+
+.quick-link-item:hover {
+    transform: scale(1.05); /* ขยายใหญ่ขึ้นเล็กน้อย */
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    background: linear-gradient(135deg, var(--primary-pink), var(--soft-blue)); /* เปลี่ยนเป็น gradient สีชมพู-ฟ้า */
+    color: var(--white);
+    border-color: transparent; /* ซ่อนเส้นขอบเมื่อ hover */
+}
+
+.quick-link-item:hover .link-icon {
+    color: var(--white); /* ไอคอนเป็นสีขาว */
+}
+
+.quick-link-item:hover .link-text {
+    color: var(--white); /* ข้อความเป็นสีขาว */
+}
+
+.link-icon {
+    font-size: 3rem; /* ไอคอนใหญ่สุด */
+    margin-bottom: 18px;
+    color: var(--primary-pink); /* สีไอคอนเริ่มต้น */
+    transition: color 0.4s ease-out;
+}
+
+.link-text {
+    font-weight: 700;
+    font-size: 1.1rem; /* ขนาดข้อความใหญ่ขึ้น */
+    color: var(--deep-blue); /* สีข้อความเริ่มต้น */
+    transition: color 0.4s ease-out;
+}
+       .quick-links-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* กำหนดให้มี 3 คอลัมน์ แต่ละคอลัมน์ขนาดเท่ากัน */
+    gap: 25px; /* สามารถปรับระยะห่างระหว่างลิงก์ได้ตามต้องการ */
+}
+
+/* เพิ่ม Media Query เพื่อให้แสดงผลแถวละ 1-2 ลิงก์เมื่อหน้าจอเล็ก (Responsive) */
+@media (max-width: 992px) { /* สำหรับแท็บเล็ตแนวตั้งหรือหน้าจอขนาดกลาง */
+    .quick-links-grid {
+        grid-template-columns: repeat(2, 1fr); /* แสดง 2 คอลัมน์ */
+    }
+}
+
+@media (max-width: 576px) { /* สำหรับมือถือ */
+    .quick-links-grid {
+        grid-template-columns: 1fr; /* แสดง 1 คอลัมน์ */
+    }
+}
+        @media(max-width:992px){.sections-grid{grid-template-columns:1fr;}}
+        @media(max-width:768px){.dashboard-container{flex-direction:column;} .sidebar{width:100%;position:sticky;top:0;} .sidebar h5{display:none;} .sections-grid{grid-template-columns:1fr;}}
+    </style>
+>>>>>>> bdcb6c15a7e3ba4aa25243be39d16632ccd91c0b
 </head>
 <body>
-    
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h5>LRU HeartCare</h5>
+            <a href="index.html" class="active"><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
+            <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+            <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+            <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+            <a href="OnlineChat.html" "><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+            <a href="ManageNews.html" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
+            <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
+            
+        </div>
+        <div class="main-content">
+            <nav class="navbar">
+                <input type="search" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://via.placeholder.com/30" alt="Avatar">
+                    <strong>แอดมิน</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="content-area">
+                <h4>ภาพรวมระบบ</h4>
+                <div class="info-cards-grid">
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-people"></i></div><div class="card-content"><h5>จำนวนผู้ใช้งาน</h5><p>1,250</p></div></div>
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-person-vcard"></i></div><div class="card-content"><h5>นักจิตวิทยา</h5><p>15</p></div></div>
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-calendar-check"></i></div><div class="card-content"><h5>นัดหมายวันนี้</h5><p>8</p></div></div>
+                    <div class="info-card"><div class="icon-wrapper"><i class="bi bi-bell"></i></div><div class="card-content"><h5>การแจ้งเตือนใหม่</h5><p>3</p></div></div>
+                </div>
+                <div class="sections-grid">
+                    <div class="section-box">
+                        <h5>กราฟสถิติการนัดหมาย</h5>
+                        <canvas id="appointmentChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="section-box">
+                        <h5>กราฟผู้ใช้งานใหม่</h5>
+                        <canvas id="userChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="section-box">
+                        <h5>กิจกรรมล่าสุด</h5>
+                        <ul class="activity-list">
+                            <li><span class="activity-icon"><i class="bi bi-person-plus"></i></span><div class="activity-content"><strong>ผู้ใช้งานใหม่สมัครสมาชิก</strong><span>เมื่อ 5 นาทีที่แล้ว</span></div></li>
+                            <li><span class="activity-icon"><i class="bi bi-calendar-plus"></i></span><div class="activity-content"><strong>นพ.สมชาย เพิ่มตารางนัดหมาย</strong><span>เมื่อ 1 ชั่วโมงที่แล้ว</span></div></li>
+                            <li><span class="activity-icon"><i class="bi bi-file-earmark-text"></i></span><div class="activity-content"><strong>สร้างรายงานประจำสัปดาห์</strong><span>เมื่อวานนี้</span></div></li>
+                            <li><span class="activity-icon"><i class="bi bi-chat-dots"></i></span><div class="activity-content"><strong>ตอบกลับข้อความจากผู้ใช้งาน</strong><span>2 วันที่แล้ว</span></div></li>
+                        </ul>
+                    </div>
+                    <div class="section-box">
+                        <h5>ลิงก์ด่วน</h5>
+                        <div class="quick-links-grid">
+                            <a href="manage_users.html" class="quick-link-item"><i class="bi bi-person-plus link-icon"></i><span class="link-text">เพิ่มผู้ใช้งาน</span></a>
+                            <a href="manage_psychologists.html" class="quick-link-item"><i class="bi bi-person-vcard link-icon"></i><span class="link-text">จัดการนักจิตวิทยา</span></a>
+                            <a href="#" class="quick-link-item"><i class="bi bi-calendar-event link-icon"></i><span class="link-text">สร้างนัดหมาย</span></a>
+                            <a href="#" class="quick-link-item"><i class="bi bi-megaphone link-icon"></i><span class="link-text">ประกาศข่าวสาร</span></a>
+                            <a href="#" class="quick-link-item"><i class="bi bi-clipboard-data link-icon"></i><span class="link-text">ดูรายงาน</span></a>
+                            <a href="#" class="quick-link-item"><i class="bi bi-envelope link-icon"></i><span class="link-text">ข้อความ</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded",function(){
+            const ctx1=document.getElementById('appointmentChart').getContext('2d');
+            new Chart(ctx1,{type:'bar',data:{labels:['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'],datasets:[{label:'จำนวนนัดหมาย',data:[12,19,3,5,2],backgroundColor:'rgba(255,105,180,0.7)',borderColor:'rgba(70,130,180,1)',borderWidth:1}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});
+            const ctx2=document.getElementById('userChart').getContext('2d');
+            new Chart(ctx2,{type:'line',data:{labels:['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'],datasets:[{label:'ผู้ใช้งานใหม่',data:[5,10,8,12,7],backgroundColor:'rgba(135,206,235,0.4)',borderColor:'rgba(135,206,235,1)',fill:true,borderWidth:2}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});
+        });
+    </script>
 </body>
 </html>
