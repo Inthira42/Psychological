@@ -47,7 +47,7 @@
         /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
         .nav {
             background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
-            padding: 20px 0; /* เพิ่ม padding ให้ดูหนาขึ้น */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
             box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
             color: var(--white); /* สีข้อความ */
             position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
@@ -88,7 +88,7 @@
         .menu-con {
             display: flex;
             align-items: center;
-            gap: 30px; /* เพิ่มระยะห่างระหว่างเมนูและปุ่มออกจากระบบ */
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
         }
 
         .menu {
@@ -96,16 +96,18 @@
             padding: 0;
             margin: 0;
             display: flex;
-            gap: 30px; /* เพิ่มระยะห่างระหว่างเมนู */
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
         }
 
         .menu li a {
             color: var(--white);
             text-decoration: none;
-            padding: 10px 15px; /* เพิ่ม padding */
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
             border-radius: 10px; /* เพิ่มขอบมน */
             transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
             font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
         }
 
         .menu li a:hover {
@@ -125,10 +127,11 @@
             gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
             cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
             color: var(--white);
-            padding: 10px 15px; /* เพิ่ม padding */
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
             border-radius: 10px; /* เพิ่มขอบมน */
             transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
             font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
         }
 
         .dropdown-toggle:hover {
@@ -177,13 +180,15 @@
             background: var(--primary-pink);
             color: var(--white);
             text-decoration: none;
-            padding: 12px 25px; /* เพิ่ม padding ให้ปุ่มใหญ่ขึ้น */
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
             border-radius: 30px; /* ขอบมนมากขึ้น */
             transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
             font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
             box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
             letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
             border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
         }
 
         .logout a:hover {
@@ -599,21 +604,21 @@
             <h2 class="content-heading">ข่าวสารและกิจกรรมล่าสุด</h2>
             <div class="content-con">
               <div class="content-item">
-                <img src="https://ejournals.swu.ac.th/public/journals/20/submission_15701_13832_coverImage_en_US.png" alt="รูปภาพกิจกรรมเวิร์คช็อปการจัดการความเครียด">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039854274445334/image.png?ex=6813f622&is=6812a4a2&hm=c2e4a697167002e5eed3dfe94e6e61650b7187168833f4826ba8b587144f6a1a&" alt="รูปภาพกิจกรรมเวิร์คช็อปการจัดการความเครียด">
                 <div class="content-text">
                     <h3>เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h3>
                     <p>เรียนรู้เทคนิคและวิธีการรับมือกับความเครียดจากการเรียนและการใช้ชีวิตประจำวันในยุคที่เต็มไปด้วยสิ่งเร้า</p>
                 </div>
               </div>
               <div class="content-item">
-                <img src="https://www.kruchiangrai.net/wp-content/uploads/2012/12/%E0%B8%88%E0%B8%B4%E0%B8%95%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%99%E0%B8%B0%E0%B9%81%E0%B8%99%E0%B8%A7.jpg" alt="รูปภาพข่าวสารการสัมมนาจิตวิทยาเชิงบวก">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039994192236555/image.png?ex=6813f643&is=6812a4c3&hm=5386cde0bf391951324825d45c61e0333cd160a1989992b467738fa85c4eec1c&" alt="รูปภาพข่าวสารการสัมมนาจิตวิทยาเชิงบวก">
                 <div class="content-text">
                     <h3>สัมมนา: พลังของจิตวิทยาเชิงบวก</h3>
                     <p>ค้นพบวิธีการสร้างพลังบวกและพัฒนาความคิดเชิงบวกเพื่อชีวิตที่มีความสุขและประสบความสำเร็จ</p>
                 </div>
               </div>
               <div class="content-item">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnLHSWBvAJH4DjyMvUUFgDSGJHLcMBXEEaVguka-v2XRSipA8dXyuQnHiuC5p-XeRiXvo&usqp=CAU" alt="รูปภาพข่าวสารคลินิกสุขภาพใจเคลื่อนที่">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039953931108423/image.png?ex=6813f639&is=6812a4b9&hm=3a00f63b7a5c18aba578cd49022e6c2b83dc428f3d4cce6926a243d2556f2a45&" alt="รูปภาพข่าวสารคลินิกสุขภาพใจเคลื่อนที่">
                 <div class="content-text">
                     <h3>เปิดคลินิกสุขภาพใจเคลื่อนที่</h3>
                     <p>พบกับนักจิตวิทยาของเราได้ที่จุดบริการพิเศษตามตารางที่ประกาศ เพื่อรับคำปรึกษาเบื้องต้นได้ทันที</p>
@@ -631,23 +636,23 @@
             <h2 class="consultant-heading">พบกับผู้ให้คำปรึกษาของเรา</h2>
             <div class="consultant-img">
               <div class="consultant-item">
-                <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="รูปภาพนักจิตวิทยา นายสมชาย ใจดี">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354093902080249906/image.png?ex=68142878&is=6812d6f8&hm=4326e0e78ed1dd3cc056610562fb36652876380cd738d91db4d3254a79092ba5&" alt="รูปภาพนักจิตวิทยา นายสมชาย ใจดี">
                 <h3>นายสมชาย ใจดี</h3>
                 <p>ผู้เชี่ยวชาญด้านความเครียดและการเรียน</p>
               </div>
               <div class="consultant-item">
-                <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="รูปภาพนักจิตวิทยา นางสาวมณีรัตน์ สุขใจ">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354093987342061588/image.png?ex=6814288c&is=6812d70c&hm=b272b9cd7ecd3aa10b03f283638ae3c6c8048de67413cb9c3a79d1fb59ecb16b&" alt="รูปภาพนักจิตวิทยา นางสาวมณีรัตน์ สุขใจ">
                 <h3>นางสาวมณีรัตน์ สุขใจ</h3>
                 <p>ผู้เชี่ยวชาญด้านความสัมพันธ์และอารมณ์</p>
               </div>
               <div class="consultant-item">
-                <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="รูปภาพนักจิตวิทยา แพทย์หญิงอรอนงค์ รักษาใจ">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354094057793523720/image.png?ex=6814289d&is=6812d71d&hm=a34d2c8467172292b92bfbd8942cfdd224668419aba3b7be7cf4471115f850eb&" alt="รูปภาพนักจิตวิทยา แพทย์หญิงอรอนงค์ รักษาใจ">
                 <h3>แพทย์หญิงอรอนงค์ รักษาใจ</h3>
                 <p>ผู้เชี่ยวชาญด้านการพัฒนาตนเอง</p>
               </div>
             </div>
             <div class="content-btn-consultant">
-                <a href="Psychologist.html" class="content-btn">ดูนักจิตวิทยาเพิ่มเติม.....</a>
+                <a href="Psychologist.html" class="consultant-btn">ดูนักจิตวิทยาเพิ่มเติม.....</a>
             </div>
         </div>
     </section>
