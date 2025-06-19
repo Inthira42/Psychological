@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | ประวัติการนัดหมาย</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+        }
+
+        .logo img {
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+        }
+
+        .logo a {
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+        }
+
+        .menu {
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+        }
+
+        .logout a:hover {
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+        }
+
+        /* ========== Appointment History Section - ส่วนเนื้อหาประวัติการนัดหมาย ========== */
+        .appointment-section {
+            padding: 80px 0; /* padding ด้านบนและล่าง */
+            background: var(--bg-light); /* สีพื้นหลัง */
+        }
+
+        .appointment-heading {
+            text-align: center;
+            font-size: 2.8rem; /* ขนาดหัวข้อ */
+            color: var(--deep-blue);
+            margin-bottom: 60px; /* ระยะห่างด้านล่าง */
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .appointment-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        /* Table specific styles */
+        .table-container {
+            overflow-x: auto; /* ทำให้ตารางเลื่อนได้ในแนวนอนเมื่อหน้าจอเล็ก */
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px var(--shadow-light);
+            padding: 20px;
+            border: 1px solid var(--border-light);
+        }
+
+        .appointment-table {
+            width: 100%;
+            border-collapse: separate; /* เพื่อให้ใช้ border-radius กับเซลล์ได้ */
+            border-spacing: 0;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .appointment-table th,
+        .appointment-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .appointment-table thead th {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky; /* ทำให้ header ตารางอยู่ด้านบนเมื่อเลื่อน */
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Rounded corners for table header */
+        .appointment-table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+        .appointment-table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .appointment-table tbody tr:last-child td {
+            border-bottom: none; /* ไม่มีเส้นขอบล่างสำหรับแถวสุดท้าย */
+        }
+
+        .appointment-table tbody tr:hover {
+            background-color: #f0f0f0; /* สีเมื่อ hover */
+            transition: background-color 0.2s ease;
+        }
+
+        .appointment-table td {
+            color: var(--text-dark);
+        }
+
+        .appointment-table td.status {
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-completed {
+            color: #155724; /* Dark green */
+            background-color: #d4edda; /* Light green */
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .status-cancelled {
+            color: #721c24; /* Dark red */
+            background-color: #f8d7da; /* Light red */
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .status-missed {
+            color: #856404; /* Dark yellow */
+            background-color: #fff3cd; /* Light yellow */
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .table-action-btn {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
+        }
+
+        .table-action-btn:hover {
+            background: #e05e9b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .appointment-heading {
+                font-size: 2.2rem;
+                margin-bottom: 40px;
+            }
+            /* Table responsiveness handled by overflow-x: auto */
+        }
+
+        @media (max-width: 768px) {
+            .appointment-section {
+                padding: 60px 0;
+            }
+            .appointment-heading {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+            .appointment-table th,
+            .appointment-table td {
+                padding: 10px 15px;
+            }
+            .appointment-table {
+                font-size: 0.9rem;
+            }
+            .table-action-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+            <div class="logo">
+                <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+                <a href="#">LRU HeartCare</a>
+            </div>
+        
+            <div class="menu-con">
+                <ul class="menu">
+                    <li><a href="index.html">หน้าแรก</a></li>
+                    <li><a href="News.html">ข่าวสาร</a></li>
+                    <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+                    <li class="dropdown">
+                        <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                        <ul class="dropdown-menu">
+                            <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                            <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="logout">
+                    <a href="Login.html">ออกจากระบบ</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="appointment-section">
+        <div class="container">
+            <h2 class="appointment-heading">ประวัติการนัดหมายของคุณ</h2>
+            
+            <div class="table-container">
+                <table class="appointment-table">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>รหัสนัดหมาย</th>
+                            <th>นักจิตวิทยา</th>
+                            <th>วันที่</th>
+                            <th>เวลา</th>
+                            <th>ช่องทาง</th>
+                            <th>สถานะ</th>
+                            <th>ดำเนินการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>#LRUC001</td>
+                            <td>อ.สมศรี ใจดี</td>
+                            <td>10 พ.ค. 2567</td>
+                            <td>14:00 - 15:00 น.</td>
+                            <td>แชท</td>
+                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
+                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>#LRUC002</td>
+                            <td>อ.ประภาส สุขใจ</td>
+                            <td>01 พ.ค. 2567</td>
+                            <td>10:30 - 11:30 น.</td>
+                            <td>แชท</td>
+                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
+                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>#LRUC003</td>
+                            <td>อ.สมศรี ใจดี</td>
+                            <td>25 เม.ย. 2567</td>
+                            <td>16:00 - 17:00 น.</td>
+                            <td>แชท</td>
+                            <td class="status"><span class="status-cancelled">ยกเลิก</span></td>
+                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>#LRUC004</td>
+                            <td>อ.ประภาส สุขใจ</td>
+                            <td>15 เม.ย. 2567</td>
+                            <td>09:00 - 10:00 น.</td>
+                            <td>แชท</td>
+                            <td class="status"><span class="status-missed">ขาดนัด</span></td>
+                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>#LRUC005</td>
+                            <td>อ.สมศรี ใจดี</td>
+                            <td>05 เม.ย. 2567</td>
+                            <td>11:00 - 12:00 น.</td>
+                            <td>แชท</td>
+                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
+                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>#LRUC006</td>
+                            <td>อ.ประภาส สุขใจ</td>
+                            <td>28 มี.ค. 2567</td>
+                            <td>13:30 - 14:30 น.</td>
+                            <td>แชท</td>
+                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
+                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

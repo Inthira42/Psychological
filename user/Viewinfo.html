@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | ข้อมูลการนัดหมาย</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+            --input-bg: #fff; /* สีพื้นหลังของ input */
+            --input-border: #ced4da; /* สีขอบ input */
+            --form-card-bg: #fff; /* สีพื้นหลังของการ์ดฟอร์ม */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน (จากหน้าหลัก) ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+        }
+
+        .logo img {
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+        }
+
+        .logo a {
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+        }
+
+        .menu {
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+        }
+
+        .logout a:hover {
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+        }
+
+        /* ========== Main Content Section ========== */
+        .info-section {
+            padding: 60px 0;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: calc(100vh - 80px);
+        }
+
+        .info-card {
+            background-color: var(--white);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            padding: 45px;
+            max-width: 900px; /* Adjusted max-width for table layout */
+            width: 100%;
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .info-card h2 {
+            font-size: 2.5rem;
+            color: var(--deep-blue);
+            margin-bottom: 35px;
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 18px;
+        }
+
+        .info-card h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 4px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        /* Container for the table-like display */
+        .appointment-list-container {
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scrolling for narrow screens */
+            padding-bottom: 10px; /* Space for scrollbar */
+        }
+
+        /* The main grid/table wrapper */
+        .appointment-list {
+            display: block; /* Change to block to allow header-row and cards to stack */
+            min-width: 750px; /* Ensures table does not squish on larger screens, enables scroll-x */
+            border-spacing: 0; /* Remove default table cell spacing */
+        }
+
+        /* Header row styling */
+        .appointment-header-row {
+            display: grid; /* Use grid for horizontal alignment of headers */
+            grid-template-columns: repeat(5, minmax(120px, 1fr)); /* 5 columns */
+            gap: 15px; /* Gap between header cells */
+            background-color: var(--bg-light);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-bottom: 2px solid var(--border-light);
+            border-top: 1px solid var(--border-light);
+            padding: 15px 10px; /* Padding for the header row container */
+            margin-bottom: 10px; /* Space between header and first data card */
+        }
+
+        .appointment-header-cell {
+            font-weight: 700;
+            color: var(--deep-blue);
+            text-align: center;
+            white-space: nowrap; /* Prevent header text from wrapping */
+            font-size: 1.1rem;
+        }
+
+        /* Individual data card styling (each row is a card) */
+        .appointment-card {
+            display: grid; /* Use grid for horizontal alignment of data cells on large screens */
+            grid-template-columns: repeat(5, minmax(120px, 1fr)); /* 5 columns for desktop */
+            gap: 15px; /* Gap between data cells */
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 10px; /* Space between individual cards */
+            padding: 0; /* Padding will be on cells */
+            border: 1px solid var(--border-light); /* Border around the entire card */
+            overflow: hidden; /* Ensure content is clipped by rounded corners */
+        }
+
+        .appointment-card:last-child {
+            margin-bottom: 0; /* No bottom margin for the last card */
+        }
+
+        /* Data cell styling */
+        .appointment-cell {
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 1rem;
+            color: var(--text-dark);
+            /* No border-bottom here, border is on the card itself */
+        }
+        /* Specific bottom border for cells within a card for visual separation if needed */
+        .appointment-card:not(.mobile-stacked) .appointment-cell:not(:last-child) {
+            /* border-bottom: 1px solid var(--border-light); */ /* Re-add if you want internal cell borders */
+        }
+
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+        }
+
+        .status-รอดำเนินการ {
+            background-color: #FFC107; /* Orange */
+            box-shadow: 0 2px 5px rgba(255, 193, 7, 0.3);
+        }
+
+        .status-เริ่มเข้าปรึกษา {
+            background-color: var(--soft-blue); /* Light Blue */
+            box-shadow: 0 2px 5px rgba(135, 206, 235, 0.3);
+        }
+
+        .status-ปรึกษาสำเร็จ {
+            background-color: #28A745; /* Green */
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+
+        .detail-button {
+            background-color: var(--primary-pink);
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(255, 105, 180, 0.3);
+        }
+
+        .detail-button:hover {
+            background-color: #e05e9b;
+            transform: translateY(-2px);
+        }
+
+        .no-appointment-message {
+            text-align: center;
+            padding: 50px 20px;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+        }
+
+        .action-buttons .btn {
+            padding: 15px 30px;
+            border-radius: 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+            text-decoration: none; /* For anchor tags used as buttons */
+            display: inline-flex; /* For consistent padding/sizing */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-buttons .btn-primary {
+            background-color: var(--primary-pink);
+            color: var(--white);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5);
+        }
+
+        .action-buttons .btn-primary:hover {
+            background-color: #e05e9b;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(255, 105, 180, 0.7);
+        }
+
+        .action-buttons .btn-secondary {
+            background-color: var(--soft-blue);
+            color: var(--white);
+            box-shadow: 0 8px 20px rgba(135, 206, 235, 0.5);
+        }
+
+        .action-buttons .btn-secondary:hover {
+            background-color: var(--deep-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(135, 206, 235, 0.7);
+        }
+
+        /* Modal Styles (Reused from appointment-booking) */
+        .confirmation-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001; /* Higher than nav bar */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); /* Dim background */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .confirmation-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: auto;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            max-width: 600px;
+            width: 100%;
+            animation: fadeInScale 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--deep-blue);
+            font-weight: 700;
+        }
+
+        .modal-body {
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .modal-body p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-body p strong {
+            color: var(--primary-pink);
+            font-weight: 600;
+            min-width: 150px;
+        }
+        .modal-body p span {
+            flex-grow: 1;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .modal-footer button {
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+            background-color: var(--primary-pink);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+        .modal-footer button:hover {
+            background-color: #e05e9b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+        }
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .nav-con {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-con {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                align-items: stretch;
+            }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            .menu li {
+                width: 100%;
+            }
+            .menu li a, .dropdown-toggle {
+                width: calc(100% - 30px);
+                text-align: center;
+                margin: 0 15px;
+            }
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
+            }
+            .logout {
+                width: 100%;
+                text-align: center;
+                padding: 0 15px;
+            }
+            .logout a {
+                display: block;
+                width: 100%;
+                margin: 0;
+            }
+
+            .info-card {
+                padding: 35px;
+                max-width: 90%;
+            }
+            .info-card h2 {
+                font-size: 2.2rem;
+                margin-bottom: 30px;
+            }
+            .appointment-header-row {
+                grid-template-columns: repeat(3, minmax(100px, 1fr)); /* Reduce columns on medium screens */
+            }
+            .appointment-header-cell:nth-child(4), /* Hide status header */
+            .appointment-header-cell:nth-child(5) { /* Hide actions header */
+                display: none;
+            }
+
+            .appointment-card {
+                grid-template-columns: repeat(3, minmax(100px, 1fr)); /* Reduce columns on medium screens */
+            }
+            .appointment-cell:nth-child(4), /* Hide status cell */
+            .appointment-cell:nth-child(5) { /* Hide actions cell */
+                display: none;
+            }
+
+            .modal-content {
+                max-width: 90%;
+                padding: 25px;
+            }
+            .modal-header h3 {
+                font-size: 1.8rem;
+            }
+            .modal-body {
+                font-size: 0.95rem;
+            }
+            .modal-body p strong {
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-section {
+                padding: 40px 0;
+            }
+            .info-card {
+                padding: 25px;
+            }
+            .info-card h2 {
+                font-size: 1.8rem;
+                margin-bottom: 25px;
+            }
+            .info-card h2::after {
+                width: 70px;
+                height: 3px;
+            }
+            .appointment-header-row {
+                grid-template-columns: repeat(2, minmax(100px, 1fr)); /* Reduce to 2 columns on small screens */
+            }
+            .appointment-header-cell:nth-child(2) { /* Hide Date header */
+                display: none;
+            }
+
+            .appointment-card {
+                grid-template-columns: repeat(2, minmax(100px, 1fr)); /* Reduce to 2 columns on small screens */
+            }
+            .appointment-cell:nth-child(2) { /* Hide Date cell */
+                display: none;
+            }
+            
+            .action-buttons {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 15px;
+            }
+            .action-buttons .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-header h3 {
+                font-size: 1.6rem;
+            }
+            .modal-body {
+                font-size: 0.9rem;
+            }
+            .modal-footer button {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .info-section {
+                padding: 30px 0;
+            }
+            .info-card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            .info-card h2 {
+                font-size: 1.6rem;
+                margin-bottom: 20px;
+            }
+            .appointment-list-container {
+                padding: 0 5px; /* Reduce container padding further */
+            }
+            .appointment-header-row {
+                /* On smallest screens, headers can wrap or some can be hidden */
+                grid-template-columns: 1fr; /* Make it a single column grid for headers */
+                gap: 5px;
+                padding: 10px 15px;
+                text-align: left; /* Align header text to the left */
+            }
+            .appointment-header-cell {
+                text-align: left; /* Ensure header cells are left aligned when stacked */
+                font-size: 1rem;
+                padding: 2px 0; /* Adjust padding for stacked headers */
+            }
+            /* Hide headers that are not "ชื่อ - นามสกุล" if stacking all headers */
+            .appointment-header-cell:not(:first-child) {
+                 display: none; /* Hide all headers except the first one */
+            }
+
+            /* Each appointment card becomes a vertical stack of its content */
+            .appointment-card {
+                display: flex; /* Change to flexbox for vertical stacking of cells */
+                flex-direction: column;
+                align-items: flex-start; /* Align text left within the card */
+                gap: 5px; /* Small gap between stacked items */
+                padding: 15px 20px; /* Padding for the card itself */
+                border-radius: 10px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+                border: 1px solid var(--border-light);
+            }
+            .appointment-card:last-child {
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+            }
+
+            .appointment-cell {
+                width: 100%; /* Each cell takes full width in stacked layout */
+                text-align: left; /* Align cell content to the left */
+                padding: 0; /* No padding on cell itself, padding is on the card */
+                border-bottom: none; /* No internal borders when stacked */
+                font-size: 0.95rem; /* Slightly smaller text for stacked cells */
+            }
+
+            /* Add labels to each stacked data item */
+            .appointment-cell:nth-child(1)::before { content: 'ชื่อ - นามสกุล: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
+            .appointment-cell:nth-child(2)::before { content: 'วันที่: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
+            .appointment-cell:nth-child(3)::before { content: 'เวลา: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
+            .appointment-cell:nth-child(4)::before { content: 'สถานะ: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
+            /* Actions cell does not need a prefix */
+
+            /* Ensure only the relevant cells are shown when stacked */
+            .appointment-cell:nth-child(2), /* Date cell (can be shown or hidden based on preference) */
+            .appointment-cell:nth-child(3), /* Time cell (can be shown or hidden based on preference) */
+            .appointment-cell:nth-child(4), /* Status cell (can be shown or hidden based on preference) */
+            .appointment-cell:nth-child(5) { /* Actions cell */
+                /* These cells are now visible because .appointment-card is flex column */
+            }
+
+            /* Detail button alignment within the stacked card */
+            .appointment-card .detail-button {
+                align-self: flex-end; /* Push button to right */
+                margin-top: 10px; /* Space above button */
+                width: auto; /* Allow button to shrink */
+                padding: 8px 15px; /* Adjust button padding */
+            }
+            .status-badge {
+                font-size: 0.9rem; /* Smaller status badge */
+                padding: 4px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+
+            // ข้อมูลตัวอย่างการนัดหมาย (จะถูกใช้หาก localStorage ไม่มีข้อมูล)
+            const exampleAppointments = [
+                { id: '1', date: '2023-01-26', time: '13:00-15:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'การตลาด', faculty: 'บริหารธุรกิจ', reason: 'ปัญหาส่วนตัวและวิธีการแก้', psychologist: 'นายสมชาย ใจดี', status: 'รอดำเนินการ' },
+                { id: '2', date: '2023-01-15', time: '09:00-10:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'วิทยาการคอมพิวเตอร์', faculty: 'วิทยาศาสตร์', reason: 'เรื่องการเรียนและความเครียด', psychologist: 'แพทย์หญิงอรอนงค์ รักษาใจ', status: 'เริ่มเข้าปรึกษา!' },
+                { id: '3', date: '2022-11-07', time: '11:00-12:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'นิติศาสตร์', faculty: 'นิติศาสตร์', reason: 'ปัญหาครอบครัวและแนวทางแก้ไข', psychologist: 'นางสาวมณีรัตน์ สุขใจ', status: 'ปรึกษาสำเร็จ' }
+            ];
+
+            const appointmentListContainer = document.getElementById('appointmentListContainer');
+            const noAppointmentMessageDiv = document.getElementById('noAppointmentMessage');
+            const appointmentActionsDiv = document.getElementById('appointmentActions');
+            // Select the actual .appointment-list to append cards to
+            const appointmentList = document.querySelector('.appointment-list'); 
+
+            // Modal elements for detailed view
+            const appointmentDetailModal = document.getElementById('appointmentDetailModal');
+            const detailDate = document.getElementById('detailDate');
+            const detailTime = document.getElementById('detailTime');
+            const detailFullName = document.getElementById('detailFullName');
+            const detailStudentId = document.getElementById('detailStudentId');
+            const detailMajor = document.getElementById('detailMajor');
+            const detailFaculty = document.getElementById('detailFaculty');
+            const detailReason = document.getElementById('detailReason');
+            const detailPsychologist = document.getElementById('detailPsychologist');
+            const detailStatus = document.getElementById('detailStatus');
+            const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
+
+            // ปิด Modal เมื่อคลิกปุ่มปิด
+            if (btnCloseDetailModal) {
+                btnCloseDetailModal.addEventListener('click', function() {
+                    appointmentDetailModal.classList.remove('show');
+                });
+            }
+
+            let allAppointments = [];
+            const storedAppointments = localStorage.getItem('allAppointments');
+
+            if (storedAppointments) {
+                try {
+                    allAppointments = JSON.parse(storedAppointments);
+                    // กรองข้อมูลที่อาจไม่สมบูรณ์
+                    allAppointments = allAppointments.filter(app => app && app.fullName && app.date && app.time);
+                    console.log("Found appointment data in localStorage:", allAppointments);
+                } catch (e) {
+                    console.error("Error parsing stored appointment data:", e);
+                    allAppointments = []; // Clear data if parsing fails
+                }
+            }
+
+            // If no real data or parsing failed, use example data
+            if (allAppointments.length === 0) {
+                console.log("No valid appointment data found. Displaying example data.");
+                allAppointments = exampleAppointments;
+                // ตั้งค่าใน localStorage ให้มีข้อมูลตัวอย่างสำหรับครั้งถัดไป
+                // localStorage.setItem('allAppointments', JSON.stringify(exampleAppointments)); // Only set if you want example to persist
+                noAppointmentMessageDiv.textContent = 'แสดงข้อมูลตัวอย่าง (ไม่มีการนัดหมายล่าสุด)';
+                noAppointmentMessageDiv.style.display = 'block';
+                // Hide the main list container if showing the message
+                appointmentList.style.display = 'none'; 
+            } else {
+                noAppointmentMessageDiv.style.display = 'none';
+                appointmentList.style.display = 'block'; // Show the main list container
+            }
+            
+            // Render appointments in the table-like grid
+            if (allAppointments.length > 0) {
+                // Clear only the dynamically generated data rows, not the header row
+                // Find and remove all existing .appointment-card elements within .appointment-list
+                const existingCards = appointmentList.querySelectorAll('.appointment-card');
+                existingCards.forEach(card => card.remove());
+                
+                allAppointments.forEach(appointment => {
+                    const row = document.createElement('div');
+                    row.classList.add('appointment-card');
+
+                    // Full Name Cell
+                    const fullNameCell = document.createElement('div');
+                    fullNameCell.classList.add('appointment-cell');
+                    fullNameCell.textContent = appointment.fullName || '-';
+                    row.appendChild(fullNameCell);
+
+                    // Date Cell
+                    const dateCell = document.createElement('div');
+                    dateCell.classList.add('appointment-cell');
+                    dateCell.textContent = appointment.date || '-';
+                    row.appendChild(dateCell);
+
+                    // Time Cell
+                    const timeCell = document.createElement('div');
+                    timeCell.classList.add('appointment-cell');
+                    timeCell.textContent = appointment.time || '-';
+                    row.appendChild(timeCell);
+
+                    // Status Cell
+                    const statusCell = document.createElement('div');
+                    statusCell.classList.add('appointment-cell');
+                    const statusBadge = document.createElement('span');
+                    statusBadge.classList.add('status-badge');
+                    if (appointment.status) {
+                        statusBadge.classList.add(`status-${appointment.status.replace(/!/g, '').trim()}`);
+                    }
+                    statusBadge.textContent = appointment.status || '-';
+                    statusCell.appendChild(statusBadge);
+                    row.appendChild(statusCell);
+
+                    // Actions Cell (ดูข้อมูลเพิ่มเติม button)
+                    const actionsCell = document.createElement('div');
+                    actionsCell.classList.add('appointment-cell');
+                    const detailButton = document.createElement('button');
+                    detailButton.classList.add('detail-button');
+                    detailButton.textContent = 'ข้อมูลเพิ่มเติม';
+                    detailButton.addEventListener('click', () => {
+                        detailDate.textContent = appointment.date || '-';
+                        detailTime.textContent = appointment.time || '-';
+                        detailFullName.textContent = appointment.fullName || '-';
+                        detailStudentId.textContent = appointment.studentId || '-';
+                        detailMajor.textContent = appointment.major || '-';
+                        detailFaculty.textContent = appointment.faculty || '-';
+                        detailReason.textContent = appointment.reason || '-';
+                        detailPsychologist.textContent = appointment.psychologist || '-';
+                        detailStatus.textContent = appointment.status || '-';
+                        appointmentDetailModal.classList.add('show');
+                    });
+                    actionsCell.appendChild(detailButton);
+                    row.appendChild(actionsCell);
+
+                    appointmentList.appendChild(row); // Append row directly to .appointment-list
+                });
+                appointmentActionsDiv.style.display = 'flex'; // Show action buttons
+            } else {
+                noAppointmentMessageDiv.textContent = 'ไม่มีข้อมูลการนัดหมายที่จะแสดง';
+                noAppointmentMessageDiv.style.display = 'block';
+                appointmentList.style.display = 'none'; // Hide the list
+                appointmentActionsDiv.style.display = 'flex'; // Still show action buttons
+            }
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+          <div class="logo">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="LRU Logo">
+            <a href="#">LRU HeartCare</a>
+          </div>
+    
+          <div class="menu-con">
+            <ul class="menu">
+              <li><a href="index.html">หน้าแรก</a></li>
+              <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="logout">
+              <a href="Login.html">ออกจากระบบ</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <main class="info-section">
+        <div class="info-card">
+            <h2 id="infoHeading">ข้อมูลการนัดหมาย</h2>
+            
+            <div id="appointmentListContainer" class="appointment-list-container">
+                <!-- Header row is now a direct child of this container -->
+                <div class="appointment-header-row">
+                    <div class="appointment-header-cell">ชื่อ - นามสกุล</div>
+                    <div class="appointment-header-cell">วันที่</div>
+                    <div class="appointment-header-cell">เวลา</div>
+                    <div class="appointment-header-cell">สถานะ</div>
+                    <div class="appointment-header-cell"></div> <!-- สำหรับปุ่ม "ข้อมูลเพิ่มเติม" -->
+                </div>
+                <!-- This div will now directly contain the appointment-card elements -->
+                <div class="appointment-list">
+                    <!-- Appointment data (appointment-card elements) will be inserted here by JavaScript -->
+                </div>
+            </div>
+
+            <div id="noAppointmentMessage" class="no-appointment-message" style="display: none;">
+                <!-- Message will be populated by JavaScript -->
+            </div>
+
+            <div id="appointmentActions" class="action-buttons" style="display: none;">
+                <a href="Psychologist.html" class="btn btn-secondary">จองนัดหมายใหม่</a>
+                <a href="appointments.html" class="btn btn-primary">ดูประวัติการนัดหมาย</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for displaying full appointment details -->
+    <div id="appointmentDetailModal" class="confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>รายละเอียดการนัดหมาย</h3>
+            </div>
+            <div class="modal-body">
+                <p><strong>วันที่นัดหมาย:</strong> <span id="detailDate"></span></p>
+                <p><strong>เวลานัดหมาย:</strong> <span id="detailTime"></span></p>
+                <p><strong>ชื่อ - นามสกุล:</strong> <span id="detailFullName"></span></p>
+                <p><strong>รหัสนักศึกษา:</strong> <span id="detailStudentId"></span></p>
+                <p><strong>สาขา:</strong> <span id="detailMajor"></span></p>
+                <p><strong>คณะ:</strong> <span id="detailFaculty"></span></p>
+                <p><strong>เรื่องที่ต้องการปรึกษา:</strong> <span id="detailReason"></span></p>
+                <p><strong>นักจิตวิทยา:</strong> <span id="detailPsychologist"></span></p>
+                <p><strong>สถานะ:</strong> <span id="detailStatus"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary" id="btnCloseDetailModal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

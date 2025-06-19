@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | รายละเอียดการนัดหมาย</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 900px; /* ลดความกว้างสูงสุดสำหรับหน้ารายละเอียด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+        }
+
+        .logo img {
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+        }
+
+        .logo a {
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+        }
+
+        .menu {
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+        }
+
+        .logout a:hover {
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+        }
+
+        /* ========== Appointment Detail Section - ส่วนเนื้อหารายละเอียดการนัดหมาย ========== */
+        .detail-section {
+            padding: 80px 0; /* padding ด้านบนและล่าง */
+            background: var(--bg-light); /* สีพื้นหลัง */
+        }
+
+        .detail-heading {
+            text-align: center;
+            font-size: 2.5rem; /* ขนาดหัวข้อ */
+            color: var(--deep-blue);
+            margin-bottom: 50px; /* ระยะห่างด้านล่าง */
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .detail-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        .detail-card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px var(--shadow-light);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-light);
+        }
+
+        .detail-card h3 {
+            font-size: 1.8rem;
+            color: var(--deep-blue);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 600;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center; /* จัดให้ข้อความและไอคอนอยู่แนวเดียวกัน */
+        }
+
+        .detail-item strong {
+            color: var(--primary-pink); /* สีชมพูสำหรับหัวข้อข้อมูล */
+            min-width: 150px; /* กำหนดความกว้างขั้นต่ำเพื่อให้จัดเรียงสวยงาม */
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .detail-item i {
+            margin-right: 10px;
+            color: var(--soft-blue); /* สีฟ้าสำหรับไอคอน */
+            font-size: 1.2em;
+        }
+
+        .consultation-summary {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px dashed var(--border-light);
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            background: var(--soft-blue);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-block;
+            margin-top: 40px;
+            box-shadow: 0 4px 10px rgba(135, 206, 235, 0.3);
+            border: 2px solid var(--soft-blue);
+        }
+
+        .back-btn:hover {
+            background: var(--white);
+            color: var(--soft-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(135, 206, 235, 0.5);
+            border-color: var(--soft-blue);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .detail-heading {
+                font-size: 2.0rem;
+                margin-bottom: 40px;
+            }
+            .detail-card {
+                padding: 25px;
+            }
+            .detail-card h3 {
+                font-size: 1.6rem;
+            }
+            .detail-item {
+                font-size: 1rem;
+                flex-direction: column; /* เปลี่ยนเป็นแนวตั้งบนจอเล็ก */
+                align-items: flex-start;
+            }
+            .detail-item strong {
+                min-width: unset; /* ยกเลิก min-width */
+                margin-right: 0;
+                margin-bottom: 5px; /* เพิ่มระยะห่างด้านล่างหัวข้อ */
+            }
+            .back-btn {
+                font-size: 0.95rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .detail-section {
+                padding: 60px 0;
+            }
+            .detail-heading {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+            .detail-card {
+                padding: 20px;
+            }
+            .detail-card h3 {
+                font-size: 1.4rem;
+            }
+            .consultation-summary {
+                font-size: 0.95rem;
+                padding: 15px;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+       
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+       
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+            <div class="logo">
+                <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+                <a href="#">LRU HeartCare</a>
+            </div>
+       
+            <div class="menu-con">
+                <ul class="menu">
+                    <li><a href="index.html">หน้าแรก</a></li>
+                    <li><a href="News.html">ข่าวสาร</a></li>
+                    <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+                    <li class="dropdown">
+                        <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                        <ul class="dropdown-menu">
+                            <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                            <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="logout">
+                    <a href="Login.html">ออกจากระบบ</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="detail-section">
+        <div class="container">
+            <h2 class="detail-heading">รายละเอียดการนัดหมาย #LRUC001</h2>
+           
+            <!-- Appointment Information -->
+            <div class="detail-card">
+                <h3>ข้อมูลการนัดหมาย</h3>
+                <p class="detail-item"><i class="fas fa-calendar-alt"></i> <strong>วันที่:</strong> 10 พฤษภาคม 2567</p>
+                <p class="detail-item"><i class="fas fa-clock"></i> <strong>เวลา:</strong> 14:00 - 15:00 น.</p>
+                <p class="detail-item"><i class="fas fa-comment-dots"></i> <strong>ช่องทาง:</strong> ปรึกษาผ่านแชท</p>
+                <p class="detail-item"><i class="fas fa-check-circle"></i> <strong>สถานะ:</strong> สำเร็จ</p>
+            </div>
+
+            <!-- Psychologist Information -->
+            <div class="detail-card">
+                <h3>ข้อมูลนักจิตวิทยา</h3>
+                <p class="detail-item"><i class="fas fa-user-tie"></i> <strong>ชื่อ:</strong> อ.สมศรี ใจดี</p>
+                <p class="detail-item"><i class="fas fa-certificate"></i> <strong>ความเชี่ยวชาญ:</strong> การจัดการความเครียด, ปัญหาความสัมพันธ์</p>
+                <p class="detail-item"><i class="fas fa-envelope"></i> <strong>อีเมล:</strong> somsri.jaidee@lru.ac.th</p>
+                <p class="detail-item"><i class="fas fa-phone-alt"></i> <strong>เบอร์โทรศัพท์:</strong> 081-234-5678</p>
+            </div>
+
+            <!-- Consultation Summary -->
+            <div class="detail-card">
+                <h3>สรุปการปรึกษา</h3>
+                <p class="consultation-summary">
+                    การปรึกษาครั้งนี้เน้นที่การจัดการความเครียดจากการเรียน ผู้ปรึกษาได้แบ่งปันความรู้สึกกังวลเกี่ยวกับผลการเรียนและแรงกดดันจากครอบครัว
+                    นักจิตวิทยาได้แนะนำเทคนิคการหายใจและการจัดการเวลา รวมถึงการตั้งเป้าหมายที่ยืดหยุ่นเพื่อลดความกดดัน
+                    และได้แนะนำให้ทำกิจกรรมที่ผ่อนคลายเพื่อรักษาสมดุลของสุขภาพจิต
+                </p>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="appointments.html" class="back-btn">กลับสู่ประวัติการนัดหมาย</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+
