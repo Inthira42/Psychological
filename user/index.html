@@ -1,18 +1,531 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ทดสอบ</title>
+    <title>หน้าแรก</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4;
+            --light-pink: #FFC0CB;
+            --soft-blue: #87CEEB;
+            --deep-blue: #4682B4;
+            --text-dark: #343a40;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .nav {
+            background: var(--deep-blue);
+            padding: 15px 0;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            color: var(--white);
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .logo a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 25px;
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 180px;
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: background 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+
+        .logout a:hover {
+            background: #e05e9b;
+            transform: translateY(-2px);
+        }
+
+        /* ========== Main Content Section - ส่วนเนื้อหาหลัก (Hero Section) ========== */
+        .maincontent {
+            background: linear-gradient(135deg, var(--soft-blue), var(--light-pink));
+            padding: 80px 0;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .maincontent-con {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* ให้เนื้อหาและรูปภาพขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
+            gap: 40px;
+        }
+
+        .maincontent-info {
+            flex: 1;
+            min-width: 300px;
+            text-align: left;
+            max-width: 600px;
+        }
+
+        .maincontent-info h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--deep-blue);
+            font-weight: 800;
+        }
+
+        .maincontent-info h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--primary-pink);
+            font-weight: 600;
+        }
+
+        .maincontent-info p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+        }
+
+        .maincontent-btn {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            display: inline-block;
+        }
+
+        .maincontent-btn:hover {
+            background: #e05e9b;
+            transform: translateY(-3px);
+        }
+
+        .maincontent-img {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .maincontent-img img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ========== Content Section - ส่วนแสดงข่าวสาร ========== */
+        .content {
+            padding: 60px 0;
+            background: var(--white);
+        }
+
+        .container-con {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .content-con {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .content-item {
+            background: var(--bg-light);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+        }
+
+        .content-item img {
+            width: 100%;
+            height: 200px; /* กำหนดความสูงรูปภาพให้เท่ากัน */
+            object-fit: cover; /* ครอบคลุมพื้นที่และตัดส่วนเกิน */
+            display: block;
+        }
+
+        .content-btn-container {
+            text-align: center;
+        }
+
+        .content-btn {
+            background: var(--deep-blue);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
+            display: inline-block;
+        }
+
+        .content-btn:hover {
+            background: #3a6b9a;
+            transform: translateY(-2px);
+        }
+
+        /* ========== Consultant Section - ส่วนแสดงผู้ให้คำปรึกษา ========== */
+        .consultant {
+            padding: 60px 0;
+            background: var(--bg-light);
+            text-align: center;
+        }
+
+        .consultant-con {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .consultant-btn {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .consultant-btn:hover {
+            background: #e05e9b;
+            transform: translateY(-3px);
+        }
+
+        .consultant-img {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .consultant-item {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .consultant-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+        }
+
+        .consultant-item img {
+            width: 100%;
+            height: 300px; /* กำหนดความสูงรูปภาพให้เท่ากัน */
+            object-fit: cover; /* ครอบคลุมพื้นที่และตัดส่วนเกิน */
+            display: block;
+        }
+
+        .content-btn-consultant {
+            text-align: center;
+        }
+
+        /* ========== Responsive Adjustments - การปรับสไตล์สำหรับขนาดหน้าจอต่างๆ ========== */
+        @media (max-width: 992px) {
+            .nav-con {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-con {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            .menu li {
+                width: 100%;
+            }
+            .menu li a, .dropdown-toggle {
+                width: calc(100% - 24px); /* Full width minus padding */
+                text-align: center;
+                margin: 0 auto;
+            }
+            .dropdown-menu {
+                position: static; /* Change to static so it flows with content */
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
+            }
+            .logout {
+                width: 100%;
+                text-align: center;
+            }
+            .logout a {
+                display: block;
+                width: calc(100% - 40px); /* Adjust for padding */
+                margin: 0 auto;
+            }
+
+            .maincontent-info, .maincontent-img {
+                max-width: 100%;
+                text-align: center;
+            }
+            .maincontent-info h1 {
+                font-size: 2.5rem;
+            }
+            .maincontent-info h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .maincontent {
+                padding: 60px 0;
+            }
+            .maincontent-info h1 {
+                font-size: 2rem;
+            }
+            .maincontent-info h2 {
+                font-size: 1.5rem;
+            }
+            .maincontent-info p {
+                font-size: 1rem;
+            }
+            .maincontent-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-con, .consultant-img {
+                grid-template-columns: 1fr; /* Single column on small screens */
+            }
+            .maincontent-info {
+                padding: 0 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>ทดสอบ</h1>
-    <h1>ทดสอบ</h1>
-    <h1>ทดสอบ</h1>
-    <h1>ทดสอบ</h1>
-    <h1>ทดสอบ</h1>
-    <h1>ทดสอบ</h1>
-    <h1>ทดสอบ</h1>
+    <nav class="nav">
+        <div class="nav-con">
+          <div class="logo">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+            <a href="#">LRU HeartCare</a>
+          </div>
     
+          <div class="menu-con">
+            <ul class="menu">
+              <li><a href="index.html">หน้าแรก</a></li>
+              <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="logout">
+              <a href="Login.html">ออกจากระบบ</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <section class="maincontent">
+        <div class="container">
+            <div class="maincontent-con">
+                <div class="maincontent-info">
+                    <h1>ยินดีต้อนรับสู่ LRU HeartCare</h1>
+                    <h2>พื้นที่ปลอดภัยสำหรับใจคุณ</h2>
+                    <p>สนับสนุนทางจิตวิทยาสำหรับนักศึกษามหาวิทยาลัยราชภัฏเลย ที่พร้อมเป็นเพื่อนข้างใจในทุกช่วงเวลา ไม่ว่าคุณจะต้องการคำปรึกษาเกี่ยวกับความเครียด ความกดดันด้านการเรียน การจัดการอารมณ์ หรือการพัฒนาตัวเอง</p>
+                    <a href="Psychologist.html" class="maincontent-btn">เริ่มปรึกษาได้เลย</a>
+                </div>
+
+                <div class="maincontent-img">
+                    <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="ภาพประกอบการสนับสนุนทางจิตวิทยา">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-con">
+            <div class="content-con">
+              <div class="content-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039854274445334/image.png?ex=6813f622&is=6812a4a2&hm=c2e4a697167002e5eed3dfe94e6e61650b7187168833f4826ba8b587144f6a1a&" alt="รูปภาพข่าวสาร 1"></div>
+              <div class="content-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039994192236555/image.png?ex=6813f643&is=6812a4c3&hm=5386cde0bf391951324825d45c61e0333cd160a1989992b467738fa85c4eec1c&" alt="รูปภาพข่าวสาร 2"></div>
+              <div class="content-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039953931108423/image.png?ex=6813f639&is=6812a4b9&hm=3a00f63b7a5c18aba578cd49022e6c2b83dc428f3d4cce6926a243d2556f2a45&" alt="รูปภาพข่าวสาร 3"></div>
+            </div>
+            <div class="content-btn-container">
+                <a href="News.html" class="content-btn">ดูเพิ่มเติม.....</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="consultant">
+            <div class="consultant-con">
+                    <a href="Psychologist.html" class="consultant-btn">ผู้ให้คำปรึกษา</a>
+                </div>
+                <div class="consultant-img">
+                  <div class="consultant-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354093902080249906/image.png?ex=68142878&is=6812d6f8&hm=4326e0e78ed1dd3cc056610562fb36652876380cd738d91db4d3254a79092ba5&" alt="รูปภาพผู้ให้คำปรึกษา 1"></div>
+                  <div class="consultant-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354093987342061588/image.png?ex=6814288c&is=6812d70c&hm=b272b9cd7ecd3aa10b03f283638ae3c6c8048de67413cb9c3a79d1fb59ecb16b&" alt="รูปภาพผู้ให้คำปรึกษา 2"></div>
+                  <div class="consultant-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354094057793523720/image.png?ex=6814289d&is=6812d71d&hm=a34d2c8467172292b92bfbd8942cfdd224668419aba3b7be7cf4471115f850eb&" alt="รูปภาพผู้ให้คำปรึกษา 3"></div>
+                </div>
+                <div class="content-btn-consultant">
+                    <a href="Psychologist.html" class="consultant-btn">ดูเพิ่มเติม.....</a>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
