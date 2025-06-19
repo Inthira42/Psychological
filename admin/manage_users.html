@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>LRU HeartCare Admin Dashboard - จัดการผู้ใช้งาน</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ตัวแปรสีและฟอนต์หลัก */
+        :root {
+            --primary-pink:#FF69B4;
+            --light-pink:#FFC0CB;
+            --soft-blue:#87CEEB;
+            --deep-blue:#4682B4;
+            --text-dark:#343a40;
+            --text-muted:#6c757d;
+            --bg-light:#f8f9fa;
+            --white:#ffffff;
+            --border-light:#e9ecef;
+            --shadow-light:rgba(0,0,0,0.08);
+            --shadow-medium:rgba(0,0,0,0.15);
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --dark-gray: #343a40;
+        }
+
+        /* สไตล์พื้นฐานของ body */
+        body {
+            font-family:'Sukhumvit Set','Kanit',sans-serif;
+            margin:0;
+            padding:0;
+            background:var(--bg-light);
+            color:var(--text-dark);
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            display:flex;
+            min-height:100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width:250px;
+            background:var(--deep-blue);
+            color:var(--white);
+            padding:20px;
+            box-shadow:2px 0 10px var(--shadow-light);
+            flex-shrink: 0;
+        }
+        .sidebar h5 {
+            text-align:center;
+            margin-bottom:30px;
+            color:var(--light-pink);
+            font-size:1.5rem;
+            font-weight:700;
+        }
+        .sidebar a {
+            display:flex;
+            align-items:center;
+            color:var(--white);
+            text-decoration:none;
+            padding:12px 15px;
+            margin-bottom:10px;
+            border-radius:8px;
+            transition:0.3s;
+            font-weight:500;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background:var(--primary-pink);
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+        }
+        .sidebar a i {
+            margin-right:12px;
+            font-size:1.1rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex:1;
+            display:flex;
+            flex-direction:column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background:var(--white);
+            padding:15px 25px;
+            box-shadow:0 2px 8px var(--shadow-light);
+            display:flex;
+            justify-content:flex-end;
+            align-items:center;
+            gap:20px;
+        }
+        .search-input {
+            border:1px solid var(--border-light);
+            padding:10px 15px;
+            border-radius:25px;
+            max-width:280px;
+            outline:none;
+            transition:0.3s;
+        }
+        .search-input:focus {
+            border-color:var(--soft-blue);
+            box-shadow:0 0 0 3px rgba(135,206,235,0.3);
+        }
+        .user-dropdown {
+            position:relative;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+        }
+        .user-dropdown img {
+            width:38px;
+            height:38px;
+            border-radius:50%;
+            margin-right:10px;
+            border:2px solid var(--light-pink);
+        }
+        .user-dropdown-menu {
+            display:none;
+            position:absolute;
+            top:50px;
+            right:0;
+            background:var(--white);
+            box-shadow:0 5px 15px var(--shadow-medium);
+            border-radius:8px;
+            min-width:160px;
+            padding:8px 0;
+            z-index: 1000;
+        }
+        .user-dropdown.active .user-dropdown-menu {
+            display:block;
+        }
+        .user-dropdown-menu a {
+            display:block;
+            padding:10px 18px;
+            color:var(--text-dark);
+            text-decoration:none;
+            transition:0.2s;
+        }
+        .user-dropdown-menu a:hover {
+            background:var(--light-pink);
+            color:var(--white);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex:1;
+            padding:30px;
+            background:var(--bg-light);
+        }
+        .content-area h4 {
+            margin-bottom:25px;
+            color:var(--deep-blue);
+            font-size:1.8rem;
+            font-weight:700;
+        }
+
+        /* Card (Box for content) */
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Search input specific to table */
+        .table-search-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .table-search-input:focus {
+            border-color: var(--soft-blue);
+        }
+        .table-search-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .table-search-wrapper .search-button {
+            background-color: var(--soft-blue);
+            color: var(--white);
+            border: 1px solid var(--soft-blue);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .table-search-wrapper .search-button:hover {
+            background-color: var(--deep-blue);
+            border-color: var(--deep-blue);
+        }
+
+        /* Tabs (User Type Filtering) */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 20px;
+            overflow-x: auto; /* เพื่อให้เลื่อนได้บนมือถือ */
+            white-space: nowrap;
+        }
+        .nav-tabs .nav-item {
+            flex-shrink: 0; /* ป้องกันการหดตัวของแท็บ */
+        }
+        .nav-tabs .nav-link {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-right: 5px;
+        }
+        .nav-tabs .nav-link:hover {
+            background-color: var(--bg-light);
+        }
+        .nav-tabs .nav-link.active {
+            background-color: var(--white);
+            border-color: var(--border-light);
+            border-bottom-color: var(--white); /* ทำให้เส้นขอบด้านล่างดูเชื่อมกับการ์ด */
+            color: var(--primary-pink);
+            font-weight: 600;
+        }
+        .tab-content .tab-pane {
+            display: none;
+        }
+        .tab-content .tab-pane.show.active {
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto; /* ทำให้ตารางเลื่อนได้ถ้าเนื้อหาเกิน */
+            margin-bottom: 20px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .data-table th {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .data-table tbody tr:hover {
+            background-color: var(--bg-light);
+            cursor: pointer;
+        }
+
+        /* Badges (Status) */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--white);
+            text-align: center;
+        }
+        .badge.bg-success { background-color: var(--success-color); }
+        .badge.bg-danger { background-color: var(--danger-color); }
+
+        /* Action Buttons in Table */
+        .action-buttons button {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-right: 8px;
+            padding: 6px 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .action-buttons button.view-btn { color: var(--info-color); }
+        .action-buttons button.edit-btn { color: var(--warning-color); }
+        .action-buttons button.delete-btn { color: var(--danger-color); }
+
+        .action-buttons button:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .action-buttons button.delete-btn:hover {
+            background-color: rgba(220,53,69,0.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            padding: 15px 0;
+            list-style: none;
+            margin: 0;
+        }
+        .pagination .page-item .page-link {
+            text-decoration: none;
+            color: var(--deep-blue);
+            padding: 8px 12px;
+            margin: 0 4px;
+            border: 1px solid var(--border-light);
+            border-radius: 5px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .pagination .page-item .page-link:hover {
+            background-color: var(--bg-light);
+            color: var(--primary-pink);
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-pink);
+            border-color: var(--primary-pink);
+            color: var(--white);
+        }
+        .pagination .page-item.disabled .page-link {
+            color: var(--text-muted);
+            pointer-events: none;
+            background-color: transparent;
+            border-color: var(--border-light);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .modal-header h5 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--deep-blue);
+        }
+        .modal-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        .modal-body label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .modal-body input[type="text"],
+        .modal-body input[type="email"],
+        .modal-body select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .modal-body input:focus, .modal-body select:focus {
+            border-color: var(--soft-blue);
+        }
+        .modal-body .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .modal-body .form-check input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        .modal-body p {
+            margin-bottom: 10px;
+        }
+        .modal-body p strong {
+            color: var(--deep-blue);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+        .modal-footer button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .modal-footer .btn-secondary {
+            background-color: var(--text-muted);
+            color: var(--white);
+        }
+        .modal-footer .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .modal-footer .btn-primary {
+            background-color: var(--primary-pink);
+            color: var(--white);
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #e04b9b;
+        }
+
+        /* Responsive Adjustments */
+        @media(max-width:992px){
+            .sidebar h5 { display: none; }
+            .sidebar {
+                width: 80px;
+                padding: 15px 10px;
+            }
+            .sidebar a {
+                justify-content: center;
+                padding: 10px;
+            }
+            .sidebar a i { margin-right: 0; }
+            .sidebar a span { display: none; }
+            .navbar { padding: 10px 15px; }
+            .search-input { max-width: 200px; }
+            .content-area { padding:20px; }
+            .table-search-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .table-search-input {
+                width: 100%;
+                max-width: none;
+            }
+            .table-search-wrapper .search-button {
+                width: 100%;
+                margin-left: 0;
+            }
+            .nav-tabs {
+                justify-content: space-between;
+                flex-wrap: wrap; /* ให้แท็บขึ้นบรรทัดใหม่ได้ */
+            }
+            .nav-tabs .nav-item {
+                flex-basis: 48%; /* 2 แท็บต่อแถว */
+                margin-bottom: 10px;
+            }
+            .nav-tabs .nav-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media(max-width:768px){
+            .dashboard-container { flex-direction:column; }
+            .sidebar {
+                width:100%;
+                position:static;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                padding: 10px;
+                box-shadow: 0 2px 8px var(--shadow-light);
+            }
+            .sidebar a {
+                padding: 8px 10px;
+                margin-bottom: 0;
+            }
+            /* สำหรับตารางบนมือถือ (Small screens) */
+            .data-table thead { display: none; }
+            .data-table, .data-table tbody, .data-table tr, .data-table td {
+                display: block;
+                width: 100%;
+            }
+            .data-table tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--border-light);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .data-table td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+                white-space: normal;
+            }
+            .data-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 30px);
+                text-align: left;
+                font-weight: 600;
+                color: var(--text-muted);
+            }
+            .data-table td:first-child {
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+            }
+            .data-table td:last-child {
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+                border-bottom: none;
+            }
+            .user-dropdown-menu {
+                right: auto;
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h5>LRU HeartCare</h5>
+           <a href="index.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
+            <a href="ManageUsers.html" class="active"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+            <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+            <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+            <a href="OnlineChat.html"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+            <a href="ManageNews.html" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
+            <a href="#"><i class="bi bi-bar-chart"></i> รายงาน</a>
+            
+        </div>
+        <div class="main-content">
+            <nav class="navbar">
+                <input type="search" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://via.placeholder.com/30" alt="Avatar">
+                    <strong>แอดมิน</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="content-area">
+                <h4>จัดการผู้ใช้งาน</h4>
+
+                <div class="card">
+                    <div class="table-search-wrapper">
+                        <input type="text" class="table-search-input" placeholder="ค้นหาผู้ใช้งาน...">
+                        <button class="search-button"><i class="bi bi-search"></i></button>
+                    </div>
+
+                    <ul class="nav-tabs" id="userTypeTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="all-users-tab" data-tab-target="allUsers" type="button">ผู้ใช้งานทั้งหมด</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="student-tab" data-tab-target="students" type="button">นักศึกษา</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="psychologist-tab" data-tab-target="psychologists" type="button">นักจิตวิทยา</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="admin-tab" data-tab-target="admins" type="button">แอดมิน</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="userTypeTabsContent">
+                        <div class="tab-pane show active" id="allUsers">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ชื่อผู้ใช้งาน</th>
+                                            <th>อีเมล</th>
+                                            <th>สถานะ</th>
+                                            <th>ประเภทผู้ใช้งาน</th>
+                                            <th>วันที่ลงทะเบียน</th>
+                                            <th class="text-center">การดำเนินการ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-label="#">1</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">std_alice</td>
+                                            <td data-label="อีเมล">alice.s@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-success">Active</span></td>
+                                            <td data-label="ประเภทผู้ใช้งาน">นักศึกษา</td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-01-15</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td data-label="#">2</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">psy_bob</td>
+                                            <td data-label="อีเมล">bob.p@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-success">Active</span></td>
+                                            <td data-label="ประเภทผู้ใช้งาน">นักจิตวิทยา</td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-02-20</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td data-label="#">3</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">admin_charlie</td>
+                                            <td data-label="อีเมล">charlie.a@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-success">Active</span></td>
+                                            <td data-label="ประเภทผู้ใช้งาน">แอดมิน</td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-03-10</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td data-label="#">4</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">std_diana</td>
+                                            <td data-label="อีเมล">diana.s@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-danger">Inactive</span></td>
+                                            <td data-label="ประเภทผู้ใช้งาน">นักศึกษา</td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-04-01</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="students">
+                             <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ชื่อผู้ใช้งาน</th>
+                                            <th>อีเมล</th>
+                                            <th>สถานะ</th>
+                                            <th>วันที่ลงทะเบียน</th>
+                                            <th class="text-center">การดำเนินการ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-label="#">1</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">std_alice</td>
+                                            <td data-label="อีเมล">alice.s@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-success">Active</span></td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-01-15</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td data-label="#">2</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">std_diana</td>
+                                            <td data-label="อีเมล">diana.s@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-danger">Inactive</span></td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-04-01</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="psychologists">
+                             <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ชื่อผู้ใช้งาน</th>
+                                            <th>อีเมล</th>
+                                            <th>สถานะ</th>
+                                            <th>วันที่ลงทะเบียน</th>
+                                            <th class="text-center">การดำเนินการ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-label="#">1</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">psy_bob</td>
+                                            <td data-label="อีเมล">bob.p@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-success">Active</span></td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-02-20</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="admins">
+                             <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ชื่อผู้ใช้งาน</th>
+                                            <th>อีเมล</th>
+                                            <th>สถานะ</th>
+                                            <th>วันที่ลงทะเบียน</th>
+                                            <th class="text-center">การดำเนินการ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td data-label="#">1</td>
+                                            <td data-label="ชื่อผู้ใช้งาน">admin_charlie</td>
+                                            <td data-label="อีเมล">charlie.a@example.com</td>
+                                            <td data-label="สถานะ"><span class="badge bg-success">Active</span></td>
+                                            <td data-label="วันที่ลงทะเบียน">2023-03-10</td>
+                                            <td data-label="การดำเนินการ" class="action-buttons text-center">
+                                                <button class="view-btn" data-modal-target="viewUserModal"><i class="bi bi-eye"></i></button>
+                                                <button class="edit-btn" data-modal-target="editUserModal"><i class="bi bi-pencil"></i></button>
+                                                <button class="delete-btn"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">แก้ไขผู้ใช้งาน</h5>
+                <button type="button" class="close-btn" data-close-modal="editUserModal"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="editUsername" class="form-label">ชื่อผู้ใช้งาน</label>
+                        <input type="text" class="form-control" id="editUsername" value="std_alice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEmail" class="form-label">อีเมล</label>
+                        <input type="email" class="form-control" id="editEmail" value="alice.s@example.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserType" class="form-label">ประเภทผู้ใช้งาน</label>
+                        <select class="form-select" id="editUserType" required>
+                            <option>นักศึกษา</option>
+                            <option>นักจิตวิทยา</option>
+                            <option>แอดมิน</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="editActiveStatus" checked>
+                        <label class="form-check-label" for="editActiveStatus">สถานะ Active</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" data-close-modal="editUserModal">ยกเลิก</button>
+                <button type="submit" class="btn-primary">บันทึกการเปลี่ยนแปลง</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="viewUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">รายละเอียดผู้ใช้งาน</h5>
+                <button type="button" class="close-btn" data-close-modal="viewUserModal"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>ชื่อผู้ใช้งาน:</strong> std_alice</p>
+                <p><strong>อีเมล:</strong> alice.s@example.com</p>
+                <p><strong>สถานะ:</strong> <span class="badge bg-success">Active</span></p>
+                <p><strong>ประเภทผู้ใช้งาน:</strong> นักศึกษา</p>
+                <p><strong>วันที่ลงทะเบียน:</strong> 2023-01-15</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" data-close-modal="viewUserModal">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript สำหรับการทำงานของ Sidebar dropdown (ถ้ามี)
+        document.addEventListener("DOMContentLoaded", function() {
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown) {
+                userDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation(); // หยุดการแพร่กระจาย event เพื่อไม่ให้ปิด dropdown ทันที
+                    this.classList.toggle('active');
+                });
+                // ปิด dropdown เมื่อคลิกที่อื่น
+                window.addEventListener('click', function(e) {
+                    if (userDropdown && !userDropdown.contains(e.target)) {
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // JavaScript สำหรับการทำงานของ Tab (Custom Tab functionality)
+            const tabButtons = document.querySelectorAll('.nav-tabs .nav-link');
+            const tabPanes = document.querySelectorAll('.tab-content .tab-pane');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // ลบ active class จากทุกแท็บ
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.remove('show', 'active'));
+
+                    // เพิ่ม active class ให้แท็บที่ถูกคลิก
+                    this.classList.add('active');
+
+                    // แสดงเนื้อหาของแท็บที่เกี่ยวข้อง
+                    const targetId = this.getAttribute('data-tab-target');
+                    const targetPane = document.getElementById(targetId);
+                    if (targetPane) {
+                        targetPane.classList.add('show', 'active');
+                    }
+                });
+            });
+
+            // JavaScript สำหรับ Modal (Custom Modal functionality)
+            const openModalButtons = document.querySelectorAll('[data-modal-target]');
+            const closeModalButtons = document.querySelectorAll('[data-close-modal]');
+            const modals = document.querySelectorAll('.modal-overlay');
+
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal-target');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.add('show');
+                    }
+                });
+            });
+
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-close-modal');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('show');
+                    }
+                });
+            });
+
+            // ปิด Modal เมื่อคลิกนอก Modal Content
+            modals.forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) { // ตรวจสอบว่าคลิกที่ overlay โดยตรง
+                        this.classList.remove('show');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
