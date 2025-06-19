@@ -236,10 +236,38 @@
             font-weight: 700;
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex; /* Use flexbox for header content */
+            justify-content: space-between; /* Space out items */
+            align-items: center; /* Vertically align items */
         }
-        .chat-header span {
+        .chat-header .title {
+            flex-grow: 1; /* Allow title to take available space */
+            text-align: center;
+        }
+        .chat-header .title span {
             font-weight: 400; /* Normal weight for "กับ" */
         }
+
+        .end-consultation-btn {
+            background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+            margin-left: 15px; /* Space from title */
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+
+        .end-consultation-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: var(--white);
+            transform: translateY(-2px);
+        }
+
 
         .chat-messages {
             flex-grow: 1;
@@ -369,6 +397,14 @@
                 font-size: 1.4rem;
                 padding: 18px 20px;
             }
+            .chat-header .title {
+                text-align: left; /* Align title left when button is present */
+            }
+            .end-consultation-btn {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+                margin-left: 10px;
+            }
             .chat-messages {
                 padding: 15px;
             }
@@ -401,6 +437,10 @@
                 font-size: 1.3rem;
                 padding: 15px 18px;
             }
+            .end-consultation-btn {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
             .chat-messages {
                 padding: 12px;
             }
@@ -432,6 +472,10 @@
             .chat-header {
                 font-size: 1.2rem;
                 padding: 12px 15px;
+            }
+            .end-consultation-btn {
+                font-size: 0.7rem;
+                padding: 4px 8px;
             }
             .chat-messages {
                 padding: 10px;
@@ -481,6 +525,7 @@
             const messageInput = document.getElementById('messageInput');
             const sendMessageButton = document.getElementById('sendMessageButton');
             const chatPsychologistName = document.getElementById('chatPsychologistName');
+            const endConsultationButton = document.getElementById('endConsultationButton'); // ปุ่มเสร็จสิ้นการปรึกษา
 
             // Psychologist data to map ID to full name
             const psychologists = {
@@ -537,6 +582,14 @@
                     sendMessageButton.click();
                 }
             });
+
+            // Event listener for "เสร็จสิ้นการปรึกษา" button
+            if (endConsultationButton) {
+                endConsultationButton.addEventListener('click', function() {
+                    // Navigate to the appointments history page
+                    window.location.href = 'appointments.html'; 
+                });
+            }
         });
     </script>
 
@@ -570,7 +623,11 @@
     <main class="chat-section">
         <div class="chat-container">
             <div class="chat-header">
-                แชทกับ <span id="chatPsychologistName">นักจิตวิทยา</span>
+                <div class="title">
+                    แชทกับ <span id="chatPsychologistName">นักจิตวิทยา</span>
+                </div>
+                <!-- ปุ่มเสร็จสิ้นการปรึกษา -->
+                <button id="endConsultationButton" class="end-consultation-btn">เสร็จสิ้นการปรึกษา</button>
             </div>
             <div class="chat-messages" id="chatMessages">
                 <!-- Chat messages will be dynamically added here -->
