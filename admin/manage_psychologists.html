@@ -1,0 +1,1481 @@
+    <!DOCTYPE html>
+    <html lang="th">
+    <head>
+        <meta charset="UTF-8" />
+        <title>LRU HeartCare Admin Dashboard - นักจิตวิทยา (ชมพูฟ้า)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <style>
+            /* Custom CSS for Psychologists Management Page (Card View) - ชมพูฟ้า (Pink-Blue) Theme */
+
+            /* Color Palette */ 
+            :root {
+                --primary-pink: #FF69B4; /* Deep Pink */
+                --light-pink: #FFC0CB;   /* Light Pink */
+                --soft-blue: #87CEEB;    /* Sky Blue */
+                --deep-blue: #4682B4;    /* Steel Blue */
+                --text-dark: #343a40;
+                --text-muted: #6c757d;
+                --bg-light: #f8f9fa;
+                --white: #ffffff;
+                --border-light: #e9ecef;
+                --shadow-light: rgba(0,0,0,0.08);
+                --shadow-medium: rgba(0,0,0,0.15);
+                --shadow-strong: rgba(0,0,0,0.25);
+                --green-success: #28a745; /* For completed status */
+                --red-cancel: #dc3545; /* For cancelled status */
+            }
+
+            body {
+                font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* Added common Thai fonts */
+                margin: 0;
+                padding: 0;
+                background-color: var(--bg-light);
+                color: var(--text-dark);
+            }
+
+            .dashboard-container {
+                display: flex;
+                min-height: 100vh; /* Ensure full height for sidebar */
+            }
+
+            /* Sidebar */
+            .sidebar {
+                width: 250px;
+                background-color: var(--deep-blue); /* Deep blue sidebar */
+                color: var(--white);
+                padding: 20px;
+                box-shadow: 2px 0 10px var(--shadow-light);
+                flex-shrink: 0; /* Prevent shrinking */
+            }
+
+            .sidebar h5 {
+                text-align: center;
+                margin-bottom: 30px;
+                color: var(--light-pink); /* Light pink for title */
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+
+            .sidebar a {
+                display: flex; /* Use flex for icon and text alignment */
+                align-items: center;
+                color: var(--white);
+                text-decoration: none;
+                padding: 12px 15px;
+                margin-bottom: 10px;
+                border-radius: 8px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                font-weight: 500;
+            }
+
+            .sidebar a:hover,
+            .sidebar a.active {
+                background-color: var(--primary-pink); /* Primary pink for active/hover */
+                color: var(--white);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            }
+
+            .sidebar a i {
+                margin-right: 12px;
+                font-size: 1.1rem;
+            }
+
+            /* Main Content Area */
+            .main-content {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Navbar */
+            .navbar {
+                background-color: var(--white);
+                padding: 15px 25px;
+                box-shadow: 0 2px 8px var(--shadow-light);
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                flex-shrink: 0; /* Prevent shrinking */
+            }
+
+            .navbar input[type="search"] {
+                border: 1px solid var(--border-light);
+                padding: 10px 15px;
+                border-radius: 25px; /* Rounded search bar */
+                margin-right: 15px;
+                max-width: 280px;
+                outline: none;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+            .navbar input[type="search"]:focus {
+                border-color: var(--soft-blue);
+                box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+            }
+
+            .user-dropdown {
+                position: relative;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+            }
+
+            .user-dropdown img {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                margin-right: 10px;
+                border: 2px solid var(--light-pink); /* Small border around avatar */
+            }
+
+            .user-dropdown strong {
+                color: var(--text-dark);
+                font-weight: 600;
+            }
+
+            .user-dropdown-menu {
+                display: none;
+                position: absolute;
+                top: 50px;
+                right: 0;
+                background-color: var(--white);
+                box-shadow: 0 5px 15px var(--shadow-medium);
+                border-radius: 8px;
+                min-width: 160px;
+                z-index: 1000;
+                padding: 8px 0;
+            }
+
+            .user-dropdown:hover .user-dropdown-menu,
+            .user-dropdown.active .user-dropdown-menu { /* Added active class for JS toggle */
+                display: block;
+            }
+
+            .user-dropdown-menu li {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .user-dropdown-menu a {
+                display: block;
+                padding: 10px 18px;
+                text-decoration: none;
+                color: var(--text-dark);
+                transition: background-color 0.2s;
+                font-size: 0.95rem;
+            }
+
+            .user-dropdown-menu a:hover {
+                background-color: var(--light-pink);
+                color: var(--white);
+            }
+
+            /* Content Area */
+            .content-area {
+                flex-grow: 1;
+                padding: 30px;
+                background-color: var(--bg-light);
+            }
+
+            .content-area h4 {
+                margin-bottom: 25px;
+                color: var(--deep-blue); /* Deep blue for main titles */
+                font-size: 1.8rem;
+                font-weight: 700;
+            }
+
+            .psychologist-card-container {
+                background-color: var(--white);
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px var(--shadow-medium);
+            }
+
+            .controls-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                flex-wrap: wrap; /* Allow wrapping on smaller screens */
+                gap: 15px; /* Spacing between items */
+            }
+
+            .search-input-group {
+                display: flex;
+                width: 320px;
+                max-width: 100%;
+            }
+
+            .search-input-group input {
+                flex-grow: 1;
+                border: 1px solid var(--border-light);
+                padding: 10px 15px;
+                border-radius: 25px 0 0 25px;
+                outline: none;
+                transition: border-color 0.3s ease;
+            }
+            .search-input-group input:focus {
+                border-color: var(--soft-blue);
+            }
+
+            .search-input-group button {
+                background-color: var(--soft-blue); /* Soft blue search button */
+                border: 1px solid var(--soft-blue);
+                border-left: none;
+                padding: 10px 15px;
+                border-radius: 0 25px 25px 0;
+                cursor: pointer;
+                color: var(--white);
+                transition: background-color 0.3s ease, border-color 0.3s ease;
+            }
+
+            .search-input-group button:hover {
+                background-color: var(--deep-blue);
+                border-color: var(--deep-blue);
+            }
+
+            .add-button {
+                background-color: var(--primary-pink); /* Primary pink add button */
+                color: var(--white);
+                border: none;
+                padding: 12px 25px;
+                border-radius: 25px; /* Rounded add button */
+                cursor: pointer;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .add-button:hover {
+                background-color: #e6529c; /* Slightly darker pink on hover */
+                box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+            }
+
+            /* Psychologist Cards Grid */
+            .psychologist-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjusted min-width for better fit */
+                gap: 30px; /* Increased gap */
+            }
+
+            .psychologist-card {
+                background-color: var(--white);
+                border: 1px solid var(--border-light);
+                border-radius: 15px; /* More rounded corners */
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                height: 100%; /* Ensure uniform height */
+                position: relative; /* For badges */
+            }
+            .psychologist-card:hover {
+                transform: translateY(-10px); /* More pronounced lift effect */
+                box-shadow: 0 12px 30px var(--shadow-strong);
+            }
+
+            .psychologist-card .card-header-bg {
+                width: 100%;
+                height: 100px; /* Decorative header background */
+                background: linear-gradient(135deg, var(--soft-blue) 0%, var(--primary-pink) 100%);
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                border-radius: 15px 15px 0 0;
+            }
+
+            .psychologist-card .profile-img-wrapper {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%; /* ทำให้เป็นวงกลม */
+        overflow: hidden;
+        border: 5px solid var(--white);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 2;
+        margin: -60px auto 15px auto;
+        background-color: var(--bg-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+            .psychologist-card .profile-img-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .psychologist-card .card-body {
+                padding: 20px; /* Increased padding */
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                position: relative;
+                z-index: 2; /* To ensure content is above header bg */
+            }
+            .psychologist-card .card-title {
+                font-size: 1.5rem; /* Larger title */
+                font-weight: 700;
+                margin-bottom: 5px;
+                color: var(--deep-blue);
+            }
+            .psychologist-card .card-subtitle {
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                margin-bottom: 15px;
+                font-weight: 500;
+            }
+
+            .psychologist-card .expertise-badges {
+                margin-bottom: 15px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 7px;
+            }
+
+            .expertise-badge {
+                background-color: var(--light-pink);
+                color: var(--primary-pink);
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 0.8em;
+                font-weight: 600;
+                white-space: nowrap; /* Prevent breaking */
+            }
+
+            .psychologist-card .card-details {
+                margin-bottom: 20px;
+                text-align: left;
+                color: var(--text-dark);
+                font-size: 0.95rem;
+                line-height: 1.5;
+                flex-grow: 1; /* Pushes action buttons to bottom */
+            }
+
+            .psychologist-card .card-details p {
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .psychologist-card .card-details p i {
+                color: var(--primary-pink);
+                font-size: 1.1em;
+            }
+            .psychologist-card .card-details p strong {
+                color: var(--deep-blue);
+                font-weight: 600;
+                min-width: 90px; /* Align content */
+                display: inline-block;
+            }
+
+            /* Status Badges */
+            .status-badge {
+                font-size: 0.85em;
+                padding: 6px 12px;
+                border-radius: 25px; /* More pill-shaped badges */
+                margin-bottom: 15px; /* Spacing below status */
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                color: var(--white);
+                font-weight: bold;
+                min-width: 90px; /* Ensure consistent width */
+                justify-content: center;
+                border: 1px solid transparent; /* For subtle border */
+            }
+            .badge-icon {
+                font-size: 1em;
+            }
+            .badge-success { background-color: #28a745; border-color: #28a745; } /* Green for Available */
+            .badge-warning { background-color: #ffc107; color: var(--text-dark); border-color: #ffc107; } /* Yellow for Busy */
+            .badge-danger { background-color: #dc3545; border-color: #dc3545; } /* Red for On Leave */
+            .badge-secondary { background-color: #6c757d; border-color: #6c757d; } /* Grey for Offline */
+
+            /* Card Actions */
+            .card-actions {
+                margin-top: auto;
+                padding-top: 20px;
+                border-top: 1px solid var(--border-light);
+                text-align: center;
+                display: flex; /* Use flex for horizontal buttons */
+                justify-content: center;
+                gap: 10px; /* Space between buttons */
+            }
+            .card-actions button, .card-actions a {
+                padding: 10px 15px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                color: var(--white);
+                transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+                display: flex; /* For icon and text */
+                align-items: center;
+                gap: 5px;
+                text-decoration: none; /* For link buttons */
+                font-weight: 500;
+            }
+            .card-actions button i, .card-actions a i {
+                font-size: 1rem;
+            }
+            .card-actions .btn-info {
+                background-color: var(--soft-blue); /* Soft blue for view */
+            }
+            .card-actions .btn-info:hover {
+                background-color: var(--deep-blue);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(70,130,180,0.3);
+            }
+            .card-actions .btn-edit {
+                background-color: #FFD700; /* Gold for edit (bright yellow) */
+                color: var(--text-dark); /* Dark text for yellow */
+            }
+            .card-actions .btn-edit:hover {
+                background-color: #DAA520; /* Darker gold */
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(255,215,0,0.3);
+            }
+            .card-actions .btn-delete {
+                background-color: var(--primary-pink); /* Primary pink for delete */
+            }
+            .card-actions .btn-delete:hover {
+                background-color: #e6529c;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(255,105,180,0.3);
+            }
+
+            /* Modals */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1050; /* Higher z-index */
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.6); /* Darker overlay */
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            .modal.show {
+                display: flex;
+            }
+
+            .modal-dialog {
+                background-color: var(--white);
+                margin: auto;
+                border: none; /* No border */
+                width: 90%;
+                max-width: 900px; /* Increased max-width */
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Stronger shadow */
+                position: relative;
+                animation: fadeIn 0.3s ease-out; /* Simple animation */
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 25px;
+                border-bottom: 1px solid var(--border-light);
+                background-color: var(--deep-blue); /* Deep blue header */
+                color: var(--white);
+                border-radius: 12px 12px 0 0;
+            }
+
+            .modal-header h5 {
+                margin: 0;
+                font-size: 1.6rem;
+                color: var(--white);
+                font-weight: 700;
+            }
+
+            .btn-close {
+                background: none;
+                border: none;
+                font-size: 2rem; /* Larger close button */
+                cursor: pointer;
+                color: var(--light-pink); /* Light pink close icon */
+                transition: color 0.2s;
+            }
+            .btn-close:hover {
+                color: var(--white);
+            }
+
+            .modal-body {
+                padding: 25px;
+                line-height: 1.6;
+            }
+
+            .modal-body .form-label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: var(--text-dark);
+                font-size: 1rem;
+            }
+
+            .modal-body .form-control,
+            .modal-body .form-select,
+            .modal-body textarea {
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border: 1px solid var(--border-light);
+                border-radius: 8px;
+                box-sizing: border-box;
+                font-size: 1rem;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+            .modal-body .form-control:focus,
+            .modal-body .form-select:focus,
+            .modal-body textarea:focus {
+                border-color: var(--soft-blue);
+                box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+                outline: none;
+            }
+
+            .modal-body .row {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0 -10px;
+            }
+
+            .modal-body .col-md-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+                padding: 0 10px;
+                box-sizing: border-box;
+            }
+
+            .modal-body .text-muted {
+                font-size: 0.8em;
+                color: var(--text-muted);
+                margin-top: -10px;
+                margin-bottom: 15px;
+                display: block; /* Ensure it takes full width */
+            }
+            .modal-body .mb-3 { /* General margin bottom for form groups */
+                margin-bottom: 20px;
+            }
+
+
+            .modal-footer {
+                display: flex;
+                justify-content: flex-end;
+                padding: 20px 25px;
+                border-top: 1px solid var(--border-light);
+                border-radius: 0 0 12px 12px;
+            }
+
+            .modal-footer .btn {
+                padding: 12px 25px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-left: 15px;
+                font-weight: 600;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+
+            .modal-footer .btn-secondary {
+                background-color: var(--text-muted);
+                color: var(--white);
+            }
+            .modal-footer .btn-secondary:hover {
+                background-color: #5a6268;
+                transform: translateY(-2px);
+            }
+
+            .modal-footer .btn-primary {
+                background-color: var(--primary-pink);
+                color: var(--white);
+            }
+            .modal-footer .btn-primary:hover {
+                background-color: #e6529c;
+                transform: translateY(-2px);
+            }
+
+            /* View Modal Specifics */
+            view-modal-content .text-center img {
+        max-width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%; /* ทำให้เป็นวงกลม */
+        margin-bottom: 25px;
+        border: 5px solid var(--light-pink);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+            .view-modal-content h5 {
+                font-size: 2rem; /* Larger name */
+                color: var(--deep-blue);
+                margin-bottom: 10px;
+                font-weight: 700;
+            }
+            .view-modal-content .email-text {
+                font-size: 1.1rem;
+                color: var(--text-muted);
+                margin-bottom: 25px;
+                display: block;
+            }
+
+            .view-modal-content p {
+                margin-bottom: 12px;
+                line-height: 1.8;
+                color: var(--text-dark);
+                font-size: 1.05rem;
+            }
+
+            .view-modal-content p strong {
+                color: var(--deep-blue);
+                font-weight: 600;
+                display: inline-block; /* Helps with spacing for strong text */
+                min-width: 150px; /* Align colons if desired */
+            }
+            .view-modal-content .modal-section-title {
+                margin-top: 30px;
+                margin-bottom: 15px;
+                color: var(--primary-pink); /* Pink for sub-heading */
+                font-size: 1.3rem;
+                font-weight: 700;
+                border-bottom: 2px solid var(--light-pink); /* Subtle line */
+                padding-bottom: 5px;
+                display: inline-block; /* Fits border to content */
+                width: 100%;
+                text-align: left;
+            }
+            .view-modal-content .expertise-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .view-modal-content .expertise-list li {
+                background-color: var(--soft-blue);
+                color: var(--white);
+                padding: 6px 15px;
+                border-radius: 20px;
+                font-size: 0.9em;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            /* Appointment History List in Modal */
+            .appointment-history-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            .appointment-history-list li {
+                padding: 10px 0;
+                border-bottom: 1px dashed var(--border-light);
+                color: var(--text-dark);
+                font-size: 0.95rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .appointment-history-list li:last-child {
+                border-bottom: none;
+            }
+            .appointment-history-list li strong {
+                color: var(--deep-blue);
+                flex-basis: 150px; /* Give date/time some fixed width */
+                margin-right: 10px;
+            }
+            .appointment-history-list li span {
+                flex-grow: 1;
+            }
+            .appointment-history-list li .status-text {
+                font-weight: 600;
+                padding: 3px 8px;
+                border-radius: 15px;
+                font-size: 0.85em;
+                white-space: nowrap;
+            }
+            .appointment-history-list li .status-text.completed {
+                background-color: var(--green-success);
+                color: var(--white);
+            }
+            .appointment-history-list li .status-text.cancelled {
+                background-color: var(--red-cancel);
+                color: var(--white);
+            }
+
+
+            /* Pagination Styling */
+            .pagination {
+                display: flex;
+                justify-content: flex-end;
+                list-style: none;
+                padding: 0;
+                margin-top: 30px;
+                gap: 8px; /* Space between page items */
+            }
+
+            .page-item {
+                margin: 0; /* Handled by gap */
+            }
+
+            .page-link {
+                display: block;
+                padding: 10px 15px;
+                text-decoration: none;
+                color: var(--deep-blue);
+                border: 1px solid var(--soft-blue);
+                border-radius: 8px; /* Rounded buttons */
+                transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+                font-weight: 500;
+            }
+
+            .page-item.active .page-link {
+                background-color: var(--primary-pink); /* Primary pink for active page */
+                border-color: var(--primary-pink);
+                color: var(--white);
+                font-weight: 700;
+            }
+
+            .page-link:hover:not(.active) {
+                background-color: var(--light-pink);
+                color: var(--deep-blue);
+                border-color: var(--light-pink);
+            }
+
+            .page-item.disabled .page-link {
+                color: #adb5bd;
+                pointer-events: none;
+                background-color: var(--border-light);
+                border-color: var(--border-light);
+            }
+
+
+            /* Responsive Adjustments */
+            @media (max-width: 992px) {
+                .psychologist-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                    gap: 20px;
+                }
+                .sidebar {
+                    width: 220px;
+                }
+                .navbar input[type="search"] {
+                    max-width: 200px;
+                }
+                .psychologist-card .card-title {
+                    font-size: 1.35rem;
+                }
+                .add-button {
+                    padding: 10px 20px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .dashboard-container {
+                    flex-direction: column; /* Stack sidebar and main content */
+                }
+
+                .sidebar {
+                    width: 100%;
+                    height: auto; /* Allow sidebar to collapse */
+                    padding: 15px;
+                    display: flex; /* Display as flex for horizontal items */
+                    justify-content: space-around; /* Distribute items */
+                    align-items: center;
+                    flex-wrap: wrap; /* Allow wrapping menu items */
+                    box-shadow: 0 2px 10px var(--shadow-light);
+                    position: sticky; /* Make it sticky if desired */
+                    top: 0;
+                    z-index: 100;
+                }
+                .sidebar h5 {
+                    display: none; /* Hide title on small screens */
+                }
+                .sidebar a {
+                    padding: 8px 10px;
+                    font-size: 0.9rem;
+                    margin-bottom: 5px; /* Adjust margin for wrapped items */
+                }
+                .sidebar a i {
+                    margin-right: 5px;
+                }
+
+                .main-content {
+                    width: 100%;
+                }
+
+                .navbar {
+                    justify-content: space-between;
+                    padding: 12px 15px;
+                }
+
+                .navbar input[type="search"] {
+                    max-width: 180px;
+                    padding: 8px 12px;
+                }
+
+                .user-dropdown img {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 50%; /* ทำให้เป็นวงกลม */
+                    margin-right: 10px;
+                    border: 2px solid var(--light-pink);
+    }
+
+                .content-area {
+                    padding: 20px;
+                }
+
+                .controls-row {
+                    flex-direction: column; /* Stack controls vertically */
+                    align-items: stretch; /* Stretch items */
+                    gap: 15px;
+                }
+
+                .search-input-group {
+                    width: 100%; /* Full width */
+                }
+
+                .add-button {
+                    width: 100%; /* Full width */
+                    justify-content: center; /* Center content */
+                }
+
+                .psychologist-grid {
+                    grid-template-columns: 1fr; /* Single column on very small screens */
+                }
+
+                .modal-dialog {
+                    width: 95%;
+                    padding: 15px;
+                }
+
+                .modal-body .row {
+                    flex-direction: column; /* Stack modal form fields vertically */
+                }
+                .modal-body .col-md-6 {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                    padding: 0;
+                }
+                .modal-body .form-control,
+                .modal-body .form-select,
+                .modal-body textarea {
+                    margin-bottom: 15px;
+                }
+                .modal-body .text-muted {
+                    margin-bottom: 10px;
+                }
+
+                .modal-footer {
+                    flex-direction: column; /* Stack footer buttons */
+                    gap: 10px;
+                    padding: 15px 20px;
+                }
+                .modal-footer .btn {
+                    width: 100%;
+                    margin-left: 0;
+                }
+                .modal-footer .btn-secondary {
+                    order: 2; /* Move secondary button below primary */
+                }
+                .modal-footer .btn-primary {
+                    order: 1;
+                }
+
+                .view-modal-content .text-center img {
+                    max-width: 150px;
+                    height: 150px;
+                    margin-bottom: 15px;
+                }
+                .view-modal-content h5 {
+                    font-size: 1.5rem;
+                    margin-bottom: 10px;
+                }
+                .view-modal-content .email-text {
+                    font-size: 1rem;
+                    margin-bottom: 15px;
+                }
+                .view-modal-content p {
+                    font-size: 0.95rem;
+                }
+                .view-modal-content .modal-section-title {
+                    font-size: 1.1rem;
+                    margin-top: 20px;
+                }
+                .appointment-history-list li {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 5px;
+                }
+                .appointment-history-list li strong {
+                    margin-right: 0;
+                    flex-basis: auto;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <h5>LRU HeartCare</h5>
+                <a href="index.html" ><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
+                <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+                <a href="manage_psychologists.html" class="active"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+                <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+                <a href="OnlineChat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+                <a href="ManageNews.html" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
+                <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
+            </div>
+
+            <div class="main-content">
+                <nav class="navbar">
+                    <div style="margin-left: auto; display: flex; align-items: center;">
+                        <input type="search" placeholder="ค้นหา..." />
+                        <div class="user-dropdown" id="userDropdown">
+                            <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Admin Avatar" />
+                            <strong>แอดมิน</strong>
+                            <ul class="user-dropdown-menu">
+                                <li><a href="#">โปรไฟล์</a></li>
+                                <li><a href="#">ออกจากระบบ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="content-area">
+                    <h4>จัดการนักจิตวิทยา</h4>
+
+                    <div class="psychologist-card-container">
+                        <div class="controls-row">
+                            <div class="search-input-group">
+                                <input type="text" placeholder="ค้นหานักจิตวิทยา..." aria-label="Search psychologist">
+                                <button type="button"><i class="bi bi-search"></i></button>
+                            </div>
+                            <button class="add-button" onclick="openModal('addPsychologistModal')">
+                                <i class="bi bi-plus-circle"></i> เพิ่มนักจิตวิทยา
+                            </button>
+                        </div>
+
+                        <div class="psychologist-grid" id="psychologistGrid">
+                            <div class="psychologist-card">
+                                <div class="card-header-bg"></div>
+                                <div class="profile-img-wrapper">
+                                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" class="card-img-top" alt="Dr. Somchai"/>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">นพ.สมชาย ใจดี</h5>
+                                    <h6 class="card-subtitle">somchai.j@example.com</h6>
+                                    <div class="expertise-badges">
+                                        <span class="expertise-badge">ซึมเศร้า</span>
+                                        <span class="expertise-badge">วิตกกังวล</span>
+                                        <span class="expertise-badge">บำบัดความคิด</span>
+                                    </div>
+                                    <p class="status-badge badge-success"><i class="bi bi-circle-fill badge-icon"></i> ว่าง</p>
+                                    <div class="card-details">
+                                        <p><i class="bi bi-calendar-check"></i> <strong>นัดหมาย:</strong> 50 ครั้ง</p>
+                                        <p><i class="bi bi-clock"></i> <strong>เวลาทำงาน:</strong> จันทร์-ศุกร์, 09:00-17:00</p>
+                                        <p><i class="bi bi-telephone"></i> <strong>โทร:</strong> 081-234-5678</p>
+                                    </div>
+                                    <div class="card-actions">
+                                        <button class="btn-info" onclick="openViewModal('somchai')"><i class="bi bi-eye"></i> ดูรายละเอียด</button>
+                                        <button class="btn-edit" onclick="openEditModal('somchai')"><i class="bi bi-pencil"></i> แก้ไข</button>
+                                        <button class="btn-delete" onclick="confirmDelete('สมชาย')"><i class="bi bi-trash"></i> ลบ</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="psychologist-card">
+                                <div class="card-header-bg"></div>
+                                <div class="profile-img-wrapper">
+                                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" class="card-img-top" alt="Dr. Lalana"/>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">พญ.ลลนา มีสุข</h5>
+                                    <h6 class="card-subtitle">lalana.m@example.com</h6>
+                                    <div class="expertise-badges">
+                                        <span class="expertise-badge">ความสัมพันธ์</span>
+                                        <span class="expertise-badge">การศึกษา</span>
+                                        <span class="expertise-badge">ครอบครัว</span>
+                                    </div>
+                                    <p class="status-badge badge-warning"><i class="bi bi-hourglass-split badge-icon"></i> ไม่ว่าง</p>
+                                    <div class="card-details">
+                                        <p><i class="bi bi-calendar-check"></i> <strong>นัดหมาย:</strong> 35 ครั้ง</p>
+                                        <p><i class="bi bi-clock"></i> <strong>เวลาทำงาน:</strong> อังคาร-เสาร์, 10:00-18:00</p>
+                                        <p><i class="bi bi-telephone"></i> <strong>โทร:</strong> 089-876-5432</p>
+                                    </div>
+                                    <div class="card-actions">
+                                        <button class="btn-info" onclick="openViewModal('lalana')"><i class="bi bi-eye"></i> ดูรายละเอียด</button>
+                                        <button class="btn-edit" onclick="openEditModal('lalana')"><i class="bi bi-pencil"></i> แก้ไข</button>
+                                        <button class="btn-delete" onclick="confirmDelete('ลลนา')"><i class="bi bi-trash"></i> ลบ</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="psychologist-card">
+                                <div class="card-header-bg"></div>
+                                <div class="profile-img-wrapper">
+                                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" class="card-img-top" alt="Mr. Kittipong"/>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">อ.กิตติพงษ์ จิตใส</h5>
+                                    <h6 class="card-subtitle">kittipong.j@example.com</h6>
+                                    <div class="expertise-badges">
+                                        <span class="expertise-badge">เด็กและวัยรุ่น</span>
+                                        <span class="expertise-badge">สมาธิสั้น</span>
+                                        <span class="expertise-badge">พัฒนาการ</span>
+                                    </div>
+                                    <p class="status-badge badge-danger"><i class="bi bi-person-x-fill badge-icon"></i> ไม่อยู่</p>
+                                    <div class="card-details">
+                                        <p><i class="bi bi-calendar-check"></i> <strong>นัดหมาย:</strong> 20 ครั้ง</p>
+                                        <p><i class="bi bi-clock"></i> <strong>เวลาทำงาน:</strong> จันทร์, พุธ, ศุกร์, 13:00-20:00</p>
+                                        <p><i class="bi bi-telephone"></i> <strong>โทร:</strong> 092-345-6789</p>
+                                    </div>
+                                    <div class="card-actions">
+                                        <button class="btn-info" onclick="openViewModal('kittipong')"><i class="bi bi-eye"></i> ดูรายละเอียด</button>
+                                        <button class="btn-edit" onclick="openEditModal('kittipong')"><i class="bi bi-pencil"></i> แก้ไข</button>
+                                        <button class="btn-delete" onclick="confirmDelete('กิตติพงษ์')"><i class="bi bi-trash"></i> ลบ</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="psychologist-card">
+                                <div class="card-header-bg"></div>
+                                <div class="profile-img-wrapper">
+                                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" class="card-img-top" alt="Ms. Kingkaew"/>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">คุณหมอกิ่งแก้ว จิตสุข</h5>
+                                    <h6 class="card-subtitle">kingkaew.k@example.com</h6>
+                                    <div class="expertise-badges">
+                                        <span class="expertise-badge">ความเครียด</span>
+                                        <span class="expertise-badge">การปรับตัว</span>
+                                        <span class="expertise-badge">การนอนหลับ</span>
+                                    </div>
+                                    <p class="status-badge badge-success"><i class="bi bi-circle-fill badge-icon"></i> ว่าง</p>
+                                    <div class="card-details">
+                                        <p><i class="bi bi-calendar-check"></i> <strong>นัดหมาย:</strong> 42 ครั้ง</p>
+                                        <p><i class="bi bi-clock"></i> <strong>เวลาทำงาน:</strong> จันทร์-ศุกร์, 11:00-19:00</p>
+                                        <p><i class="bi bi-telephone"></i> <strong>โทร:</strong> 086-789-0123</p>
+                                    </div>
+                                    <div class="card-actions">
+                                        <button class="btn-info" onclick="openViewModal('kingkaew')"><i class="bi bi-eye"></i> ดูรายละเอียด</button>
+                                        <button class="btn-edit" onclick="openEditModal('kingkaew')"><i class="bi bi-pencil"></i> แก้ไข</button>
+                                        <button class="btn-delete" onclick="confirmDelete('กิ่งแก้ว')"><i class="bi bi-trash"></i> ลบ</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item disabled"><a class="page-link" href="#">ก่อนหน้า</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">ถัดไป</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="addPsychologistModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h5>เพิ่มนักจิตวิทยาใหม่</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('addPsychologistModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addFullName" class="form-label">ชื่อ-นามสกุล</label>
+                                <input type="text" class="form-control" id="addFullName" placeholder="ระบุชื่อ-นามสกุล">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addEmail" class="form-label">อีเมล</label>
+                                <input type="email" class="form-control" id="addEmail" placeholder="ระบุอีเมล">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="addPhone" class="form-label">เบอร์โทรศัพท์</label>
+                                <input type="tel" class="form-control" id="addPhone" placeholder="ระบุเบอร์โทรศัพท์">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="addStatus" class="form-label">สถานะ</label>
+                                <select class="form-select" id="addStatus">
+                                    <option value="available">ว่าง</option>
+                                    <option value="busy">ไม่ว่าง</option>
+                                    <option value="on-leave">ไม่อยู่</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addExpertise" class="form-label">ความเชี่ยวชาญ (คั่นด้วยคอมม่า)</label>
+                            <input type="text" class="form-control" id="addExpertise" placeholder="เช่น ซึมเศร้า, วิตกกังวล">
+                        </div>
+                        <div class="mb-3">
+                            <label for="addWorkHours" class="form-label">เวลาทำงาน</label>
+                            <input type="text" class="form-control" id="addWorkHours" placeholder="เช่น จันทร์-ศุกร์, 09:00-17:00">
+                        </div>
+                        <div class="mb-3">
+                            <label for="addBiography" class="form-label">ประวัติโดยย่อ</label>
+                            <textarea class="form-control" id="addBiography" rows="3" placeholder="ประวัติการศึกษา, ประสบการณ์, แนวทางการบำบัด"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addProfileImage" class="form-label">รูปโปรไฟล์</label>
+                            <input type="file" class="form-control" id="addProfileImage" accept="image/*">
+                            <small class="text-muted">เลือกไฟล์รูปภาพสำหรับโปรไฟล์นักจิตวิทยา</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addPsychologistModal')">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary">บันทึก</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="editPsychologistModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h5>แก้ไขข้อมูลนักจิตวิทยา</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('editPsychologistModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPsychologistForm">
+                        <input type="hidden" id="editPsyId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editFullName" class="form-label">ชื่อ-นามสกุล</label>
+                                <input type="text" class="form-control" id="editFullName" value="นพ.สมชาย ใจดี">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editEmail" class="form-label">อีเมล</label>
+                                <input type="email" class="form-control" id="editEmail" value="somchai.j@example.com">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editPhone" class="form-label">เบอร์โทรศัพท์</label>
+                                <input type="tel" class="form-control" id="editPhone" value="081-234-5678">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editStatus" class="form-label">สถานะ</label>
+                                <select class="form-select" id="editStatus">
+                                    <option value="available">ว่าง</option>
+                                    <option value="busy" selected>ไม่ว่าง</option>
+                                    <option value="on-leave">ไม่อยู่</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editExpertise" class="form-label">ความเชี่ยวชาญ (คั่นด้วยคอมม่า)</label>
+                            <input type="text" class="form-control" id="editExpertise" value="ซึมเศร้า, วิตกกังวล">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editWorkHours" class="form-label">เวลาทำงาน</label>
+                            <input type="text" class="form-control" id="editWorkHours" value="จันทร์-ศุกร์, 09:00-17:00">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBiography" class="form-label">ประวัติโดยย่อ</label>
+                            <textarea class="form-control" id="editBiography" rows="3">นพ.สมชาย ใจดี เป็นนักจิตวิทยาที่มีประสบการณ์กว่า 10 ปี เชี่ยวชาญในการบำบัดผู้ป่วยภาวะซึมเศร้าและวิตกกังวล มีแนวทางการบำบัดแบบ Cognitive Behavioral Therapy (CBT) ที่มุ่งเน้นการปรับเปลี่ยนความคิดและพฤติกรรม</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProfileImage" class="form-label">รูปโปรไฟล์</label>
+                            <input type="file" class="form-control" id="editProfileImage" accept="image/*">
+                            <small class="text-muted">เลือกไฟล์รูปภาพใหม่เพื่อเปลี่ยน</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editPsychologistModal')">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewPsychologistModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h5 id="viewPsyName"></h5>
+                    <button type="button" class="btn-close" onclick="closeModal('viewPsychologistModal')">&times;</button>
+                </div>
+                <div class="modal-body view-modal-content">
+                    <div class="text-center">
+                        <img id="viewPsyImage" src="" alt="Profile Picture"/>
+                        <span class="email-text" id="viewPsyEmail"></span>
+                        <p class="status-badge" id="viewPsyStatusBadge"></p>
+                        </div>
+
+                    <h6 class="modal-section-title">ข้อมูลติดต่อ</h6>
+                    <p><strong>เบอร์โทรศัพท์:</strong> <span id="viewPsyPhone"></span></p>
+
+                    <h6 class="modal-section-title">ความเชี่ยวชาญ</h6>
+                    <ul class="expertise-list" id="viewPsyExpertiseList"></ul>
+
+                    <h6 class="modal-section-title">รายละเอียดอื่นๆ</h6>
+                    <p><strong>จำนวนนัดหมาย:</strong> <span id="viewPsyAppointments"></span> ครั้ง</p>
+                    <p><strong>เวลาทำงาน:</strong> <span id="viewPsyWorkHours"></span></p>
+                    <p><strong>ประวัติโดยย่อ:</strong> <span id="viewPsyBiography"></span></p>
+
+                    <h6 class="modal-section-title">ประวัติการนัดหมาย</h6>
+                    <ul class="appointment-history-list" id="viewPsyAppointmentHistory">
+                        </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('viewPsychologistModal')">ปิด</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Dropdown functionality for user profile
+                const userDropdown = document.getElementById('userDropdown');
+                if (userDropdown) {
+                    userDropdown.addEventListener('click', function(event) {
+                        event.stopPropagation(); // Prevent click from closing immediately
+                        this.classList.toggle('active');
+                    });
+                    document.addEventListener('click', function(event) {
+                        if (!userDropdown.contains(event.target)) {
+                            userDropdown.classList.remove('active');
+                        }
+                    });
+                }
+
+                // Centralized Modal Functions
+                window.openModal = function(modalId) {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.add('show');
+                    }
+                };
+
+                window.closeModal = function(modalId) {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('show');
+                    }
+                };
+
+                // Close modal when clicking outside of the modal-dialog
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', function(event) {
+                        if (event.target === this) { // Check if the click was directly on the overlay
+                            this.classList.remove('show');
+                        }
+                    });
+                });
+
+                // Data for psychologists (now includes appointment history)
+                const psychologistsData = [
+                    {
+                        id: 'somchai',
+                        name: 'นพ.สมชาย ใจดี',
+                        email: 'somchai.j@example.com',
+                        phone: '081-234-5678',
+                        status: 'available', // available, busy, on-leave, offline
+                        expertise: ['ซึมเศร้า', 'วิตกกังวล', 'บำบัดความคิด'],
+                        appointments: 50,
+                        workHours: 'จันทร์-ศุกร์, 09:00-17:00',
+                        biography: 'นพ.สมชาย ใจดี เป็นนักจิตวิทยาที่มีประสบการณ์กว่า 10 ปี เชี่ยวชาญในการบำบัดผู้ป่วยภาวะซึมเศร้าและวิตกกังวล มีแนวทางการบำบัดแบบ Cognitive Behavioral Therapy (CBT) ที่มุ่งเน้นการปรับเปลี่ยนความคิดและพฤติกรรม',
+                        image: 'https://via.placeholder.com/150/FFC0CB/FF69B4?text=สมชาย',
+                        appointmentHistory: [
+                            { date: '2024-05-20', time: '10:00', client: 'นาย A', status: 'completed' },
+                            { date: '2024-05-18', time: '14:30', client: 'นางสาว B', status: 'completed' },
+                            { date: '2024-05-15', time: '09:00', client: 'เด็กชาย C', status: 'cancelled' },
+                            { date: '2024-05-10', time: '16:00', client: 'คุณ D', status: 'completed' },
+                            { date: '2024-05-05', time: '11:00', client: 'นาย E', status: 'completed' },
+                        ]
+                    },
+                    {
+                        id: 'lalana',
+                        name: 'พญ.ลลนา มีสุข',
+                        email: 'lalana.m@example.com',
+                        phone: '089-876-5432',
+                        status: 'busy',
+                        expertise: ['ความสัมพันธ์', 'การศึกษา', 'ครอบครัว'],
+                        appointments: 35,
+                        workHours: 'อังคาร-เสาร์, 10:00-18:00',
+                        biography: 'พญ.ลลนา มีสุข ให้คำปรึกษาด้านความสัมพันธ์และครอบครัวอย่างเชี่ยวชาญ ช่วยเหลือผู้ป่วยให้เข้าใจตนเองและผู้อื่นได้ดีขึ้น',
+                        image: 'https://via.placeholder.com/150/87CEEB/4682B4?text=ลลนา',
+                        appointmentHistory: [
+                            { date: '2024-05-22', time: '13:00', client: 'นาง F', status: 'completed' },
+                            { date: '2024-05-19', time: '10:00', client: 'นาย G', status: 'completed' },
+                            { date: '2024-05-14', time: '15:00', client: 'คุณ H', status: 'completed' },
+                        ]
+                    },
+                    {
+                        id: 'kittipong',
+                        name: 'อ.กิตติพงษ์ จิตใส',
+                        email: 'kittipong.j@example.com',
+                        phone: '092-345-6789',
+                        status: 'on-leave',
+                        expertise: ['เด็กและวัยรุ่น', 'สมาธิสั้น', 'พัฒนาการ'],
+                        appointments: 20,
+                        workHours: 'จันทร์, พุธ, ศุกร์, 13:00-20:00',
+                        biography: 'อ.กิตติพงษ์ จิตใส มีความเข้าใจลึกซึ้งในพัฒนาการของเด็กและวัยรุ่น มุ่งเน้นการสร้างสภาพแวดล้อมที่ส่งเสริมการเรียนรู้และเติบโต',
+                        image: 'https://via.placeholder.com/150/FFC0CB/FF69B4?text=กิตติพงษ์',
+                        appointmentHistory: [
+                            { date: '2024-04-30', time: '14:00', client: 'เด็กชาย I', status: 'completed' },
+                            { date: '2024-04-25', time: '16:00', client: 'คุณ J', status: 'cancelled' },
+                        ]
+                    },
+                    {
+                        id: 'kingkaew',
+                        name: 'คุณหมอกิ่งแก้ว จิตสุข',
+                        email: 'kingkaew.k@example.com',
+                        phone: '086-789-0123',
+                        status: 'available',
+                        expertise: ['ความเครียด', 'การปรับตัว', 'การนอนหลับ'],
+                        appointments: 42,
+                        workHours: 'จันทร์-ศุกร์, 11:00-19:00',
+                        biography: 'คุณหมอกิ่งแก้ว จิตสุข มีความเชี่ยวชาญในการจัดการความเครียดและปัญหาการนอนหลับ ช่วยให้ผู้ป่วยฟื้นฟูสุขภาพจิตและกายอย่างยั่งยืน',
+                        image: 'https://via.placeholder.com/150/87CEEB/4682B4?text=กิ่งแก้ว',
+                        appointmentHistory: [
+                            { date: '2024-05-24', time: '10:00', client: 'นาย K', status: 'completed' },
+                            { date: '2024-05-23', time: '15:00', client: 'นาง L', status: 'completed' },
+                            { date: '2024-05-21', time: '11:00', client: 'คุณ M', status: 'completed' },
+                            { date: '2024-05-19', time: '17:00', client: 'นาย N', status: 'completed' },
+                        ]
+                    }
+                    // Add more psychologist data here
+                ];
+
+                // Function to open View Psychologist Modal
+                window.openViewModal = function(psyId) {
+                    const psychologist = psychologistsData.find(p => p.id === psyId);
+                    if (!psychologist) {
+                        console.error('Psychologist not found:', psyId);
+                        return;
+                    }
+
+                    // Populate basic details
+                    document.getElementById('viewPsyName').innerText = psychologist.name;
+                    document.getElementById('viewPsyImage').src = psychologist.image;
+                    document.getElementById('viewPsyEmail').innerText = psychologist.email;
+                    document.getElementById('viewPsyPhone').innerText = psychologist.phone;
+                    document.getElementById('viewPsyAppointments').innerText = psychologist.appointments;
+                    document.getElementById('viewPsyWorkHours').innerText = psychologist.workHours;
+                    document.getElementById('viewPsyBiography').innerText = psychologist.biography;
+
+                    // Update status badge
+                    const statusBadge = document.getElementById('viewPsyStatusBadge');
+                    statusBadge.className = `status-badge`; // Reset classes
+                    let statusText = '';
+                    let statusIcon = '';
+                    if (psychologist.status === 'available') {
+                        statusBadge.classList.add('badge-success');
+                        statusText = 'ว่าง';
+                        statusIcon = 'bi-circle-fill';
+                    } else if (psychologist.status === 'busy') {
+                        statusBadge.classList.add('badge-warning');
+                        statusText = 'ไม่ว่าง';
+                        statusIcon = 'bi-hourglass-split';
+                    } else if (psychologist.status === 'on-leave') {
+                        statusBadge.classList.add('badge-danger');
+                        statusText = 'ไม่อยู่';
+                        statusIcon = 'bi-person-x-fill';
+                    } else {
+                        statusBadge.classList.add('badge-secondary');
+                        statusText = 'ออฟไลน์';
+                        statusIcon = 'bi-power';
+                    }
+                    statusBadge.innerHTML = `<i class="bi ${statusIcon} badge-icon"></i> ${statusText}`;
+
+                    // Update expertise list
+                    const expertiseList = document.getElementById('viewPsyExpertiseList');
+                    expertiseList.innerHTML = ''; // Clear previous items
+                    psychologist.expertise.forEach(exp => {
+                        const li = document.createElement('li');
+                        li.innerText = exp;
+                        expertiseList.appendChild(li);
+                    });
+
+                    // Populate Appointment History
+                    const appointmentHistoryList = document.getElementById('viewPsyAppointmentHistory');
+                    appointmentHistoryList.innerHTML = ''; // Clear previous items
+
+                    if (psychologist.appointmentHistory && psychologist.appointmentHistory.length > 0) {
+                        psychologist.appointmentHistory.forEach(appt => {
+                            const li = document.createElement('li');
+                            const statusDisplay = appt.status === 'completed' ? 'เสร็จสิ้น' : 'ยกเลิก';
+                            const statusClass = appt.status === 'completed' ? 'completed' : 'cancelled';
+                            li.innerHTML = `
+                                <strong>${appt.date} ${appt.time}</strong>
+                                <span>กับ ${appt.client}</span>
+                                <span class="status-text ${statusClass}">${statusDisplay}</span>
+                            `;
+                            appointmentHistoryList.appendChild(li);
+                        });
+                    } else {
+                        const li = document.createElement('li');
+                        li.innerText = 'ยังไม่มีประวัติการนัดหมาย';
+                        appointmentHistoryList.appendChild(li);
+                    }
+
+                    openModal('viewPsychologistModal');
+                };
+
+                // Function to open Edit Psychologist Modal and populate data
+                window.openEditModal = function(psyId) {
+                    const psychologist = psychologistsData.find(p => p.id === psyId);
+                    if (!psychologist) {
+                        console.error('Psychologist not found for editing:', psyId);
+                        return;
+                    }
+
+                    document.getElementById('editPsyId').value = psychologist.id;
+                    document.getElementById('editFullName').value = psychologist.name;
+                    document.getElementById('editEmail').value = psychologist.email;
+                    document.getElementById('editPhone').value = psychologist.phone;
+                    document.getElementById('editStatus').value = psychologist.status;
+                    document.getElementById('editExpertise').value = psychologist.expertise.join(', ');
+                    document.getElementById('editWorkHours').value = psychologist.workHours;
+                    document.getElementById('editBiography').value = psychologist.biography;
+                    // For image, you might want to show a preview or just keep the file input blank for new upload
+
+                    openModal('editPsychologistModal');
+                };
+
+                // Function to handle delete (simple alert for now)
+                window.confirmDelete = function(psyName) {
+                    if (confirm(`คุณแน่ใจหรือไม่ที่จะลบนักจิตวิทยา ${psyName} ?`)) {
+                        alert(`${psyName} ถูกลบแล้ว (ในทางทฤษฎี)!`);
+                        // In a real application, you'd send an AJAX request to delete from the database
+                        // and then remove the card from the DOM.
+                    }
+                };
+            });
+        </script>
+    </body>
+    </html>
