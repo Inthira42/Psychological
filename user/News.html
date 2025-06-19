@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | ข่าวสาร - อัปเดตล่าสุดจากเรา</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+        }
+
+        .logo img {
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+        }
+
+        .logo a {
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+        }
+
+        .menu {
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+        }
+
+        .logout a:hover {
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+        }
+
+        /* ========== Main News Section - ส่วนเนื้อหาข่าวสารหลัก ========== */
+        .news-section {
+            padding: 80px 0; /* padding ด้านบนและล่าง */
+            background: var(--bg-light); /* สีพื้นหลัง */
+        }
+
+        .news-heading {
+            text-align: center;
+            font-size: 2.8rem; /* ขนาดหัวข้อ */
+            color: var(--deep-blue);
+            margin-bottom: 60px; /* ระยะห่างด้านล่าง */
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .news-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* ปรับขนาดคอลัมน์ให้ยืดหยุ่น */
+            gap: 40px; /* ระยะห่างระหว่างข่าว */
+        }
+
+        .news-item {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px var(--shadow-light); /* เงาที่ดูมีมิติขึ้น */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-light); /* เพิ่มเส้นขอบเล็กน้อย */
+        }
+
+        .news-item:hover {
+            transform: translateY(-10px); /* เด้งขึ้นมากขึ้นเมื่อ hover */
+            box-shadow: 0 15px 35px var(--shadow-medium); /* เงาเข้มขึ้น */
+        }
+
+        .news-item img {
+            width: 100%;
+            height: 220px; /* ปรับความสูงรูปภาพให้เหมาะสม */
+            object-fit: cover; /* ครอบคลุมพื้นที่ */
+            display: block;
+        }
+
+        .news-content {
+            padding: 25px; /* เพิ่ม padding */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* ทำให้เนื้อหาขยายเต็มพื้นที่ */
+        }
+
+        .news-content h3 {
+            font-size: 1.5rem; /* ขนาดหัวข้อข่าว */
+            color: var(--deep-blue);
+            margin-bottom: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .news-content p {
+            font-size: 1rem; /* ขนาดข้อความ */
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1; /* ทำให้ p ขยายเพื่อดันปุ่มลงไปด้านล่าง */
+        }
+
+        .news-date {
+            font-size: 0.9rem;
+            color: var(--primary-pink);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .read-more-btn {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-block;
+            align-self: flex-start; /* จัดให้อยู่ด้านซ้ายใน flex column */
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+
+        .read-more-btn:hover {
+            background: #e05e9b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        /* ========== Responsive Adjustments - การปรับสไตล์สำหรับขนาดหน้าจอต่างๆ ========== */
+        @media (max-width: 992px) {
+            .nav-con {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-con {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                align-items: stretch; /* ทำให้ menu-con ขยายเต็มความกว้าง */
+            }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            .menu li {
+                width: 100%;
+            }
+            .menu li a, .dropdown-toggle {
+                width: calc(100% - 30px); /* Full width minus padding (20px) and slight margin (10px) */
+                text-align: center;
+                margin: 0 15px; /* เพิ่ม margin ด้านข้าง */
+            }
+            .dropdown-menu {
+                position: static; /* Change to static so it flows with content */
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
+            }
+            .logout {
+                width: 100%;
+                text-align: center;
+                padding: 0 15px; /* เพิ่ม padding ด้านข้าง */
+            }
+            .logout a {
+                display: block;
+                width: 100%; /* Adjust to full width */
+                margin: 0; /* Remove auto margin */
+            }
+
+            .news-heading {
+                font-size: 2.2rem;
+                margin-bottom: 40px;
+            }
+            .news-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 30px;
+            }
+            .news-item img {
+                height: 200px;
+            }
+            .news-content h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-section {
+                padding: 60px 0;
+            }
+            .news-heading {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+            .news-grid {
+                gap: 25px;
+            }
+            .news-item img {
+                height: 180px;
+            }
+            .news-content h3 {
+                font-size: 1.2rem;
+            }
+            .news-content p {
+                font-size: 0.9rem;
+            }
+            .read-more-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .news-grid {
+                grid-template-columns: 1fr; /* Single column on smallest screens */
+            }
+            .news-item img {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+          <div class="logo">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+            <a href="#">LRU HeartCare</a>
+          </div>
+    
+          <div class="menu-con">
+            <ul class="menu">
+              <li><a href="index.html">หน้าแรก</a></li>
+              <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="logout">
+              <a href="Login.html">ออกจากระบบ</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <section class="news-section">
+        <div class="container">
+            <h2 class="news-heading">ข่าวสารและประกาศจาก LRU HeartCare</h2>
+            <div class="news-grid">
+                <!-- News Item 1 -->
+                <div class="news-item">
+                    <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039854274445334/image.png?ex=6813f622&is=6812a4a2&hm=c2e4a697167002e5eed3dfe94e6e61650b7187168833f4826ba8b587144f6a1a&" alt="รูปภาพกิจกรรมเวิร์คช็อปการจัดการความเครียด">
+                    <div class="news-content">
+                        <p class="news-date">วันที่ 15 มิถุนายน 2567</p>
+                        <h3>เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h3>
+                        <p>มาร่วมเรียนรู้เทคนิคและวิธีการรับมือกับความเครียดจากการเรียนและการใช้ชีวิตประจำวันในยุคที่เต็มไปด้วยสิ่งเร้า พร้อมคำแนะนำจากนักจิตวิทยาผู้เชี่ยวชาญ</p>
+                        <a href="#" class="read-more-btn">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+
+                <!-- News Item 2 -->
+                <div class="news-item">
+                    <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039994192236555/image.png?ex=6813f643&is=6812a4c3&hm=5386cde0bf391951324825d45c61e0333cd160a1989992b467738fa85c4eec1c&" alt="รูปภาพข่าวสารการสัมมนาจิตวิทยาเชิงบวก">
+                    <div class="news-content">
+                        <p class="news-date">วันที่ 10 มิถุนายน 2567</p>
+                        <h3>สัมมนา: พลังของจิตวิทยาเชิงบวก สร้างสุขให้ชีวิตนักศึกษา</h3>
+                        <p>ค้นพบวิธีการสร้างพลังบวกและพัฒนาความคิดเชิงบวกเพื่อชีวิตที่มีความสุขและประสบความสำเร็จในรั้วมหาวิทยาลัย</p>
+                        <a href="#" class="read-more-btn">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+
+                <!-- News Item 3 -->
+                <div class="news-item">
+                    <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039953931108423/image.png?ex=6813f639&is=6812a4b9&hm=3a00f63b7a5c18aba578cd49022e6c2b83dc428f3d4cce6926a243d2556f2a45&" alt="รูปภาพข่าวสารคลินิกสุขภาพใจเคลื่อนที่">
+                    <div class="news-content">
+                        <p class="news-date">วันที่ 5 มิถุนายน 2567</p>
+                        <h3>เปิดคลินิกสุขภาพใจเคลื่อนที่: ใกล้คุณยิ่งขึ้น!</h3>
+                        <p>พบกับนักจิตวิทยาของเราได้ที่จุดบริการพิเศษตามตารางที่ประกาศ เพื่อรับคำปรึกษาเบื้องต้นได้ทันที ไม่ต้องรอคิว</p>
+                        <a href="#" class="read-more-btn">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+
+                <!-- News Item 4 -->
+                <div class="news-item">
+                    <img src="https://placehold.co/800x450/87CEEB/ffffff?text=New+Article+Image+4" alt="รูปภาพข่าวสารบทความใหม่">
+                    <div class="news-content">
+                        <p class="news-date">วันที่ 1 มิถุนายน 2567</p>
+                        <h3>บทความน่าสนใจ: นอนหลับให้เต็มที่เพื่อสุขภาพจิตที่ดี</h3>
+                        <p>การนอนหลับมีผลอย่างมากต่อสุขภาพจิต มาดูกันว่าคุณสามารถปรับปรุงคุณภาพการนอนได้อย่างไร</p>
+                        <a href="#" class="read-more-btn">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+
+                 <!-- News Item 5 -->
+                 <div class="news-item">
+                    <img src="https://placehold.co/800x450/FF69B4/ffffff?text=New+Article+Image+5" alt="รูปภาพข่าวสารกลุ่มบำบัด">
+                    <div class="news-content">
+                        <p class="news-date">วันที่ 28 พฤษภาคม 2567</p>
+                        <h3>เปิดรับสมัคร: กลุ่มบำบัดสำหรับนักศึกษาใหม่</h3>
+                        <p>สำหรับนักศึกษาชั้นปีที่ 1 ที่ต้องการปรับตัวและหาเพื่อนใหม่ในรั้วมหาวิทยาลัย</p>
+                        <a href="#" class="read-more-btn">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+
+                <!-- News Item 6 -->
+                <div class="news-item">
+                    <img src="https://placehold.co/800x450/4682B4/ffffff?text=New+Article+Image+6" alt="รูปภาพข่าวสารการให้คำปรึกษาออนไลน์">
+                    <div class="news-content">
+                        <p class="news-date">วันที่ 20 พฤษภาคม 2567</p>
+                        <h3>บริการให้คำปรึกษาออนไลน์: สะดวกทุกที่ทุกเวลา</h3>
+                        <p>คุณสามารถเข้าถึงบริการให้คำปรึกษาทางจิตวิทยาได้ง่ายๆ ผ่านแพลตฟอร์มออนไลน์ของเรา</p>
+                        <a href="#" class="read-more-btn">อ่านเพิ่มเติม</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
