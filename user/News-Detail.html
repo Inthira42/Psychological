@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+        }
+
+        .logo img {
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+        }
+
+        .logo a {
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+        }
+
+        .menu {
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+        }
+
+        .logout a:hover {
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+        }
+
+        /* ========== News Detail Section - ส่วนเนื้อหาข่าวสารแบบเต็ม ========== */
+        .news-detail-section {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+
+        .news-detail-card {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            overflow: hidden;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .news-detail-image {
+            width: 100%;
+            height: 450px; /* ขนาดใหญ่ขึ้นสำหรับภาพข่าวเดี่ยว */
+            object-fit: cover;
+            display: block;
+            border-bottom: 5px solid var(--primary-pink); /* เพิ่มเส้นขอบด้านล่างรูปภาพ */
+        }
+
+        .news-detail-content {
+            padding: 40px; /* เพิ่ม padding */
+        }
+
+        .news-detail-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-light);
+        }
+
+        .news-detail-meta .date {
+            font-size: 1rem;
+            color: var(--primary-pink);
+            font-weight: 600;
+        }
+
+        .news-detail-meta .category {
+            background-color: var(--soft-blue);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .news-detail-title {
+            font-size: 2.8rem; /* ขนาดใหญ่ขึ้น */
+            color: var(--deep-blue);
+            margin-bottom: 30px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .news-detail-text {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            line-height: 1.8; /* ระยะห่างบรรทัดอ่านง่ายขึ้น */
+            margin-bottom: 40px;
+        }
+
+        .news-detail-text p {
+            margin-bottom: 20px; /* ระยะห่างระหว่างย่อหน้า */
+        }
+
+        .back-btn {
+            background: var(--deep-blue);
+            color: var(--white);
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
+        }
+
+        .back-btn:hover {
+            background: #3a6b9a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
+        }
+
+        /* ========== Responsive Adjustments ========== */
+        @media (max-width: 992px) {
+            .nav-con {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-con {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                align-items: stretch;
+            }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            .menu li {
+                width: 100%;
+            }
+            .menu li a, .dropdown-toggle {
+                width: calc(100% - 30px);
+                text-align: center;
+                margin: 0 15px;
+            }
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
+            }
+            .logout {
+                width: 100%;
+                text-align: center;
+                padding: 0 15px;
+            }
+            .logout a {
+                display: block;
+                width: 100%;
+                margin: 0;
+            }
+
+            .news-detail-section {
+                padding: 60px 0;
+            }
+            .news-detail-title {
+                font-size: 2.2rem;
+                margin-bottom: 20px;
+            }
+            .news-detail-image {
+                height: 350px;
+            }
+            .news-detail-content {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-detail-section {
+                padding: 40px 0;
+            }
+            .news-detail-title {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            .news-detail-image {
+                height: 250px;
+            }
+            .news-detail-content {
+                padding: 20px;
+            }
+            .news-detail-text {
+                font-size: 1rem;
+            }
+            .news-detail-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .back-btn {
+                padding: 12px 25px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .news-detail-image {
+                height: 200px;
+            }
+            .news-detail-title {
+                font-size: 1.5rem;
+            }
+            .news-detail-text {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+          <div class="logo">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+            <a href="#">LRU HeartCare</a>
+          </div>
+    
+          <div class="menu-con">
+            <ul class="menu">
+              <li><a href="index.html">หน้าแรก</a></li>
+              <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="logout">
+              <a href="Login.html">ออกจากระบบ</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <main class="news-detail-section">
+        <div class="container">
+            <div class="news-detail-card">
+                <img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039854274445334/image.png?ex=6813f622&is=6812a4a2&hm=c2e4a697167002e5eed3dfe94e6e61650b7187168833f4826ba8b587144f6a1a&" alt="รูปภาพกิจกรรมเวิร์คช็อปการจัดการความเครียด" class="news-detail-image">
+                <div class="news-detail-content">
+                    <div class="news-detail-meta">
+                        <span class="date">วันที่ 15 มิถุนายน 2567</span>
+                        <span class="category">กิจกรรม</span>
+                    </div>
+                    <h1 class="news-detail-title">เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h1>
+                    <div class="news-detail-text">
+                        <p>ในยุคที่เทคโนโลยีและข้อมูลข่าวสารถาโถมเข้ามาอย่างรวดเร็ว นักศึกษาหลายคนอาจเผชิญกับความเครียดและความกดดันที่เพิ่มมากขึ้น ไม่ว่าจะเป็นความคาดหวังด้านการเรียน การแข่งขันทางสังคม หรือแม้แต่การรับข้อมูลข่าวสารที่มากเกินไป LRU HeartCare เล็งเห็นถึงความสำคัญของปัญหานี้ จึงได้จัดเวิร์คช็อปพิเศษ "การจัดการความเครียดในยุคดิจิทัล" ขึ้น เพื่อมอบเครื่องมือและเทคนิคที่จำเป็นในการรับมือกับความท้าทายเหล่านี้</p>
+                        <p>เวิร์คช็อปนี้ออกแบบมาเพื่อให้ผู้เข้าร่วมได้เรียนรู้ถึงสาเหตุและผลกระทบของความเครียดต่อทั้งร่างกายและจิตใจ รวมถึงการฝึกปฏิบัติเทคนิคผ่อนคลายต่างๆ เช่น การฝึกหายใจ การทำสมาธิแบบง่ายๆ และการปรับความคิดเชิงบวก นอกจากนี้ยังมีการเสวนาแลกเปลี่ยนประสบการณ์และให้คำแนะนำจากนักจิตวิทยาผู้เชี่ยวชาญ ที่จะช่วยให้คุณค้นพบวิธีที่เหมาะสมกับตนเองในการจัดการกับความเครียดอย่างมีประสิทธิภาพ</p>
+                        <p>เราเชื่อว่าการมีสุขภาพจิตที่ดีเป็นพื้นฐานสำคัญของการใช้ชีวิตในรั้วมหาวิทยาลัยอย่างมีความสุขและประสบความสำเร็จ การเข้าร่วมเวิร์คช็อปนี้ไม่เพียงแต่จะช่วยให้คุณสามารถจัดการกับความเครียดได้ดีขึ้น แต่ยังเสริมสร้างทักษะชีวิตที่จำเป็นสำหรับการเติบโตเป็นผู้ใหญ่ที่มีคุณภาพในอนาคต ขอเชิญชวนนักศึกษาทุกท่านเข้าร่วมกิจกรรมดีๆ แบบนี้ และมาร่วมสร้างพื้นที่ปลอดภัยสำหรับใจเราไปพร้อมกัน</p>
+                        <p><strong>รายละเอียดกิจกรรม:</strong></p>
+                        <ul>
+                            <li><strong>หัวข้อ:</strong> การจัดการความเครียดในยุคดิจิทัล</li>
+                            <li><strong>วันที่:</strong> วันเสาร์ที่ 22 มิถุนายน 2567</li>
+                            <li><strong>เวลา:</strong> 13:00 - 16:00 น.</li>
+                            <li><strong>สถานที่:</strong> ห้องประชุม ชั้น 2 อาคารศูนย์สุขภาพนักศึกษา มหาวิทยาลัยราชภัฏเลย</li>
+                            <li><strong>วิทยากร:</strong> อาจารย์ ดร.สมศรี มีสุข (นักจิตวิทยาเชี่ยวชาญด้านสุขภาพจิตวัยรุ่น)</li>
+                        </ul>
+                        <p>ลงทะเบียนเข้าร่วมกิจกรรมได้ตั้งแต่วันนี้ถึงวันที่ 20 มิถุนายน 2567 ที่เคาน์เตอร์บริการนักศึกษา หรือสแกน QR Code ที่โปสเตอร์ประชาสัมพันธ์ในคณะต่างๆ</p>
+                    </div>
+                    <a href="News.html" class="back-btn">กลับไปหน้าข่าวสาร</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

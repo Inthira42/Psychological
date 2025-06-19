@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>LRU HeartCare Admin Dashboard - จัดการข่าวสาร (ชมพูฟ้า)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for Appointments Management Page - ชมพูฟ้า (Pink-Blue) Theme */
+
+        /* Color Palette */
+        :root {
+            --primary-pink: #FF69B4; /* Deep Pink */
+            --light-pink: #FFC0CB;    /* Light Pink */
+            --soft-blue: #87CEEB;     /* Sky Blue */
+            --deep-blue: #4682B4;     /* Steel Blue */
+            --text-dark: #343a40;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow-light: rgba(0,0,0,0.08);
+            --shadow-medium: rgba(0,0,0,0.15);
+            --red-cancel: #dc3545; /* Specific red for cancel actions */
+            --green-success: #28a745; /* Green for success/confirmed/completed */
+            --blue-info: #007bff; /* Blue for info/pending/in-progress */
+        }
+
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* Added common Thai fonts */
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh; /* Ensure full height for sidebar */
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--deep-blue); /* Deep blue sidebar */
+            color: var(--white);
+            padding: 20px;
+            box-shadow: 2px 0 10px var(--shadow-light);
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .sidebar h5 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--light-pink); /* Light pink for title */
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .sidebar a {
+            display: flex; /* Use flex for icon and text alignment */
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: var(--primary-pink); /* Primary pink for active/hover */
+            color: var(--white);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .sidebar a i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--white);
+            padding: 15px 25px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .navbar input[type="search"] {
+            border: 1px solid var(--border-light);
+            padding: 10px 15px;
+            border-radius: 25px; /* Rounded search bar */
+            margin-right: 15px;
+            max-width: 280px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .navbar input[type="search"]:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        .user-dropdown {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-dropdown img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid var(--light-pink); /* Small border around avatar */
+        }
+
+        .user-dropdown strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: var(--white);
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            border-radius: 8px;
+            min-width: 160px;
+            z-index: 1000;
+            padding: 8px 0;
+        }
+
+        .user-dropdown:hover .user-dropdown-menu,
+        .user-dropdown.active .user-dropdown-menu { /* Added active class for JS toggle */
+            display: block;
+        }
+
+        .user-dropdown-menu li {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .user-dropdown-menu a {
+            display: block;
+            padding: 10px 18px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: background-color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .user-dropdown-menu a:hover {
+            background-color: var(--light-pink);
+            color: var(--white);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex-grow: 1;
+            padding: 30px;
+            background-color: var(--bg-light);
+        }
+
+        .content-area h4 {
+            margin-bottom: 25px;
+            color: var(--deep-blue); /* Deep blue for main titles */
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .content-container {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-medium);
+            margin-bottom: 30px; /* Added margin for space below */
+        }
+
+        /* Image Carousel */
+        .image-carousel {
+            position: relative;
+            width: 100%;
+            max-width: 1200px; /* Wider for 4 items */
+            margin: 0 auto 30px auto; /* Center carousel and add bottom margin */
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            /* aspect-ratio: 16 / 6; Removed as items have their own sizing */
+            padding: 15px; /* Padding for the carousel container itself */
+            background-color: var(--white);
+        }
+
+        .carousel-inner {
+            display: flex;
+            width: 100%;
+            /* Removed fixed height, let content define it */
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide-group {
+            min-width: 100%; /* Each group takes full width */
+            display: flex;
+            justify-content: space-around; /* Distribute items within the group */
+            gap: 20px; /* Space between cards */
+            padding: 20px 0; /* Padding for the group items */
+            box-sizing: border-box; /* Include padding in width */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens if items don't fit */
+        }
+
+        .carousel-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            flex: 1 1 calc(25% - 20px); /* Base for 4 items, accounting for gap */
+            max-width: calc(25% - 20px); /* Max width for 4 items */
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none; /* Remove underline from card link */
+            color: var(--text-dark); /* Ensure text color */
+        }
+
+        .carousel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .carousel-card-img {
+            width: 100%;
+            height: 180px; /* Fixed height for image */
+            object-fit: cover; /* Cover the area, crop if needed */
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .carousel-card-body {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+       .carousel-card-title {
+    /* ... other properties ... */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* WebKit browsers */
+    line-clamp: 2; /* Standard property for modern browsers */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.carousel-card-text {
+    /* ... other properties ... */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* WebKit browsers */
+    line-clamp: 3; /* Standard property for modern browsers */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+        .carousel-card-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: auto; /* Push date to bottom */
+            text-align: right;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(0,0,0,0.3); /* Darker dots for white background */
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .dot.active {
+            background-color: var(--primary-pink);
+            transform: scale(1.2);
+        }
+
+        /* Controls Row and Table Styles */
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 15px; /* Spacing between items */
+        }
+
+        .search-input-group {
+            display: flex;
+            width: 320px;
+            max-width: 100%;
+        }
+
+        .search-input-group input {
+            flex-grow: 1;
+            border: 1px solid var(--border-light);
+            padding: 10px 15px;
+            border-radius: 25px 0 0 25px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        .search-input-group input:focus {
+            border-color: var(--soft-blue);
+        }
+
+        .search-input-group button {
+            background-color: var(--soft-blue); /* Soft blue search button */
+            border: 1px solid var(--soft-blue);
+            border-left: none;
+            padding: 10px 15px;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            color: var(--white);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .search-input-group button:hover {
+            background-color: var(--deep-blue);
+            border-color: var(--deep-blue);
+        }
+
+        .add-button {
+            background-color: var(--primary-pink);
+            color: var(--white);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex; /* For icon and text alignment */
+            align-items: center;
+            gap: 8px; /* Space between icon and text */
+        }
+        .add-button:hover {
+            background-color: #e6529c;
+            transform: translateY(-2px);
+        }
+
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group select,
+        .filter-group input[type="date"] {
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background-color: var(--white);
+            color: var(--text-dark);
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="date"]:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        /* Tables (General for Appointments, Chat Logs, News) */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .data-table th {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            font-weight: 600;
+            position: sticky;
+            top: 0; /* Keep header visible on scroll */
+            z-index: 1;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: var(--bg-light);
+        }
+
+        .data-table tbody tr:hover {
+            background-color: var(--light-pink);
+            color: var(--deep-blue);
+            cursor: pointer;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            font-size: 0.85em;
+            padding: 6px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            color: var(--white);
+            font-weight: bold;
+            min-width: 90px;
+            text-align: center;
+        }
+        .status-pending { background-color: var(--blue-info); }
+        .status-confirmed, .status-completed, .status-published { background-color: var(--green-success); }
+        .status-cancelled { background-color: var(--red-cancel); }
+        .status-in-progress, .status-draft { background-color: var(--blue-info); }
+
+        /* Table Actions */
+        .table-actions button {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .table-actions .btn-view { color: var(--soft-blue); }
+        .table-actions .btn-view:hover { color: var(--deep-blue); background-color: rgba(135, 206, 235, 0.2); }
+        .table-actions .btn-edit { color: #FFD700; } /* Gold */
+        .table-actions .btn-edit:hover { color: #DAA520; background-color: rgba(255, 215, 0, 0.2); }
+        .table-actions .btn-delete { color: var(--red-cancel); } /* Changed from cancel to delete */
+        .table-actions .btn-delete:hover { color: #b02a37; background-color: rgba(220, 53, 69, 0.2); }
+
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-dialog {
+            background-color: var(--white);
+            margin: auto;
+            border: none;
+            width: 90%;
+            max-width: 700px; /* Adjusted max-width for forms */
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--deep-blue);
+            color: var(--white);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-header h5 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--light-pink);
+            transition: color 0.2s;
+        }
+        .btn-close:hover {
+            color: var(--white);
+        }
+
+        .modal-body {
+            padding: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-body .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .modal-body .form-control,
+        .modal-body .form-select,
+        .modal-body textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .modal-body .form-control:focus,
+        .modal-body .form-select:focus,
+        .modal-body textarea:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+            outline: none;
+        }
+
+        .modal-body .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .modal-body .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .modal-body .mb-3 {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-light);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .modal-footer .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 15px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .modal-footer .btn-secondary {
+            background-color: var(--text-muted);
+            color: var(--white);
+        }
+        .modal-footer .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .modal-footer .btn-primary {
+            background-color: var(--primary-pink);
+            color: var(--white);
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #e6529c;
+            transform: translateY(-2px);
+        }
+
+        /* View Modal Specifics (for Appointment & Chat details) */
+        .view-modal-content h5.modal-title-detail {
+            font-size: 1.8rem;
+            color: var(--deep-blue);
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .view-modal-content p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .view-modal-content p strong {
+            color: var(--deep-blue);
+            font-weight: 600;
+            display: inline-block;
+            min-width: 150px; /* Ensure alignment for labels */
+        }
+        .view-modal-content .info-section {
+            background-color: var(--bg-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-light);
+        }
+
+        .view-modal-content .info-section h6 {
+            color: var(--primary-pink);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--light-pink);
+            padding-bottom: 5px;
+            display: inline-block;
+            font-weight: 700;
+        }
+        .view-modal-content .status-badge {
+            margin: 0;
+            vertical-align: middle;
+        }
+
+
+        /* Pagination Styling */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+            gap: 8px; /* Space between page items */
+        }
+
+        .page-item {
+            margin: 0; /* Handled by gap */
+        }
+
+        .page-link {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--deep-blue);
+            border: 1px solid var(--soft-blue);
+            border-radius: 8px; /* Rounded buttons */
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            font-weight: 500;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-pink); /* Primary pink for active page */
+            border-color: var(--primary-pink);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .page-link:hover:not(.active) {
+            background-color: var(--light-pink);
+            color: var(--deep-blue);
+            border-color: var(--light-pink);
+        }
+
+        .page-item.disabled .page-link {
+            color: #adb5bd;
+            pointer-events: none;
+            background-color: var(--border-light);
+            border-color: var(--border-light);
+        }
+
+        /* News Detail Modal Specifics */
+        .news-details-modal .modal-dialog {
+            max-width: 800px; /* Wider for full news content */
+        }
+
+        .news-details-modal .modal-body {
+            padding: 25px;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .news-details-modal .news-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .news-details-modal .news-header h4 {
+            color: var(--deep-blue);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .news-details-modal .news-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .news-details-modal .news-image {
+            width: 100%;
+            height: 250px; /* Fixed height for consistency */
+            object-fit: cover; /* Cover the area, crop if needed */
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .news-details-modal .news-content {
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+        .news-details-modal .news-content p {
+            margin-bottom: 15px;
+        }
+
+        /* Input type file styling */
+        .form-control-file {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--white);
+            color: var(--text-dark);
+        }
+
+        .form-control-file:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+            outline: none;
+        }
+        /* Custom file input appearance (optional, more complex CSS needed for full control) */
+        .form-control-file::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+        .form-control-file::before {
+            content: 'เลือกรูปภาพ';
+            display: inline-block;
+            background: var(--soft-blue);
+            color: var(--white);
+            border: 1px solid var(--soft-blue);
+            border-radius: 5px;
+            padding: 8px 12px;
+            outline: none;
+            white-space: nowrap;
+            -webkit-user-select: none; /* For WebKit browsers (Chrome, Safari, older Edge, Opera) */
+            -moz-user-select: none;    /* For Mozilla Firefox */
+            -ms-user-select: none;     /* For Microsoft Edge (legacy) and IE */
+            user-select: none;         /* Standard property for modern browsers */
+            cursor: pointer;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        .form-control-file:hover::before {
+            background-color: var(--deep-blue);
+            border-color: var(--deep-blue);
+        }
+        .form-control-file:active::before {
+            background: var(--deep-blue);
+        }
+
+        /* --- New CSS for Multiple Image Preview --- */
+        .image-preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px; /* Space below previews */
+            border: 1px dashed var(--border-light);
+            padding: 10px;
+            border-radius: 8px;
+            min-height: 80px; /* Minimum height even if no images */
+            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .image-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .remove-image-btn:hover {
+            background-color: var(--red-cancel);
+        }
+        /* --- End New CSS for Multiple Image Preview --- */
+
+
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .carousel-card {
+                flex: 1 1 calc(33.333% - 20px); /* 3 items per row */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+            }
+            .navbar input[type="search"] {
+                max-width: 200px;
+            }
+            .carousel-card {
+                flex: 1 1 calc(50% - 20px); /* 2 items per row */
+                max-width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column; /* Stack sidebar and main content */
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto; /* Allow sidebar to collapse */
+                padding: 15px;
+                display: flex; /* Display as flex for horizontal items */
+                justify-content: space-around; /* Distribute items */
+                align-items: center;
+                flex-wrap: wrap; /* Allow wrapping menu items */
+                box-shadow: 0 2px 10px var(--shadow-light);
+                position: sticky; /* Make it sticky if desired */
+                top: 0;
+                z-index: 100;
+            }
+            .sidebar h5 {
+                display: none; /* Hide title on small screens */
+            }
+            .sidebar a {
+                padding: 8px 10px;
+                font-size: 0.9rem;
+                margin-bottom: 5px; /* Adjust margin for wrapped items */
+            }
+            .sidebar a i {
+                margin-right: 5px;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .navbar {
+                justify-content: space-between;
+                padding: 12px 15px;
+            }
+
+            .navbar input[type="search"] {
+                max-width: 180px;
+                padding: 8px 12px;
+            }
+
+            .user-dropdown img {
+                width: 32px;
+                height: 32px;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .image-carousel {
+                padding: 10px;
+            }
+            .carousel-slide-group {
+                gap: 10px; /* Smaller gap on small screens */
+            }
+            .carousel-card {
+                flex: 1 1 calc(100% - 10px); /* 1 item per row on very small screens */
+                max-width: calc(100% - 10px);
+            }
+
+
+            .controls-row {
+                flex-direction: column; /* Stack controls vertically */
+                align-items: stretch; /* Stretch items */
+                gap: 15px;
+            }
+
+            .search-input-group {
+                width: 100%; /* Full width */
+            }
+
+            .add-button {
+                width: 100%; /* Full width */
+                justify-content: center; /* Center content */
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group select,
+            .filter-group input[type="date"] {
+                width: 100%;
+            }
+
+            .data-table {
+                font-size: 0.9em;
+                display: block; /* Make table scrollable on small screens */
+                overflow-x: auto; /* Enable horizontal scrolling */
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+            .data-table th, .data-table td {
+                padding: 8px 10px;
+            }
+            .table-actions button {
+                font-size: 0.95rem;
+                margin-right: 5px;
+            }
+
+            .modal-dialog {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .modal-body .row {
+                flex-direction: column; /* Stack modal form fields vertically */
+            }
+            .modal-body .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                padding: 0;
+            }
+            .modal-body .form-control,
+            .modal-body .form-select,
+            .modal-body textarea {
+                margin-bottom: 15px;
+            }
+
+            .modal-footer {
+                flex-direction: column; /* Stack footer buttons */
+                gap: 10px;
+                padding: 15px 20px;
+            }
+            .modal-footer .btn {
+                width: 100%;
+                margin-left: 0;
+            }
+            .modal-footer .btn-secondary {
+                order: 2; /* Move secondary button below primary */
+            }
+            .modal-footer .btn-primary {
+                order: 1;
+            }
+
+            .view-modal-content h5.modal-title-detail {
+                font-size: 1.3rem;
+            }
+            .view-modal-content p {
+                font-size: 0.9rem;
+            }
+            .view-modal-content p strong {
+                min-width: 100px;
+            }
+            .view-modal-content .info-section h6 {
+                font-size: 1.0rem;
+            }
+
+            .news-details-modal .news-header h4 {
+                font-size: 1.5rem;
+            }
+            .news-details-modal .news-meta {
+                font-size: 0.8rem;
+            }
+            .news-details-modal .news-image {
+                height: 180px; /* Adjust height for smaller screens */
+            }
+            .news-details-modal .news-content {
+                padding: 15px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h5>LRU HeartCare</h5>
+            <a href="index.html" ><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
+            <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+            <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+            <a href="Appointments.html" ><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+            <a href="OnlineChat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+            <a href="ManageNews.html" class="active" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
+            <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
+        </div>
+
+        <div class="main-content">
+            <nav class="navbar">
+                <div style="margin-left: auto; display: flex; align-items: center;">
+                    <input type="search" placeholder="ค้นหา..." aria-label="Search news">
+                    <div class="user-dropdown">
+                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
+                            <img src="https://via.placeholder.com/30" alt="Admin Avatar" />
+                            <strong>แอดมิน</strong>
+                        </a>
+                        <ul class="user-dropdown-menu">
+                            <li><a href="#">โปรไฟล์</a></li>
+                            <li><a href="#">ออกจากระบบ</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="content-area">
+                <h4>ข่าวสารล่าสุด</h4>
+                <div class="image-carousel">
+                    <div class="carousel-inner" id="newsCarouselInner">
+                        </div>
+                    <div class="carousel-dots" id="newsCarouselDots">
+                        </div>
+                </div>
+                <h4>จัดการข่าวสาร</h4>
+
+                <div class="content-container">
+                    <div class="controls-row">
+                        <div class="search-input-group">
+                            <input type="text" placeholder="ค้นหาข่าวสาร..." aria-label="Search news">
+                            <button type="button"><i class="bi bi-search"></i></button>
+                        </div>
+                        <button class="add-button" onclick="openModal('addEditNewsModal')">
+                            <i class="bi bi-plus-circle-fill"></i> เพิ่มข่าวสารใหม่
+                        </button>
+                    </div>
+
+                    <table class="data-table news-table">
+                        <thead>
+                            <tr>
+                                <th>รหัสข่าวสาร</th>
+                                <th>หัวข้อข่าวสาร</th>
+                                <th>วันที่เผยแพร่</th>
+                                <th>สถานะ</th>
+                                <th>ผู้เขียน</th>
+                                <th>การดำเนินการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NEWS001</td>
+                                <td>LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม.</td>
+                                <td>2024-05-25</td>
+                                <td><span class="status-badge status-published">เผยแพร่</span></td>
+                                <td>แอดมิน</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NEWS002</td>
+                                <td>สัมมนาฟรี: จัดการความเครียดในยุคดิจิทัล</td>
+                                <td>2024-05-20</td>
+                                <td><span class="status-badge status-published">เผยแพร่</span></td>
+                                <td>นพ.สมชาย ใจดี</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NEWS003</td>
+                                <td>แนวทางการรับมือกับภาวะซึมเศร้าจากการเรียน</td>
+                                <td>2024-05-18</td>
+                                <td><span class="status-badge status-draft">ฉบับร่าง</span></td>
+                                <td>พญ.ลลนา มีสุข</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NEWS004</td>
+                                <td>กิจกรรม Mindful Walk ผ่อนคลายใจในธรรมชาติ</td>
+                                <td>2024-05-15</td>
+                                <td><span class="status-badge status-published">เผยแพร่</span></td>
+                                <td>แอดมิน</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">ก่อนหน้า</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">ถัดไป</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addEditNewsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">เพิ่ม/แก้ไขข่าวสาร</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('addEditNewsModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="newsTitle" class="form-label">หัวข้อข่าวสาร</label>
+                            <input type="text" class="form-control" id="newsTitle" placeholder="กรอกหัวข้อข่าวสาร">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newsImageUpload" class="form-label">รูปภาพประกอบข่าวสาร (เลือกได้หลายรูป)</label>
+                            <input type="file" class="form-control-file" id="newsImageUpload" accept="image/*" multiple>
+                            <div class="image-preview-container" id="newsImagePreview">
+                                <p>ยังไม่มีรูปภาพที่เลือก</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newsContent" class="form-label">เนื้อหาข่าวสาร</label>
+                            <textarea class="form-control" id="newsContent" rows="8" placeholder="กรอกเนื้อหาข่าวสาร..."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="newsStatus" class="form-label">สถานะ</label>
+                                <select class="form-select" id="newsStatus">
+                                    <option value="published">เผยแพร่</option>
+                                    <option value="draft">ฉบับร่าง</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="newsAuthor" class="form-label">ผู้เขียน</label>
+                                <input type="text" class="form-control" id="newsAuthor" placeholder="ชื่อผู้เขียน">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="publishDate" class="form-label">วันที่เผยแพร่</label>
+                            <input type="date" class="form-control" id="publishDate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addEditNewsModal')">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary">บันทึก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewNewsModal" class="modal news-details-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">รายละเอียดข่าวสาร</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('viewNewsModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="news-header">
+                        <h4>LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม.</h4>
+                        <p class="news-meta">เผยแพร่เมื่อ: 2024-05-25 | โดย: แอดมิน | สถานะ: <span class="status-badge status-published">เผยแพร่</span></p>
+                    </div>
+                    <img src="https://st3.depositphotos.com/24754644/34200/v/450/depositphotos_342000796-stock-illustration-woman-talking-to-her-psychologist.jpg" alt="News Image" class="news-image">
+                    <div class="news-content">
+                        <p>LRU HeartCare มีความยินดีที่จะประกาศว่าเราได้ขยายเวลาการให้บริการให้คำปรึกษาทางจิตวิทยาออนไลน์เป็น 24 ชั่วโมงต่อวัน เพื่อให้การดูแลสุขภาพใจเข้าถึงได้ง่ายและสะดวกสบายยิ่งขึ้นสำหรับทุกคน ไม่ว่าคุณจะอยู่ที่ไหนหรือต้องการความช่วยเหลือเมื่อไหร่ ทีมงานนักจิตวิทยาผู้เชี่ยวชาญของเราพร้อมที่จะให้คำปรึกษาและสนับสนุนคุณเสมอ</p>
+                        <p>บริการใหม่นี้ครอบคลุมทั้งการแชทออนไลน์และการนัดหมายวิดีโอคอล เพื่อตอบสนองความต้องการที่หลากหลายของผู้ใช้งาน เราเข้าใจดีว่าปัญหาทางใจอาจเกิดขึ้นได้ทุกเมื่อ ดังนั้นการเข้าถึงบริการที่รวดเร็วและต่อเนื่องจึงเป็นสิ่งสำคัญสูงสุดสำหรับเรา</p>
+                        <p>เพื่อความสะดวกสบายยิ่งขึ้น ผู้ใช้งานสามารถจองคิวปรึกษาหรือเริ่มต้นการแชทได้ทันทีผ่านเว็บไซต์หรือแอปพลิเคชันของเรา ระบบของเราได้รับการออกแบบมาให้ใช้งานง่ายและปลอดภัย เพื่อให้คุณสามารถพูดคุยได้อย่างสบายใจ</p>
+                        <p>เราหวังเป็นอย่างยิ่งว่าบริการ 24 ชั่วโมงนี้จะช่วยให้ทุกคนสามารถดูแลสุขภาพใจของตนเองได้ดียิ่งขึ้น และเป็นส่วนหนึ่งในการสร้างสังคมที่มีสุขภาพใจที่แข็งแรง</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('viewNewsModal')">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteNewsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ยืนยันการลบข่าวสาร</h5>
+                    <button type="button" class="btn-close" onclick="closeModal('deleteNewsModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>คุณแน่ใจหรือไม่ว่าต้องการลบข่าวสาร **"LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม."** ข่าวสารที่ถูกลบจะไม่สามารถกู้คืนได้</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('deleteNewsModal')">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary btn-delete-confirm">ลบ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            if (modalId === 'addEditNewsModal') {
+                // Clear previous previews when opening the Add/Edit modal
+                const previewContainer = document.getElementById('newsImagePreview');
+                previewContainer.innerHTML = '<p>ยังไม่มีรูปภาพที่เลือก</p>';
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Optional: Close dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+            const userDropdown = document.querySelector('.user-dropdown');
+            const userDropdownMenu = document.querySelector('.user-dropdown-menu');
+            if (userDropdown && !userDropdown.contains(event.target) && userDropdown.classList.contains('active')) {
+                userDropdown.classList.remove('active');
+            }
+        });
+
+        // Toggle user dropdown
+        document.querySelector('.user-dropdown > a').addEventListener('click', function(event) {
+            event.preventDefault();
+            this.parentElement.classList.toggle('active');
+        });
+
+        // --- Carousel Logic for News Cards ---
+        const newsData = [
+            // Added multiple images for NEWS001 for demonstration
+            { id: 'NEWS001', title: 'LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม.', date: '2024-05-25', status: 'published', author: 'แอดมิน', images: ['https://static.wixstatic.com/media/22c2c6_57e7338d85c846dd982ce0a93ff3cd46~mv2.jpg/v1/fill/w_568,h_454,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/22c2c6_57e7338d85c846dd982ce0a93ff3cd46~mv2.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1WRQUXcWYj4DeOJM3ndMGauDZzrESCzBruIZHO0amg8zJXCqeNTyk270l-CKkuhMe8Ps&usqp=CAU', 'https://via.placeholder.com/400x180/87CEEB/FFFFFF?text=Online+Chat'], content: 'LRU HeartCare มีความยินดีที่จะประกาศว่าเราได้ขยายเวลาการให้บริการให้คำปรึกษาทางจิตวิทยาออนไลน์เป็น 24 ชั่วโมงต่อวัน เพื่อให้การดูแลสุขภาพใจเข้าถึงได้ง่ายและสะดวกสบายยิ่งขึ้นสำหรับทุกคน ไม่ว่าคุณจะอยู่ที่ไหนหรือต้องการความช่วยเหลือเมื่อไหร่ ทีมงานนักจิตวิทยาผู้เชี่ยวชาญของเราพร้อมที่จะให้คำปรึกษาและสนับสนุนคุณเสมอ' },
+            { id: 'NEWS002', title: 'สัมมนาฟรี: จัดการความเครียดในยุคดิจิทัล', date: '2024-05-20', status: 'published', author: 'นพ.สมชาย ใจดี', images: ['https://story.motherhood.co.th/wp-content/uploads/2022/08/therapist2-1024x683.jpg'], content: 'พบกับนักจิตวิทยาผู้เชี่ยวชาญ พร้อมเคล็ดลับการใช้ชีวิตและการจัดการความเครียดในยุคดิจิทัลที่เปลี่ยนแปลงไปอย่างรวดเร็ว สมัครเลยวันนี้เพื่อรับสิทธิ์เข้าร่วมฟรี!' },
+            { id: 'NEWS003', title: 'แนวทางการรับมือกับภาวะซึมเศร้าจากการเรียน', date: '2024-05-18', status: 'published', author: 'พญ.ลลนา มีสุข', images: ['https://wallofsharing.com/wp-content/uploads/2025/01/vdo_call_with_doctor-1024x770.png'], content: 'บทความนี้ให้ข้อมูลและแนวทางปฏิบัติเบื้องต้นสำหรับนักเรียนนักศึกษาที่กำลังเผชิญกับภาวะซึมเศร้าที่เกิดจากการเรียน การดูแลตัวเองเป็นสิ่งสำคัญ' },
+            { id: 'NEWS004', title: 'กิจกรรม Mindful Walk ผ่อนคลายใจในธรรมชาติ', date: '2024-05-15', status: 'published', author: 'แอดมิน', images: ['https://synzofficial.com/wp-content/uploads/2024/04/%E0%B8%AA%E0%B8%B7%E0%B9%88%E0%B8%AD-%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B8%81%E0%B8%B3%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B9%83%E0%B8%88-768x362.png'], content: 'ขอเชิญชวนทุกท่านเข้าร่วมกิจกรรมเดินในธรรมชาติพร้อมฝึกสติ เพื่อผ่อนคลายจิตใจและเพิ่มพลังบวกให้กับชีวิต กิจกรรมนี้เหมาะสำหรับทุกคน' },
+            { id: 'NEWS005', title: 'เปิดตัวแอปพลิเคชัน LRU HeartCare เวอร์ชันใหม่', date: '2024-05-10', status: 'published', author: 'แอดมิน', images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMBMQeQRlTt46WTGBB31RbJKVG-Pchy6iDIQ&s'], content: 'เราได้เปิดตัวแอปพลิเคชันเวอร์ชันใหม่ที่มีฟังก์ชันการใช้งานที่ง่ายขึ้นและประสิทธิภาพที่ดีกว่าเดิม ดาวน์โหลดได้แล้ววันนี้ทั้ง iOS และ Android' },
+            { id: 'NEWS006', title: 'เคล็ดลับการนอนหลับให้มีคุณภาพสำหรับวัยทำงาน', date: '2024-05-08', status: 'published', author: 'นพ.สุขใจ ยิ้มเสมอ', images: ['https://psicologiaanagarciarey.com/wp-content/uploads/2023/06/a8b9f156406125c6a399aacff5240fd2.jpg'], content: 'การนอนหลับที่มีคุณภาพส่งผลโดยตรงต่อสุขภาพกายและใจ มาดูเคล็ดลับง่ายๆ ที่จะช่วยให้คุณนอนหลับได้สนิทและตื่นมาอย่างสดชื่นกัน' },
+            { id: 'NEWS007', title: 'ข้อควรปฏิบัติเมื่อรู้สึกเครียดจากการทำงาน', date: '2024-05-05', status: 'published', author: 'แอดมิน', images: ['https://img.lovepik.com/free-png/20210928/lovepik-counselling-png-image_401692973_wh1200.png'], content: 'ความเครียดจากการทำงานเป็นเรื่องปกติ แต่การจัดการเป็นสิ่งสำคัญ บทความนี้จะแนะนำข้อควรปฏิบัติเบื้องต้นเมื่อคุณรู้สึกเครียด' },
+            { id: 'NEWS008', title: 'ความสำคัญของการปรึกษานักจิตวิทยาเบื้องต้น', date: '2024-05-01', status: 'published', author: 'พญ.ใจใส เบิกบาน', images: ['https://cozybara.com/wp-content/uploads/2023/03/AW6-e1680280935609.png'], content: 'หลายคนอาจลังเลที่จะปรึกษานักจิตวิทยา แต่การปรึกษาเบื้องต้นสามารถช่วยให้คุณเข้าใจตัวเองและรับมือกับปัญหาได้ดีขึ้น' },
+            { id: 'NEWS009', title: 'เตรียมตัวให้พร้อมสำหรับสอบปลายภาค', date: '2024-04-28', status: 'published', author: 'แอดมิน', images: ['https://thaipublica.org/wp-content/uploads/2025/04/Thaipublica_%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%AA%E0%B8%AD%E0%B8%9A-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-03.jpg'], content: 'คำแนะนำสำหรับการเตรียมตัวสอบปลายภาค ทั้งการจัดตารางเวลา การพักผ่อน และการจัดการความเครียด' },
+            { id: 'NEWS010', title: 'การดูแลสุขภาพใจในสถานการณ์วิกฤต', date: '2024-04-25', status: 'published', author: 'ทีม LRU HeartCare', images: ['https://adaymagazine.com/wp-content/uploads/2021/09/TypeB_MeetYourMonster.jpg'], content: 'บทความนี้ให้คำแนะนำในการดูแลสุขภาพใจเมื่อต้องเผชิญกับสถานการณ์ที่ไม่คาดฝันหรือวิกฤตต่างๆ' },
+        ];
+
+        const newsCarouselInner = document.getElementById('newsCarouselInner');
+        const newsCarouselDots = document.getElementById('newsCarouselDots');
+        const CARDS_PER_SLIDE = 4; // Define how many cards per slide
+
+        let newsCurrentSlide = 0;
+        let newsSlideInterval;
+
+        function createNewsCarousel() {
+            // Clear existing content
+            newsCarouselInner.innerHTML = '';
+            newsCarouselDots.innerHTML = '';
+
+            // Filter out news items that don't have images for the carousel display if needed
+            // For now, we'll assume all news has at least one image in its 'images' array
+            const publishedNews = newsData.filter(news => news.status === 'published' && news.images && news.images.length > 0);
+
+            // Group news data into slides
+            const numSlides = Math.ceil(publishedNews.length / CARDS_PER_SLIDE);
+
+            if (publishedNews.length === 0) {
+                newsCarouselInner.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 50px;">ไม่มีข่าวสารล่าสุดที่เผยแพร่</p>';
+                return;
+            }
+
+
+            for (let i = 0; i < numSlides; i++) {
+                const slideGroup = document.createElement('div');
+                slideGroup.classList.add('carousel-slide-group');
+
+                const startIndex = i * CARDS_PER_SLIDE;
+                const endIndex = Math.min(startIndex + CARDS_PER_SLIDE, publishedNews.length);
+                const slideNews = publishedNews.slice(startIndex, endIndex);
+
+                slideNews.forEach(news => {
+                    const newsCard = document.createElement('a'); // Use 'a' for clickable card
+                    newsCard.href = "#"; // You can set a dynamic link here to view the news
+                    newsCard.classList.add('carousel-card');
+                    // Use the first image from the 'images' array for the carousel card
+                    const displayImageUrl = news.images && news.images.length > 0 ? news.images[0] : 'https://via.placeholder.com/400x180/CCCCCC/666666?text=No+Image';
+                    
+                    newsCard.innerHTML = `
+                        <img src="${displayImageUrl}" alt="${news.title}" class="carousel-card-img">
+                        <div class="carousel-card-body">
+                            <h5 class="carousel-card-title">${news.title}</h5>
+                            <p class="carousel-card-text">${news.content}</p>
+                            <span class="carousel-card-date">${news.date}</span>
+                        </div>
+                    `;
+                    newsCard.onclick = (event) => { // Example: open view modal on click
+                        event.preventDefault(); // Prevent default link behavior
+                        openModal('viewNewsModal');
+                        populateViewNewsModal(news); // Populate modal with specific news data
+                    };
+                    slideGroup.appendChild(newsCard);
+                });
+                newsCarouselInner.appendChild(slideGroup);
+
+                // Create dots
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => {
+                    clearInterval(newsSlideInterval);
+                    goToNewsSlide(i);
+                    startNewsAutoSlide();
+                });
+                newsCarouselDots.appendChild(dot);
+            }
+
+            // Ensure the first slide is visible initially
+            goToNewsSlide(0);
+        }
+
+        function goToNewsSlide(index) {
+            const publishedNews = newsData.filter(news => news.status === 'published' && news.images && news.images.length > 0);
+            const numSlides = Math.ceil(publishedNews.length / CARDS_PER_SLIDE);
+            if (index < 0) {
+                index = numSlides - 1;
+            } else if (index >= numSlides) {
+                index = 0;
+            }
+            newsCarouselInner.style.transform = `translateX(-${index * 100}%)`;
+            updateNewsDots(index);
+            newsCurrentSlide = index;
+        }
+
+        function updateNewsDots(activeIndex) {
+            document.querySelectorAll('#newsCarouselDots .dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+
+        function nextNewsSlide() {
+            const publishedNews = newsData.filter(news => news.status === 'published' && news.images && news.images.length > 0);
+            const numSlides = Math.ceil(publishedNews.length / CARDS_PER_SLIDE);
+            newsCurrentSlide = (newsCurrentSlide + 1) % numSlides;
+            goToNewsSlide(newsCurrentSlide);
+        }
+
+        function startNewsAutoSlide() {
+            clearInterval(newsSlideInterval); // Clear any existing interval
+            newsSlideInterval = setInterval(nextNewsSlide, 5000); // Change slide every 5 seconds
+        }
+
+        // --- JavaScript for Multiple Image Upload Preview ---
+        const newsImageUpload = document.getElementById('newsImageUpload');
+        const newsImagePreview = document.getElementById('newsImagePreview');
+
+        newsImageUpload.addEventListener('change', function(event) {
+            newsImagePreview.innerHTML = ''; // Clear existing previews
+
+            if (this.files.length === 0) {
+                newsImagePreview.innerHTML = '<p>ยังไม่มีรูปภาพที่เลือก</p>';
+                return;
+            }
+
+            Array.from(this.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.classList.add('image-preview-item');
+
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = file.name;
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.classList.add('remove-image-btn');
+                        removeBtn.innerHTML = '&times;';
+                        removeBtn.title = 'ลบรูปภาพนี้';
+                        removeBtn.onclick = (event) => {
+                            event.stopPropagation(); // Prevent modal from closing or other actions
+                            previewItem.remove(); // Remove the preview item from DOM
+                            // In a real application, you'd also need to manage the actual files
+                            // For now, selecting new files will clear and re-add.
+                            // To properly "remove" a file, you'd need to rebuild the FileList
+                            // This is complex for a frontend-only solution and usually handled by backend.
+                            if (newsImagePreview.children.length === 0) {
+                                newsImagePreview.innerHTML = '<p>ยังไม่มีรูปภาพที่เลือก</p>';
+                            }
+                        };
+
+                        previewItem.appendChild(img);
+                        previewItem.appendChild(removeBtn);
+                        newsImagePreview.appendChild(previewItem);
+                    };
+                    reader.readAsDataURL(file); // Read the file as a data URL for preview
+                }
+            });
+        });
+
+        // Function to populate View News Modal with dynamic content
+        function populateViewNewsModal(newsItem) {
+            document.querySelector('#viewNewsModal .news-header h4').textContent = newsItem.title;
+            document.querySelector('#viewNewsModal .news-meta').innerHTML = `เผยแพร่เมื่อ: ${newsItem.date} | โดย: ${newsItem.author} | สถานะ: <span class="status-badge status-${newsItem.status}">${newsItem.status === 'published' ? 'เผยแพร่' : 'ฉบับร่าง'}</span>`;
+            document.querySelector('#viewNewsModal .news-content p').textContent = newsItem.content;
+
+            // Handle multiple images for the view modal
+            const viewModalImageContainer = document.querySelector('#viewNewsModal .news-image'); // This is currently an <img> tag.
+            // We need to replace this with a div that can hold multiple images
+            // For simplicity, I'll temporarily put only the first image in the existing <img> tag
+            // A more robust solution would be to create a mini-carousel or gallery in the view modal
+
+            if (newsItem.images && newsItem.images.length > 0) {
+                // If you want to show ALL images in the view modal, you'd modify the HTML
+                // For now, we'll just show the first one in the existing `news-image` element.
+                // If you need a proper gallery/carousel within the view modal, that's another feature.
+                viewModalImageContainer.src = newsItem.images[0];
+                viewModalImageContainer.style.display = 'block'; // Ensure it's visible
+            } else {
+                viewModalImageContainer.src = 'https://via.placeholder.com/750x250/CCCCCC/666666?text=No+Image'; // Placeholder if no images
+                viewModalImageContainer.style.display = 'block';
+            }
+        }
+
+
+        // Initialize news carousel when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            createNewsCarousel();
+            startNewsAutoSlide();
+        });
+    </script>
+</body>
+</html>

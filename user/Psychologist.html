@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | เลือกนักจิตวิทยา</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน (จากหน้าหลัก) ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+        }
+
+        .logo img {
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+        }
+
+        .logo a {
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+        }
+
+        .menu {
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+        }
+
+        .logout a:hover {
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+        }
+
+        /* ========== Psychologist Selection Section ========== */
+        .psychologist-selection-section {
+            padding: 80px 0;
+            background: var(--bg-light);
+        }
+
+        .selection-heading {
+            text-align: center;
+            font-size: 2.8rem;
+            color: var(--deep-blue);
+            margin-bottom: 60px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .selection-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: var(--primary-pink);
+            border-radius: 2px;
+        }
+
+        /* Search Bar specific styles */
+        .search-bar-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px; /* Space between search bar and grid */
+            padding: 0 20px; /* Ensure padding on smaller screens */
+        }
+
+        .search-input {
+            flex-grow: 1; /* Allows it to take available space */
+            max-width: 600px; /* Max width for search bar */
+            border: 1px solid var(--border-light);
+            padding: 12px 20px; /* Increased padding */
+            border-radius: 30px; /* More rounded */
+            outline: none;
+            font-size: 1.1rem; /* Larger font size */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .search-input:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 4px rgba(135, 206, 235, 0.3); /* Stronger focus shadow */
+        }
+
+        .psychologist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .psychologist-card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px var(--shadow-light);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Added for the pseudo-element background */
+        }
+
+        .psychologist-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px; /* Height for the header background */
+            background: linear-gradient(135deg, var(--soft-blue) 0%, var(--primary-pink) 100%);
+            border-radius: 15px 15px 0 0;
+            z-index: 1; /* Ensure it's behind content but above card background */
+        }
+
+        .psychologist-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px var(--shadow-medium);
+        }
+
+        .psychologist-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--white); /* Stronger white border */
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* More prominent shadow */
+            position: relative; /* To be above the pseudo-element */
+            z-index: 2;
+        }
+
+        .psychologist-name {
+            font-size: 1.8rem;
+            color: var(--deep-blue);
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+            position: relative; /* To be above the pseudo-element */
+            z-index: 2;
+        }
+
+        .psychologist-specialty {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative; /* To be above the pseudo-element */
+            z-index: 2;
+        }
+
+        .psychologist-bio {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 25px;
+            flex-grow: 1; /* Allow bio to grow and push button down */
+            position: relative; /* To be above the pseudo-element */
+            z-index: 2;
+        }
+
+        .select-psychologist-btn {
+            background: var(--soft-blue);
+            color: var(--white);
+            text-decoration: none;
+            padding: 14px 30px; /* Larger button */
+            border-radius: 30px; /* More rounded */
+            font-size: 1.05rem; /* Slightly larger font */
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 6px 15px rgba(135, 206, 235, 0.4); /* Stronger shadow */
+            border: 2px solid var(--soft-blue);
+            position: relative; /* To be above the pseudo-element */
+            z-index: 2;
+        }
+
+        .select-psychologist-btn:hover {
+            background: var(--deep-blue);
+            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 8px 20px rgba(135, 206, 235, 0.6);
+        }
+
+        /* Pagination styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .pagination-btn {
+            background: var(--light-pink);
+            color: var(--white);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--primary-pink);
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .page-info {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* ========== Responsive Adjustments ========== */
+        @media (max-width: 992px) {
+            .nav-con {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-con {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                align-items: stretch;
+            }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            .menu li {
+                width: 100%;
+            }
+            .menu li a, .dropdown-toggle {
+                width: calc(100% - 30px);
+                text-align: center;
+                margin: 0 15px;
+            }
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
+            }
+            .logout {
+                width: 100%;
+                text-align: center;
+                padding: 0 15px;
+            }
+            .logout a {
+                display: block;
+                width: 100%;
+                margin: 0;
+            }
+
+            .selection-heading {
+                font-size: 2.2rem;
+                margin-bottom: 40px;
+            }
+            .psychologist-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 30px;
+            }
+            .psychologist-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            .psychologist-name {
+                font-size: 1.6rem;
+            }
+            .psychologist-specialty {
+                font-size: 0.9rem;
+            }
+            .psychologist-bio {
+                font-size: 0.9rem;
+            }
+            .search-bar-container {
+                max-width: 100%; /* Full width on smaller screens */
+                padding: 0 15px; /* Adjust padding */
+            }
+            .search-input {
+                padding: 10px 15px; /* Smaller padding */
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .psychologist-selection-section {
+                padding: 60px 0;
+            }
+            .selection-heading {
+                font-size: 1.8rem;
+                margin-bottom: 30px;
+            }
+            .psychologist-grid {
+                gap: 25px;
+            }
+            .psychologist-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            .psychologist-name {
+                font-size: 1.4rem;
+            }
+            .select-psychologist-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .psychologist-grid {
+                grid-template-columns: 1fr;
+            }
+            .psychologist-avatar {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // JavaScript for Dropdown functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+
+            // JavaScript for Psychologist Search functionality
+            const searchInput = document.getElementById('psychologistSearch');
+            const psychologistCards = document.querySelectorAll('.psychologist-card');
+            const pagination = document.querySelector('.pagination');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+
+                let visibleCardsCount = 0;
+                psychologistCards.forEach(card => {
+                    const name = card.querySelector('.psychologist-name').textContent.toLowerCase();
+                    const specialty = card.querySelector('.psychologist-specialty').textContent.toLowerCase();
+                    const bio = card.querySelector('.psychologist-bio').textContent.toLowerCase(); // Include bio in search
+
+                    if (name.includes(searchTerm) || specialty.includes(searchTerm) || bio.includes(searchTerm)) {
+                        card.style.display = 'flex'; // Show card
+                        visibleCardsCount++;
+                    } else {
+                        card.style.display = 'none'; // Hide card
+                    }
+                });
+
+                // Hide pagination if search is active
+                if (searchTerm.length > 0) {
+                    pagination.style.display = 'none';
+                } else {
+                    pagination.style.display = 'flex'; // Show pagination when search is cleared
+                }
+            });
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+          <div class="logo">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="LRU Logo">
+            <a href="#">LRU HeartCare</a>
+          </div>
+    
+          <div class="menu-con">
+            <ul class="menu">
+              <li><a href="index.html">หน้าแรก</a></li>
+              <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="logout">
+              <a href="Login.html">ออกจากระบบ</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <section class="psychologist-selection-section">
+        <div class="container">
+            <h2 class="selection-heading">เลือกนักจิตวิทยาที่ใช่สำหรับคุณ</h2>
+            
+            <div class="search-bar-container">
+                <input type="text" id="psychologistSearch" class="search-input" placeholder="ค้นหาตามชื่อ, ความเชี่ยวชาญ หรือข้อมูล...">
+            </div>
+
+            <div class="psychologist-grid">
+                <!-- Psychologist Card 1 -->
+                <div class="psychologist-card">
+                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Psychologist Somchai Jaidee" class="psychologist-avatar">
+                    <h3 class="psychologist-name">นายสมชาย ใจดี</h3>
+                    <p class="psychologist-specialty">ผู้เชี่ยวชาญ: ความเครียดและการเรียน</p>
+                    <p class="psychologist-bio">นายสมชายมีประสบการณ์ในการให้คำปรึกษาแก่นักศึกษาที่เผชิญกับความกดดันด้านการเรียนและการจัดการความเครียด</p>
+                    <a href="appointment-booking.html?psy=somchai" class="select-psychologist-btn">เลือกนักจิตวิทยา</a>
+                </div>
+
+                <!-- Psychologist Card 2 -->
+                <div class="psychologist-card">
+                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Psychologist Maneerat Sukjai" class="psychologist-avatar">
+                    <h3 class="psychologist-name">นางสาวมณีรัตน์ สุขใจ</h3>
+                    <p class="psychologist-specialty">ผู้เชี่ยวชาญ: ความสัมพันธ์และอารมณ์</p>
+                    <p class="psychologist-bio">นางสาวมณีรัตน์ช่วยให้นักศึกษาพัฒนาทักษะการสื่อสาร จัดการอารมณ์ และสร้างความสัมพันธ์ที่ดีกับผู้อื่น</p>
+                    <a href="appointment-booking.html?psy=maneerat" class="select-psychologist-btn">เลือกนักจิตวิทยา</a>
+                </div>
+
+                <!-- Psychologist Card 3 -->
+                <div class="psychologist-card">
+                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Psychologist Oranong Raksa Jai" class="psychologist-avatar">
+                    <h3 class="psychologist-name">แพทย์หญิงอรอนงค์ รักษาใจ</h3>
+                    <p class="psychologist-specialty">ผู้เชี่ยวชาญ: การพัฒนาตนเอง</p>
+                    <p class="psychologist-bio">แพทย์หญิงอรอนงค์เน้นการเสริมสร้างความมั่นใจ ค้นหาศักยภาพ และวางแผนเพื่ออนาคตที่สดใส</p>
+                    <a href="appointment-booking.html?psy=oranong" class="select-psychologist-btn">เลือกนักจิตวิทยา</a>
+                </div>
+
+                <!-- Psychologist Card 4 (Placeholder) -->
+                <div class="psychologist-card">
+                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Psychologist Pimpapan Sooksa" class="psychologist-avatar">
+                    <h3 class="psychologist-name">แพทย์หญิงพิมพา สุขสันต์</h3>
+                    <p class="psychologist-specialty">ผู้เชี่ยวชาญ: ภาวะซึมเศร้าและวิตกกังวล</p>
+                    <p class="psychologist-bio">แพทย์หญิงพิมพาให้การสนับสนุนผู้ที่มีภาวะซึมเศร้าและวิตกกังวล เพื่อให้กลับมามีคุณภาพชีวิตที่ดีขึ้น</p>
+                    <a href="appointment-booking.html?psy=pimpa" class="select-psychologist-btn">เลือกนักจิตวิทยา</a>
+                </div>
+
+                <!-- Psychologist Card 5 (Placeholder) -->
+                <div class="psychologist-card">
+                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Psychologist Deeprom Yimsoo" class="psychologist-avatar">
+                    <h3 class="psychologist-name">นายดีพร้อม ยิ้มสู้</h3>
+                    <p class="psychologist-specialty">ผู้เชี่ยวชาญ: การปรับตัวและทักษะชีวิต</p>
+                    <p class="psychologist-bio">นายดีพร้อมช่วยให้นักศึกษาปรับตัวเข้ากับสภาพแวดล้อมใหม่ๆ และพัฒนาทักษะชีวิตที่จำเป็น</p>
+                    <a href="appointment-booking.html?psy=deeprom" class="select-psychologist-btn">เลือกนักจิตวิทยา</a>
+                </div>
+
+                <!-- Psychologist Card 6 (Placeholder) -->
+                <div class="psychologist-card">
+                    <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="Psychologist Chainan Meechai" class="psychologist-avatar">
+                    <h3 class="psychologist-name">นางสาวชัยนันท์ มีชัย</h3>
+                    <p class="psychologist-specialty">ผู้เชี่ยวชาญ: การเรียนรู้และอาชีพ</p>
+                    <p class="psychologist-bio">นางสาวชัยนันท์ให้คำแนะนำด้านการเรียนรู้ การวางแผนอาชีพ และการค้นหาเส้นทางที่เหมาะสม</p>
+                    <a href="appointment-booking.html?psy=chainant" class="select-psychologist-btn">เลือกนักจิตวิทยา</a>
+                </div>
+
+            </div>
+            
+            <!-- Basic Pagination (can be expanded with JS) -->
+            <div class="pagination">
+                <button class="pagination-btn" disabled>ก่อนหน้า</button>
+                <span class="page-info">หน้า 1 จาก 3</span>
+                <button class="pagination-btn">ถัดไป</button>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
