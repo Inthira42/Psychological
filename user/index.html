@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าแรก</title>
+    <title>LRU HeartCare | หน้าแรก - พื้นที่ปลอดภัยสำหรับใจคุณ</title>
     <style>
         /* ========== Variables - ตัวแปรสีและเงา ========== */
         :root {
-            --primary-pink: #FF69B4;
-            --light-pink: #FFC0CB;
-            --soft-blue: #87CEEB;
-            --deep-blue: #4682B4;
-            --text-dark: #343a40;
-            --text-muted: #6c757d;
-            --bg-light: #f8f9fa;
-            --white: #ffffff;
-            --border-light: #e9ecef;
-            --shadow-light: rgba(0, 0, 0, 0.08);
-            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
         }
 
         /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
@@ -27,28 +28,38 @@
             padding: 0;
             background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
             color: var(--text-dark); /* สีข้อความเริ่มต้น */
-            line-height: 1.6;
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
         }
 
         /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
         }
 
         /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
         .nav {
-            background: var(--deep-blue);
-            padding: 15px 0;
-            box-shadow: 0 2px 8px var(--shadow-light);
-            color: var(--white);
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 20px 0; /* เพิ่ม padding ให้ดูหนาขึ้น */
+            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            color: var(--white); /* สีข้อความ */
+            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            top: 0;
+            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
         }
 
         .nav-con {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: space-between; /* กระจายเนื้อหา */
+            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
@@ -57,45 +68,50 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
         }
 
         .logo img {
-            height: 40px;
-            border-radius: 8px;
+            height: 45px; /* เพิ่มความสูงโลโก้ */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
         }
 
         .logo a {
-            color: var(--white);
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 700;
+            color: var(--white); /* สีลิงก์ */
+            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+            font-weight: 700; /* น้ำหนักฟอนต์ */
+            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
         }
 
         .menu-con {
             display: flex;
             align-items: center;
-            gap: 25px;
+            gap: 30px; /* เพิ่มระยะห่างระหว่างเมนูและปุ่มออกจากระบบ */
         }
 
         .menu {
-            list-style: none;
+            list-style: none; /* ไม่มีสไตล์ลิสต์ */
             padding: 0;
             margin: 0;
             display: flex;
-            gap: 25px;
+            gap: 30px; /* เพิ่มระยะห่างระหว่างเมนู */
         }
 
         .menu li a {
             color: var(--white);
             text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
+            padding: 10px 15px; /* เพิ่ม padding */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            font-weight: 500;
         }
 
         .menu li a:hover {
             background: var(--primary-pink);
+            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
         }
 
         /* Dropdown specific styles */
@@ -106,73 +122,82 @@
         .dropdown-toggle {
             display: flex;
             align-items: center;
-            gap: 5px;
-            cursor: pointer;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
             color: var(--white);
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
+            padding: 10px 15px; /* เพิ่ม padding */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
         }
 
         .dropdown-toggle:hover {
             background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
         }
 
         .dropdown-menu {
-            display: none;
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
             position: absolute;
-            top: 100%;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
             left: 0;
             background: var(--deep-blue);
-            min-width: 180px;
-            box-shadow: 0 5px 15px var(--shadow-medium);
-            border-radius: 8px;
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
             overflow: hidden;
             z-index: 1000;
             padding: 10px 0;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
         }
 
         .dropdown.show .dropdown-menu {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
         }
 
         .dropdown-menu li a {
             color: var(--white);
-            padding: 10px 20px;
+            padding: 12px 25px; /* เพิ่ม padding */
             display: block;
             text-decoration: none;
-            transition: background 0.2s ease;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .dropdown-menu li a:hover {
             background: var(--primary-pink);
+            color: var(--white);
         }
 
         .logout a {
             background: var(--primary-pink);
             color: var(--white);
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            transition: background 0.3s ease, transform 0.2s ease;
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+            padding: 12px 25px; /* เพิ่ม padding ให้ปุ่มใหญ่ขึ้น */
+            border-radius: 30px; /* ขอบมนมากขึ้น */
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
         }
 
         .logout a:hover {
-            background: #e05e9b;
-            transform: translateY(-2px);
+            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
         }
 
         /* ========== Main Content Section - ส่วนเนื้อหาหลัก (Hero Section) ========== */
         .maincontent {
-            background: linear-gradient(135deg, var(--soft-blue), var(--light-pink));
-            padding: 80px 0;
+            background: linear-gradient(135deg, var(--soft-blue) 0%, var(--light-pink) 100%); /* ไล่โทนสี */
+            padding: 100px 0; /* เพิ่ม padding ให้ใหญ่ขึ้น */
             color: var(--white);
             text-align: center;
         }
@@ -182,7 +207,7 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap; /* ให้เนื้อหาและรูปภาพขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
-            gap: 40px;
+            gap: 50px; /* เพิ่มระยะห่าง */
         }
 
         .maincontent-info {
@@ -190,25 +215,27 @@
             min-width: 300px;
             text-align: left;
             max-width: 600px;
+            padding-right: 20px; /* เพิ่มระยะห่างด้านขวา */
         }
 
         .maincontent-info h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 3.5rem; /* เพิ่มขนาดฟอนต์ */
+            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
             color: var(--deep-blue);
             font-weight: 800;
+            line-height: 1.2;
         }
 
         .maincontent-info h2 {
-            font-size: 2rem;
-            margin-bottom: 25px;
+            font-size: 2.2rem; /* เพิ่มขนาดฟอนต์ */
+            margin-bottom: 30px; /* เพิ่มระยะห่างด้านล่าง */
             color: var(--primary-pink);
             font-weight: 600;
         }
 
         .maincontent-info p {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem; /* เพิ่มขนาดฟอนต์ */
+            margin-bottom: 40px; /* เพิ่มระยะห่างด้านล่าง */
             color: var(--text-dark);
         }
 
@@ -216,18 +243,19 @@
             background: var(--primary-pink);
             color: var(--white);
             text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-size: 1.1rem;
+            padding: 18px 35px; /* เพิ่ม padding */
+            border-radius: 35px; /* ขอบมนมากขึ้น */
+            font-size: 1.2rem; /* เพิ่มขนาดฟอนต์ */
             font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5); /* เงาเข้มขึ้น */
             display: inline-block;
         }
 
         .maincontent-btn:hover {
             background: #e05e9b;
-            transform: translateY(-3px);
+            transform: translateY(-5px); /* เลื่อนขึ้นมากขึ้น */
+            box-shadow: 0 12px 30px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้นและกว้างขึ้น */
         }
 
         .maincontent-img {
@@ -245,8 +273,16 @@
 
         /* ========== Content Section - ส่วนแสดงข่าวสาร ========== */
         .content {
-            padding: 60px 0;
+            padding: 80px 0; /* เพิ่ม padding */
             background: var(--white);
+        }
+
+        .content-heading {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--deep-blue);
+            margin-bottom: 50px;
+            font-weight: 700;
         }
 
         .container-con {
@@ -259,7 +295,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            margin-bottom: 40px;
+            margin-bottom: 50px; /* เพิ่มระยะห่าง */
         }
 
         .content-item {
@@ -268,6 +304,8 @@
             overflow: hidden;
             box-shadow: 0 5px 15px var(--shadow-light);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column; /* จัดเรียงเนื้อหาเป็นแนวตั้ง */
         }
 
         .content-item:hover {
@@ -282,6 +320,23 @@
             display: block;
         }
 
+        .content-text {
+            padding: 20px; /* เพิ่ม padding ให้เนื้อหา */
+        }
+
+        .content-text h3 {
+            font-size: 1.3rem;
+            color: var(--deep-blue);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .content-text p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
         .content-btn-container {
             text-align: center;
         }
@@ -290,11 +345,11 @@
             background: var(--deep-blue);
             color: var(--white);
             text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
+            padding: 15px 30px; /* เพิ่ม padding */
+            border-radius: 30px; /* ขอบมน */
+            font-size: 1.1rem; /* เพิ่มขนาดฟอนต์ */
             font-weight: 500;
-            transition: background 0.3s ease, transform 0.2s ease;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
             display: inline-block;
         }
@@ -302,13 +357,22 @@
         .content-btn:hover {
             background: #3a6b9a;
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
         }
 
         /* ========== Consultant Section - ส่วนแสดงผู้ให้คำปรึกษา ========== */
         .consultant {
-            padding: 60px 0;
+            padding: 80px 0; /* เพิ่ม padding */
             background: var(--bg-light);
             text-align: center;
+        }
+
+        .consultant-heading {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            margin-bottom: 50px;
+            font-weight: 700;
         }
 
         .consultant-con {
@@ -317,30 +381,11 @@
             padding: 0 20px;
         }
 
-        .consultant-btn {
-            background: var(--primary-pink);
-            color: var(--white);
-            text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-            display: inline-block;
-            margin-bottom: 40px;
-        }
-
-        .consultant-btn:hover {
-            background: #e05e9b;
-            transform: translateY(-3px);
-        }
-
         .consultant-img {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .consultant-item {
@@ -349,6 +394,10 @@
             overflow: hidden;
             box-shadow: 0 5px 15px var(--shadow-light);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column; /* จัดเรียงเนื้อหาเป็นแนวตั้ง */
+            align-items: center; /* จัดกึ่งกลางรูปภาพและข้อความ */
+            padding-bottom: 20px; /* เพิ่ม padding ด้านล่าง */
         }
 
         .consultant-item:hover {
@@ -361,6 +410,19 @@
             height: 300px; /* กำหนดความสูงรูปภาพให้เท่ากัน */
             object-fit: cover; /* ครอบคลุมพื้นที่และตัดส่วนเกิน */
             display: block;
+            margin-bottom: 15px; /* ระยะห่างจากข้อความ */
+        }
+
+        .consultant-item h3 {
+            font-size: 1.4rem;
+            color: var(--deep-blue);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .consultant-item p {
+            font-size: 1rem;
+            color: var(--text-muted);
         }
 
         .content-btn-consultant {
@@ -377,6 +439,7 @@
                 flex-direction: column;
                 gap: 15px;
                 width: 100%;
+                align-items: stretch; /* ทำให้ menu-con ขยายเต็มความกว้าง */
             }
             .menu {
                 flex-direction: column;
@@ -388,9 +451,9 @@
                 width: 100%;
             }
             .menu li a, .dropdown-toggle {
-                width: calc(100% - 24px); /* Full width minus padding */
+                width: calc(100% - 30px); /* Full width minus padding (20px) and slight margin (10px) */
                 text-align: center;
-                margin: 0 auto;
+                margin: 0 15px; /* เพิ่ม margin ด้านข้าง */
             }
             .dropdown-menu {
                 position: static; /* Change to static so it flows with content */
@@ -405,22 +468,24 @@
             .logout {
                 width: 100%;
                 text-align: center;
+                padding: 0 15px; /* เพิ่ม padding ด้านข้าง */
             }
             .logout a {
                 display: block;
-                width: calc(100% - 40px); /* Adjust for padding */
-                margin: 0 auto;
+                width: 100%; /* Adjust to full width */
+                margin: 0; /* Remove auto margin */
             }
 
             .maincontent-info, .maincontent-img {
                 max-width: 100%;
                 text-align: center;
+                padding-right: 0; /* ลบ padding-right ใน mobile */
             }
             .maincontent-info h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem; /* ปรับขนาดฟอนต์ให้เล็กลงสำหรับแท็บเล็ต */
             }
             .maincontent-info h2 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
         }
 
@@ -429,10 +494,10 @@
                 padding: 60px 0;
             }
             .maincontent-info h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             .maincontent-info h2 {
-                font-size: 1.5rem;
+                font-size: 1.7rem;
             }
             .maincontent-info p {
                 font-size: 1rem;
@@ -440,6 +505,9 @@
             .maincontent-btn {
                 padding: 12px 25px;
                 font-size: 1rem;
+            }
+            .content-heading, .consultant-heading {
+                font-size: 2rem;
             }
         }
 
@@ -450,10 +518,38 @@
             .maincontent-info {
                 padding: 0 15px;
             }
+            .maincontent-info h1 {
+                font-size: 1.8rem;
+            }
+            .maincontent-info h2 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
 <body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+        });
+    </script>
+
     <nav class="nav">
         <div class="nav-con">
           <div class="logo">
@@ -487,7 +583,7 @@
                 <div class="maincontent-info">
                     <h1>ยินดีต้อนรับสู่ LRU HeartCare</h1>
                     <h2>พื้นที่ปลอดภัยสำหรับใจคุณ</h2>
-                    <p>สนับสนุนทางจิตวิทยาสำหรับนักศึกษามหาวิทยาลัยราชภัฏเลย ที่พร้อมเป็นเพื่อนข้างใจในทุกช่วงเวลา ไม่ว่าคุณจะต้องการคำปรึกษาเกี่ยวกับความเครียด ความกดดันด้านการเรียน การจัดการอารมณ์ หรือการพัฒนาตัวเอง</p>
+                    <p>ที่ LRU HeartCare เราเข้าใจว่าชีวิตนักศึกษามหาวิทยาลัยอาจเต็มไปด้วยความท้าทาย ทั้งเรื่องการเรียน ความสัมพันธ์ หรืออนาคต เราพร้อมเป็นพื้นที่ปลอดภัยและให้การสนับสนุนทางจิตวิทยาสำหรับนักศึกษามหาวิทยาลัยราชภัฏเลย เพื่อช่วยให้คุณเติบโตอย่างเข้มแข็งและมีความสุข</p>
                     <a href="Psychologist.html" class="maincontent-btn">เริ่มปรึกษาได้เลย</a>
                 </div>
 
@@ -500,30 +596,58 @@
 
     <section class="content">
         <div class="container-con">
+            <h2 class="content-heading">ข่าวสารและกิจกรรมล่าสุด</h2>
             <div class="content-con">
-              <div class="content-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039854274445334/image.png?ex=6813f622&is=6812a4a2&hm=c2e4a697167002e5eed3dfe94e6e61650b7187168833f4826ba8b587144f6a1a&" alt="รูปภาพข่าวสาร 1"></div>
-              <div class="content-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039994192236555/image.png?ex=6813f643&is=6812a4c3&hm=5386cde0bf391951324825d45c61e0333cd160a1989992b467738fa85c4eec1c&" alt="รูปภาพข่าวสาร 2"></div>
-              <div class="content-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354039953931108423/image.png?ex=6813f639&is=6812a4b9&hm=3a00f63b7a5c18aba578cd49022e6c2b83dc428f3d4cce6926a243d2556f2a45&" alt="รูปภาพข่าวสาร 3"></div>
+              <div class="content-item">
+                <img src="https://ejournals.swu.ac.th/public/journals/20/submission_15701_13832_coverImage_en_US.png" alt="รูปภาพกิจกรรมเวิร์คช็อปการจัดการความเครียด">
+                <div class="content-text">
+                    <h3>เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h3>
+                    <p>เรียนรู้เทคนิคและวิธีการรับมือกับความเครียดจากการเรียนและการใช้ชีวิตประจำวันในยุคที่เต็มไปด้วยสิ่งเร้า</p>
+                </div>
+              </div>
+              <div class="content-item">
+                <img src="https://www.kruchiangrai.net/wp-content/uploads/2012/12/%E0%B8%88%E0%B8%B4%E0%B8%95%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%99%E0%B8%B0%E0%B9%81%E0%B8%99%E0%B8%A7.jpg" alt="รูปภาพข่าวสารการสัมมนาจิตวิทยาเชิงบวก">
+                <div class="content-text">
+                    <h3>สัมมนา: พลังของจิตวิทยาเชิงบวก</h3>
+                    <p>ค้นพบวิธีการสร้างพลังบวกและพัฒนาความคิดเชิงบวกเพื่อชีวิตที่มีความสุขและประสบความสำเร็จ</p>
+                </div>
+              </div>
+              <div class="content-item">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnLHSWBvAJH4DjyMvUUFgDSGJHLcMBXEEaVguka-v2XRSipA8dXyuQnHiuC5p-XeRiXvo&usqp=CAU" alt="รูปภาพข่าวสารคลินิกสุขภาพใจเคลื่อนที่">
+                <div class="content-text">
+                    <h3>เปิดคลินิกสุขภาพใจเคลื่อนที่</h3>
+                    <p>พบกับนักจิตวิทยาของเราได้ที่จุดบริการพิเศษตามตารางที่ประกาศ เพื่อรับคำปรึกษาเบื้องต้นได้ทันที</p>
+                </div>
+              </div>
             </div>
             <div class="content-btn-container">
-                <a href="News.html" class="content-btn">ดูเพิ่มเติม.....</a>
+                <a href="News.html" class="content-btn">ดูข่าวสารและกิจกรรมทั้งหมด.....</a>
             </div>
         </div>
     </section>
 
-    <section>
-        <div class="consultant">
-            <div class="consultant-con">
-                    <a href="Psychologist.html" class="consultant-btn">ผู้ให้คำปรึกษา</a>
-                </div>
-                <div class="consultant-img">
-                  <div class="consultant-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354093902080249906/image.png?ex=68142878&is=6812d6f8&hm=4326e0e78ed1dd3cc056610562fb36652876380cd738d91db4d3254a79092ba5&" alt="รูปภาพผู้ให้คำปรึกษา 1"></div>
-                  <div class="consultant-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354093987342061588/image.png?ex=6814288c&is=6812d70c&hm=b272b9cd7ecd3aa10b03f283638ae3c6c8048de67413cb9c3a79d1fb59ecb16b&" alt="รูปภาพผู้ให้คำปรึกษา 2"></div>
-                  <div class="consultant-item"><img src="https://cdn.discordapp.com/attachments/1072487445133803531/1354094057793523720/image.png?ex=6814289d&is=6812d71d&hm=a34d2c8467172292b92bfbd8942cfdd224668419aba3b7be7cf4471115f850eb&" alt="รูปภาพผู้ให้คำปรึกษา 3"></div>
-                </div>
-                <div class="content-btn-consultant">
-                    <a href="Psychologist.html" class="consultant-btn">ดูเพิ่มเติม.....</a>
-                </div>
+    <section class="consultant">
+        <div class="container-con">
+            <h2 class="consultant-heading">พบกับผู้ให้คำปรึกษาของเรา</h2>
+            <div class="consultant-img">
+              <div class="consultant-item">
+                <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="รูปภาพนักจิตวิทยา นายสมชาย ใจดี">
+                <h3>นายสมชาย ใจดี</h3>
+                <p>ผู้เชี่ยวชาญด้านความเครียดและการเรียน</p>
+              </div>
+              <div class="consultant-item">
+                <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="รูปภาพนักจิตวิทยา นางสาวมณีรัตน์ สุขใจ">
+                <h3>นางสาวมณีรัตน์ สุขใจ</h3>
+                <p>ผู้เชี่ยวชาญด้านความสัมพันธ์และอารมณ์</p>
+              </div>
+              <div class="consultant-item">
+                <img src="https://mthai.com/app/uploads/2020/01/wLLo.jpg" alt="รูปภาพนักจิตวิทยา แพทย์หญิงอรอนงค์ รักษาใจ">
+                <h3>แพทย์หญิงอรอนงค์ รักษาใจ</h3>
+                <p>ผู้เชี่ยวชาญด้านการพัฒนาตนเอง</p>
+              </div>
+            </div>
+            <div class="content-btn-consultant">
+                <a href="Psychologist.html" class="content-btn">ดูนักจิตวิทยาเพิ่มเติม.....</a>
             </div>
         </div>
     </section>
