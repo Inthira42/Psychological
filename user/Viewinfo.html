@@ -509,6 +509,24 @@
             box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
         }
 
+        .btn-start-consultation { /* New button style */
+            background-color: #28A745; /* Green color */
+            color: var(--white);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            flex: 1; /* Allow button to take equal width with other modal buttons */
+        }
+        .btn-start-consultation:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+        }
 
         /* Responsive Adjustments */
         @media (max-width: 992px) {
@@ -593,6 +611,12 @@
             }
             .modal-body p strong {
                 min-width: 120px;
+            }
+            .modal-footer {
+                flex-direction: column; /* Stack buttons vertically in modal footer */
+            }
+            .modal-footer button {
+                width: 100%; /* Full width for stacked buttons */
             }
         }
 
@@ -756,16 +780,16 @@
             });
 
             // ข้อมูลตัวอย่างการนัดหมาย (จะถูกใช้หาก localStorage ไม่มีข้อมูล)
+            // เพิ่ม psychologistId เข้าไปในข้อมูลตัวอย่างเพื่อใช้ในการนำทางไปยังหน้าแชท
             const exampleAppointments = [
-                { id: '1', date: '2023-01-26', time: '13:00-15:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'การตลาด', faculty: 'บริหารธุรกิจ', reason: 'ปัญหาส่วนตัวและวิธีการแก้', psychologist: 'นายสมชาย ใจดี', status: 'รอดำเนินการ' },
-                { id: '2', date: '2023-01-15', time: '09:00-10:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'วิทยาการคอมพิวเตอร์', faculty: 'วิทยาศาสตร์', reason: 'เรื่องการเรียนและความเครียด', psychologist: 'แพทย์หญิงอรอนงค์ รักษาใจ', status: 'เริ่มเข้าปรึกษา!' },
-                { id: '3', date: '2022-11-07', time: '11:00-12:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'นิติศาสตร์', faculty: 'นิติศาสตร์', reason: 'ปัญหาครอบครัวและแนวทางแก้ไข', psychologist: 'นางสาวมณีรัตน์ สุขใจ', status: 'ปรึกษาสำเร็จ' }
+                { id: '1', date: '2023-01-26', time: '13:00-15:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'การตลาด', faculty: 'บริหารธุรกิจ', reason: 'ปัญหาส่วนตัวและวิธีการแก้', psychologist: 'นายสมชาย ใจดี', psychologistId: 'somchai', status: 'รอดำเนินการ' },
+                { id: '2', date: '2023-01-15', time: '09:00-10:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'วิทยาการคอมพิวเตอร์', faculty: 'วิทยาศาสตร์', reason: 'เรื่องการเรียนและความเครียด', psychologist: 'แพทย์หญิงอรอนงค์ รักษาใจ', psychologistId: 'oranong', status: 'เริ่มเข้าปรึกษา!' },
+                { id: '3', date: '2022-11-07', time: '11:00-12:00', fullName: 'นางสาวแมว สีขาว', studentId: '654321001-2', major: 'นิติศาสตร์', faculty: 'นิติศาสตร์', reason: 'ปัญหาครอบครัวและแนวทางแก้ไข', psychologist: 'นางสาวมณีรัตน์ สุขใจ', psychologistId: 'maneerat', status: 'ปรึกษาสำเร็จ' }
             ];
 
             const appointmentListContainer = document.getElementById('appointmentListContainer');
             const noAppointmentMessageDiv = document.getElementById('noAppointmentMessage');
             const appointmentActionsDiv = document.getElementById('appointmentActions');
-            // Select the actual .appointment-list to append cards to
             const appointmentList = document.querySelector('.appointment-list'); 
 
             // Modal elements for detailed view
@@ -780,6 +804,7 @@
             const detailPsychologist = document.getElementById('detailPsychologist');
             const detailStatus = document.getElementById('detailStatus');
             const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
+            const btnStartConsultation = document.getElementById('btnStartConsultation'); // ปุ่มเริ่มเข้าการปรึกษา
 
             // ปิด Modal เมื่อคลิกปุ่มปิด
             if (btnCloseDetailModal) {
@@ -852,6 +877,7 @@
                     statusCell.classList.add('appointment-cell');
                     const statusBadge = document.createElement('span');
                     statusBadge.classList.add('status-badge');
+                    // Ensure status exists before attempting to replace/trim
                     if (appointment.status) {
                         statusBadge.classList.add(`status-${appointment.status.replace(/!/g, '').trim()}`);
                     }
@@ -866,6 +892,7 @@
                     detailButton.classList.add('detail-button');
                     detailButton.textContent = 'ข้อมูลเพิ่มเติม';
                     detailButton.addEventListener('click', () => {
+                        // Populate and show the detail modal
                         detailDate.textContent = appointment.date || '-';
                         detailTime.textContent = appointment.time || '-';
                         detailFullName.textContent = appointment.fullName || '-';
@@ -875,6 +902,19 @@
                         detailReason.textContent = appointment.reason || '-';
                         detailPsychologist.textContent = appointment.psychologist || '-';
                         detailStatus.textContent = appointment.status || '-';
+
+                        // Show/Hide "เริ่มเข้าการปรึกษา" button based on status
+                        if (appointment.status === 'รอดำเนินการ' || appointment.status === 'เริ่มเข้าปรึกษา!') {
+                            btnStartConsultation.style.display = 'block';
+                            // Set up button click to go to chat page
+                            btnStartConsultation.onclick = () => {
+                                // Pass psychologistId and appointmentId to the chat page
+                                window.location.href = `Chat.html?psy=${appointment.psychologistId}&appId=${appointment.id}`;
+                            };
+                        } else {
+                            btnStartConsultation.style.display = 'none';
+                        }
+
                         appointmentDetailModal.classList.add('show');
                     });
                     actionsCell.appendChild(detailButton);
@@ -968,6 +1008,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-primary" id="btnCloseDetailModal">ปิด</button>
+                <button type="button" class="btn-start-consultation" id="btnStartConsultation">เริ่มเข้าการปรึกษา</button>
             </div>
         </div>
     </div>
