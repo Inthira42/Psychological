@@ -1,197 +1,771 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ข้อมูลการนัดหมาย</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Kanit', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f7fc;
-    }
-    header {
-      background-color: #4682B4;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .sidebar {
-      width: 230px;
-      background-color: #4682B4;
-      color: white;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      padding-top: 70px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare - การนัดหมาย</title>
+    <!-- Google Fonts: Kanit for Thai text -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons for a wide range of icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FullCalendar CSS for the calendar view -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <style>
+        /* ========== Variables ========== */
+        :root {
+            --primary-pink: #FF69B4;
+            --light-pink: #FFC0CB;
+            --soft-blue: #87CEEB;
+            --deep-blue: #4682B4;
+            --text-dark: #343a40;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --input-border: #ced4da;
+            --input-focus: #80bdff;
+        }
 
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
+        /* ========== Body ========== */
+        body {
+            font-family: 'Kanit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
 
-    .sidebar li {
-      padding: 0;
-    }
+        /* ========== Layout ========== */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
 
-    .sidebar li a {
-      display: block;
-      padding: 15px;
-      cursor: pointer;
-      color: inherit;
-      text-decoration: none;
-      border-radius: 8px; /* เพิ่มขอบมนหากต้องการ */
-    }
+        .sidebar {
+            width: 250px;
+            background: var(--deep-blue);
+            color: var(--white);
+            padding: 20px;
+            box-shadow: 2px 0 10px var(--shadow-light);
+            flex-shrink: 0;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+        }
 
-    .sidebar li a:hover {
-      background-color: #FF69B4;
-    }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 
-    .main {
-      margin-left: 240px;
-      padding: 2rem;
-    }
-    #calendar {
-      margin-top: 2rem;
-      background-color: white;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    .container {
-      padding: 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-    h2 {
-      color: #34495e;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background-color: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-    th, td {
-      padding: 1rem;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-    }
-    th {
-      background-color: #ecf0f1;
-    }
-    .filter {
-      margin-bottom: 1.5rem;
-    }
-    .filter input, .filter select {
-      padding: 0.5rem;
-      margin-right: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .status-pending { color: #f39c12; }
-    .status-done { color: #27ae60; }
-    .status-cancel { color: #e74c3c; }
-  </style>
+        /* ========== Sidebar ========== */
+        .sidebar h5 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--light-pink);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            padding: 0;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: var(--primary-pink);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar a i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* ========== Navbar ========== */
+        .navbar {
+            background: var(--white);
+            padding: 15px 25px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-input {
+            border: 1px solid var(--border-light);
+            padding: 10px 15px;
+            border-radius: 25px;
+            max-width: 280px;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        .user-dropdown {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-dropdown img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid var(--light-pink);
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            border-radius: 8px;
+            min-width: 160px;
+            padding: 8px 0;
+            z-index: 10;
+        }
+
+        .user-dropdown.active .user-dropdown-menu,
+        .user-dropdown:hover .user-dropdown-menu {
+            display: block;
+        }
+
+        .user-dropdown-menu a {
+            display: block;
+            padding: 10px 18px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .user-dropdown-menu a:hover {
+            background: var(--light-pink);
+            color: var(--white);
+        }
+
+        /* ========== Content Area ========== */
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            background: var(--bg-light);
+            box-sizing: border-box;
+        }
+
+        .content-area h4 {
+            margin-bottom: 25px;
+            color: var(--deep-blue);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* ========== Main Content Section (Appointment Overview) ========== */
+        .appointment-overview-section {
+            background: linear-gradient(135deg, var(--soft-blue), var(--light-pink));
+            padding: 60px 0;
+            color: var(--white);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .appointment-overview-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .appointment-overview-content h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            color: var(--deep-blue);
+            line-height: 1.2;
+        }
+
+        .appointment-overview-content p {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .appointment-overview-btn {
+            display: inline-block;
+            background-color: var(--primary-pink);
+            color: var(--white);
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .appointment-overview-btn:hover {
+            background-color: #e6529c;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+        }
+
+        /* ========== Table Styles (for appointments) ========== */
+        .appointment-table-section,
+        .appointment-form-section,
+        .appointment-calendar-section {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .appointment-table-section h5,
+        .appointment-form-section h5,
+        .appointment-calendar-section h5 {
+            margin-bottom: 20px;
+            color: var(--deep-blue);
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            background-color: white;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: var(--soft-blue);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--bg-light);
+        }
+
+        .status-confirmed {
+            color: #28a745; /* Green */
+            font-weight: 600;
+        }
+        .status-pending {
+            color: #ffc107; /* Yellow */
+            font-weight: 600;
+        }
+        .status-cancelled {
+            color: #dc3545; /* Red */
+            font-weight: 600;
+        }
+        .status-completed {
+            color: #17a2b8; /* Info blue */
+            font-weight: 600;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ========== Form Styles ========== */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="datetime-local"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="datetime-local"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.25);
+            outline: none;
+        }
+
+        .form-submit-btn {
+            background-color: var(--primary-pink);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+        }
+
+        .form-submit-btn:hover {
+            background-color: #e6529c;
+            transform: translateY(-2px);
+        }
+
+        /* FullCalendar Specific Styles */
+        #calendar {
+            max-width: 100%;
+            margin: 0 auto;
+            font-size: 0.9em;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.5em;
+            color: var(--deep-blue);
+        }
+        .fc-daygrid-event {
+            background-color: var(--light-pink) !important;
+            border-color: var(--primary-pink) !important;
+            color: var(--text-dark) !important;
+            border-radius: 5px;
+            padding: 3px 5px;
+            font-size: 0.85em;
+        }
+        .fc-daygrid-day-number {
+            color: var(--text-dark);
+        }
+        .fc-col-header-cell-cushion {
+            color: var(--deep-blue);
+            font-weight: 600;
+        }
+        .fc-button-primary {
+            background-color: var(--soft-blue) !important;
+            border-color: var(--soft-blue) !important;
+            color: var(--white) !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .fc-button-primary:hover {
+            background-color: var(--deep-blue) !important;
+            border-color: var(--deep-blue) !important;
+        }
+
+        /* ========== Responsive Design ========== */
+        @media (max-width: 992px) { /* For tablets or medium screens */
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 20px;
+            }
+            .sidebar h5 {
+                display: block;
+                text-align: left;
+                padding-left: 15px;
+            }
+            .sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .sidebar li {
+                flex: 1;
+                min-width: 120px;
+                margin-bottom: 5px;
+            }
+            .sidebar a {
+                justify-content: center;
+                text-align: center;
+                padding: 10px;
+            }
+            .sidebar a i {
+                margin-right: 5px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            .navbar {
+                justify-content: center;
+                padding: 15px;
+            }
+            .navbar .search-input {
+                width: calc(100% - 40px);
+                margin-bottom: 10px;
+                order: 1;
+            }
+            .user-dropdown {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) { /* For smaller tablets and mobile */
+            .content-area {
+                padding: 15px;
+            }
+            .sidebar ul {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .sidebar a {
+                justify-content: flex-start;
+                padding-left: 20px;
+            }
+            .sidebar h5 {
+                text-align: center;
+                padding-left: 0;
+            }
+            table th, table td {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+            .appointment-overview-content h1 {
+                font-size: 2.5rem;
+            }
+            .appointment-overview-content p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) { /* Extra small screens */
+            .content-area {
+                padding: 10px;
+            }
+            .navbar {
+                padding: 10px;
+            }
+            .search-input {
+                padding: 8px 12px;
+            }
+            .user-dropdown img {
+                width: 32px;
+                height: 32px;
+            }
+            .sidebar a {
+                font-size: 0.9rem;
+            }
+            .appointment-overview-content h1 {
+                font-size: 2rem;
+            }
+            .appointment-overview-content p {
+                font-size: 0.9rem;
+            }
+            .appointment-overview-btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div>🎓 มหาวิทยาลัยแห่งความสุข</div>
-    <div>👩‍⚕️ ดร.กาญจนา นักจิตวิทยา</div>
-  </header>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h5>LRU HeartCare</h5>
+            <ul>
+                <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
+                <li><a href="appointments.html" class="active"><i class="bi bi-calendar-check"></i> การนัดหมาย</a></li>
+                <li><a href="online_chat.html"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
+                <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+            </ul>
+        </div>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Navbar Header -->
+            <nav class="navbar">
+                <input type="search" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt="Avatar"> <!-- Placeholder image with PS text for Psychologist -->
+                    <strong>นักจิตวิทยา</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="Login.html">ออกจากระบบ</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- Content Area for Dashboard Widgets -->
+            <div class="content-area">
+                <!-- Appointment Overview Section -->
+                <section class="appointment-overview-section">
+                    <div class="container">
+                        <div class="appointment-overview-content">
+                            <h1>จัดการการนัดหมายของคุณ</h1>
+                            <p>ดูการนัดหมายที่กำลังจะมาถึง เพิ่มนัดหมายใหม่ และจัดการตารางเวลาทั้งหมดได้จากที่นี่</p>
+                            <a href="#addAppointmentForm" class="appointment-overview-btn">เพิ่มนัดหมายใหม่</a>
+                        </div>
+                    </div>
+                </section>
 
-  <div class="sidebar">
-    <ul>
-      <li><a href="Homepage.html">📊 หน้าแรก</a></li>
-      <li><a href="student-info.html">📅 นัดหมายของฉัน</a></li>
-      <!-- <li>👩‍🎓 รายชื่อนักศึกษา</li> -->
-      <!-- <li>📝 บันทึกคำปรึกษา</li> -->
-      <!-- <li>📈 รายงาน / สถิติ</li> -->
-      <li><a href="#">⚙️ ออกจากระบบ</a></li>
-    </ul>
-  </div>    
+                <!-- Upcoming Appointments Table -->
+                <section class="appointment-table-section">
+                    <h5>นัดหมายที่กำลังจะมาถึง</h5>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>วันที่</th>
+                                    <th>เวลา</th>
+                                    <th>ชื่อผู้ป่วย</th>
+                                    <th>หัวข้อ</th>
+                                    <th>สถานะ</th>
+                                    <th>การดำเนินการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2025-06-20</td>
+                                    <td>09:00</td>
+                                    <td>นายสมศักดิ์ จริงใจ</td>
+                                    <td>ความเครียดจากการทำงาน</td>
+                                    <td class="status-confirmed">ยืนยันแล้ว</td>
+                                    <td><button class="form-submit-btn">ดูรายละเอียด</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2025-06-20</td>
+                                    <td>10:30</td>
+                                    <td>นางสาวสุดาพร มีสุข</td>
+                                    <td>ปัญหาความสัมพันธ์</td>
+                                    <td class="status-pending">รอดำเนินการ</td>
+                                    <td><button class="form-submit-btn">ดูรายละเอียด</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2025-06-21</td>
+                                    <td>14:00</td>
+                                    <td>เด็กชายเก่งกาจ กล้าหาญ</td>
+                                    <td>ภาวะซึมเศร้าในวัยรุ่น</td>
+                                    <td class="status-confirmed">ยืนยันแล้ว</td>
+                                    <td><button class="form-submit-btn">ดูรายละเอียด</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2025-06-22</td>
+                                    <td>11:00</td>
+                                    <td>นายพิเชษฐ์ รักสงบ</td>
+                                    <td>การจัดการความโกรธ</td>
+                                    <td class="status-pending">รอดำเนินการ</td>
+                                    <td><button class="form-submit-btn">ดูรายละเอียด</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2025-06-23</td>
+                                    <td>09:30</td>
+                                    <td>นางสาวพรทิพย์ สุขสบาย</td>
+                                    <td>ความวิตกกังวล</td>
+                                    <td class="status-confirmed">ยืนยันแล้ว</td>
+                                    <td><button class="form-submit-btn">ดูรายละเอียด</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
 
-      <div class="container">
-    <div class="filter">
-      <label for="filter-month">เดือน:</label>
-      <input type="month" id="filter-month">
+                <!-- Appointment Calendar Section -->
+                <section class="appointment-calendar-section">
+                    <h5>ปฏิทินการนัดหมาย</h5>
+                    <div id="calendar"></div>
+                </section>
 
-      <label for="filter-status">สถานะ:</label>
-      <select id="filter-status">
-        <option value="">ทั้งหมด</option>
-        <option value="pending">รอดำเนินการ</option>
-        <option value="done">เสร็จแล้ว</option>
-        <option value="cancel">ยกเลิก</option>
-      </select>
+                <!-- Add New Appointment Form -->
+                <section class="appointment-form-section" id="addAppointmentForm">
+                    <h5>เพิ่มการนัดหมายใหม่</h5>
+                    <form>
+                        <div class="form-group">
+                            <label for="patientName">ชื่อผู้ป่วย:</label>
+                            <input type="text" id="patientName" placeholder="ชื่อ-นามสกุล ผู้ป่วย" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentDateTime">วันและเวลา:</label>
+                            <input type="datetime-local" id="appointmentDateTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="topic">หัวข้อการปรึกษา:</label>
+                            <input type="text" id="topic" placeholder="เช่น ความเครียด, ปัญหาครอบครัว" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">บันทึกเพิ่มเติม (ไม่บังคับ):</label>
+                            <textarea id="notes" rows="3" placeholder="รายละเอียดเพิ่มเติมเกี่ยวกับการนัดหมาย"></textarea>
+                        </div>
+                        <button type="submit" class="form-submit-btn">บันทึกการนัดหมาย</button>
+                    </form>
+                </section>
 
-      <button onclick="applyFilter()">🔍 ค้นหา</button>
+            </div>
+        </div>
     </div>
 
-    <h2>รายการนัดหมาย</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>วันที่</th>
-          <th>เวลา</th>
-          <th>นักศึกษา</th>
-          <th>หัวข้อ</th>
-          <th>สถานะ</th>
-        </tr>
-      </thead>
-      <tbody id="appointments-table">
-        <tr>
-          <td>2025-05-26</td>
-          <td>09:00</td>
-          <td>อภิชาติ ก. (65011234)</td>
-          <td>ความเครียดจากการเรียน</td>
-          <td class="status-done">✅ เสร็จแล้ว</td>
-        </tr>
-        <tr>
-          <td>2025-05-26</td>
-          <td>11:00</td>
-          <td>นิรชา ข. (64019876)</td>
-          <td>ปัญหาครอบครัว</td>
-          <td class="status-pending">⏳ รอดำเนินการ</td>
-        </tr>
-        <tr>
-          <td>2025-06-01</td>
-          <td>14:00</td>
-          <td>ภูมิใจ จ. (63014567)</td>
-          <td>ปัญหาการนอน</td>
-          <td class="status-cancel">❌ ยกเลิก</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Dropdown functionality for user profile
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown) {
+                userDropdown.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+                // Close dropdown if clicked outside
+                window.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target)) {
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
 
-  <script>
-    function applyFilter() {
-      const monthFilter = document.getElementById('filter-month').value;
-      const statusFilter = document.getElementById('filter-status').value;
-      const rows = document.querySelectorAll('#appointments-table tr');
+            // FullCalendar for Appointment Calendar
+            const calendarEl = document.getElementById('calendar');
+            if (calendarEl) {
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'th', // Set locale to Thai
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: [
+                        // Sample events (replace with actual data from a backend)
+                        {
+                            title: 'สมศักดิ์ - เครียดงาน',
+                            start: '2025-06-20T09:00:00',
+                            end: '2025-06-20T10:00:00',
+                            color: '#FFC0CB', // Light pink for events
+                            textColor: '#343a40' // Dark text for events
+                        },
+                        {
+                            title: 'สุดาพร - ปัญหาความสัมพันธ์',
+                            start: '2025-06-20T10:30:00',
+                            end: '2025-06-20T11:30:00',
+                            color: '#FFC0CB',
+                            textColor: '#343a40'
+                        },
+                        {
+                            title: 'เก่งกาจ - ซึมเศร้าวัยรุ่น',
+                            start: '2025-06-21T14:00:00',
+                            end: '2025-06-21T15:00:00',
+                            color: '#87CEEB', // Soft blue for next day events
+                            textColor: '#343a40'
+                        },
+                        {
+                            title: 'พิเชษฐ์ - จัดการความโกรธ',
+                            start: '2025-06-22T11:00:00',
+                            end: '2025-06-22T12:00:00',
+                            color: '#87CEEB',
+                            textColor: '#343a40'
+                        },
+                        {
+                            title: 'พรทิพย์ - วิตกกังวล',
+                            start: '2025-06-23T09:30:00',
+                            end: '2025-06-23T10:30:00',
+                            color: '#FFC0CB',
+                            textColor: '#343a40'
+                        },
+                        {
+                            title: 'ประชุมทีมประจำสัปดาห์',
+                            start: '2025-06-25T10:00:00',
+                            end: '2025-06-25T11:30:00',
+                            color: '#4682B4', // Deep blue for other events
+                            textColor: '#ffffff'
+                        }
+                    ],
+                    eventClick: function(info) {
+                        alert('นัดหมาย: ' + info.event.title + '\nเวลา: ' + info.event.start.toLocaleString());
+                    }
+                });
+                calendar.render();
+            }
 
-      rows.forEach(row => {
-        const date = row.cells[0].innerText;
-        const rowMonth = date.slice(0, 7); // YYYY-MM
-        const statusClass = row.cells[4].className;
+            // Basic form submission handler (for demonstration)
+            const appointmentForm = document.querySelector('#addAppointmentForm form');
+            if (appointmentForm) {
+                appointmentForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent default form submission
 
-        const matchMonth = !monthFilter || rowMonth === monthFilter;
-        const matchStatus = !statusFilter || statusClass.includes(statusFilter);
+                    const patientName = document.getElementById('patientName').value;
+                    const appointmentDateTime = document.getElementById('appointmentDateTime').value;
+                    const topic = document.getElementById('topic').value;
+                    const notes = document.getElementById('notes').value;
 
-        row.style.display = (matchMonth && matchStatus) ? '' : 'none';
-      });
-    }
-  </script>
-  </div>
-
+                    if (patientName && appointmentDateTime && topic) {
+                        alert(`นัดหมายใหม่ถูกบันทึก:\nผู้ป่วย: ${patientName}\nวัน/เวลา: ${appointmentDateTime}\nหัวข้อ: ${topic}\nบันทึก: ${notes || '-'}`);
+                        // In a real application, you would send this data to a backend server.
+                        // For now, we'll just clear the form.
+                        appointmentForm.reset();
+                    } else {
+                        alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (ชื่อผู้ป่วย, วันและเวลา, หัวข้อ)');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

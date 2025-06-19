@@ -1,203 +1,889 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แดชบอร์ดนักจิตวิทยา</title>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Kanit', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #c0c2c4;
-    }
-    header {
-      background-color: #4682B4;
-      color: white;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .sidebar {
-      width: 230px;
-      background-color: #4682B4;
-      color: white;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      padding-top: 70px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare Admin Dashboard</title>
+    <!-- Google Fonts: Kanit for Thai text -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons for a wide range of icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- FullCalendar CSS for the calendar view -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <style>
+        /* ========== Variables ========== */
+        :root {
+            --primary-pink: #FF69B4;
+            --light-pink: #FFC0CB;
+            --soft-blue: #87CEEB;
+            --deep-blue: #4682B4;
+            --text-dark: #343a40;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+        }
 
-    .sidebar li {
-      padding: 0; /* เอา padding ออกจาก li เพื่อให้ a คุมพื้นที่ทั้งหมด */
-    }
+        /* ========== Body ========== */
+        body {
+            font-family: 'Kanit', sans-serif; /* Use Kanit for all text */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
 
-    .sidebar li a {
-      display: block;            /* ให้คลิกได้ทั้งแถว */
-      padding: 15px;
-      text-decoration: none;     /* ไม่ให้มีขีดเส้นใต้ */
-      color: inherit;            /* ใช้สีเดียวกับข้อความธรรมดา */
-      border-radius: 8px;
-    }
+        /* ========== Layout ========== */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
 
-    .sidebar li a:hover {
-      background-color: #FF69B4;
-    }
+        .sidebar {
+            width: 250px;
+            background: var(--deep-blue);
+            color: var(--white);
+            padding: 20px;
+            box-shadow: 2px 0 10px var(--shadow-light);
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+            transition: width 0.3s ease; /* Smooth transition for sidebar width */
+            overflow-y: auto; /* Allow sidebar to scroll if content overflows */
+        }
 
-    .main {
-      margin-left: 240px;
-      padding: 2rem;
-    }
-    .cards {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .card {
-      background-color: white;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      flex: 1;
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      background-color: white;
-      border-collapse: collapse;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    th, td {
-      padding: 1rem;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #ecf0f1;
-    }
-    .status-done { color: green; }
-    .status-pending { color: orange; }
-    .alert {
-      background-color: #ffeaa7;
-      border-left: 5px solid #fdcb6e;
-      padding: 1rem;
-      margin-top: 2rem;
-      border-radius: 5px;
-    }
-    #calendar {
-      margin-top: 2rem;
-      background-color: white;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling within main content */
+            overflow-y: auto; /* Allow main content to scroll */
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar h5 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--light-pink);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Added styles to remove list bullets */
+        .sidebar ul {
+            list-style: none; /* Remove bullet points */
+            padding: 0; /* Remove default padding */
+            margin: 0; /* Remove default margin */
+        }
+
+        .sidebar li {
+            padding: 0; /* Ensure no extra padding from list items */
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: var(--primary-pink);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar a i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* ========== Navbar ========== */
+        .navbar {
+            background: var(--white);
+            padding: 15px 25px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow navbar items to wrap on smaller screens */
+            position: sticky; /* Make navbar sticky */
+            top: 0;
+            z-index: 100; /* Ensure it stays on top */
+        }
+
+        /* ========== Search Input ========== */
+        .search-input {
+            border: 1px solid var(--border-light);
+            padding: 10px 15px;
+            border-radius: 25px;
+            max-width: 280px;
+            width: 100%; /* Ensure it takes full width when needed */
+            box-sizing: border-box; /* Include padding and border in the element's total width */
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        /* ========== User Dropdown ========== */
+        .user-dropdown {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-dropdown img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid var(--light-pink);
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            border-radius: 8px;
+            min-width: 160px;
+            padding: 8px 0;
+            z-index: 10; /* Ensure dropdown is above other content */
+        }
+
+        .user-dropdown.active .user-dropdown-menu,
+        .user-dropdown:hover .user-dropdown-menu {
+            display: block;
+        }
+
+        .user-dropdown-menu a {
+            display: block;
+            padding: 10px 18px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .user-dropdown-menu a:hover {
+            background: var(--light-pink);
+            color: var(--white);
+        }
+
+        /* ========== Content Area ========== */
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            background: var(--bg-light);
+            box-sizing: border-box; /* Include padding in element's total width */
+        }
+
+        .content-area h4 {
+            margin-bottom: 25px;
+            color: var(--deep-blue);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* ========== Main Content Section (from psychologist dashboard) ========== */
+        .maincontent {
+            background: linear-gradient(135deg, var(--soft-blue), var(--light-pink));
+            padding: 60px 0; /* Adjusted padding */
+            color: var(--white);
+            text-align: center; /* Centered the content of maincontent */
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px; /* Rounded corners for the section */
+            margin-bottom: 30px; /* Space below this section */
+        }
+
+        .maincontent-con {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .maincontent-info {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            text-align: center; /* Changed to center for text alignment within this div */
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        .maincontent-info h1 {
+            font-size: 3rem; /* Adjusted font size */
+            margin-bottom: 10px;
+            font-weight: 800;
+            color: var(--deep-blue);
+            line-height: 1.2;
+        }
+
+        .maincontent-info h2 {
+            font-size: 1.8rem; /* Adjusted font size */
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: var(--primary-pink);
+        }
+
+        .maincontent-info p {
+            font-size: 1rem; /* Adjusted font size */
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto; /* Centering for block elements like p */
+            margin-right: auto; /* Centering for block elements like p */
+        }
+
+        .maincontent-btn {
+            display: inline-block;
+            background-color: var(--primary-pink);
+            color: var(--white);
+            padding: 15px 35px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .maincontent-btn:hover {
+            background-color: #e6529c;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+        }
+
+        .maincontent-img {
+            flex: 1;
+            min-width: 250px; /* Adjusted min-width */
+            text-align: center;
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        .maincontent-img img {
+            max-width: 80%; /* Adjusted to make the image smaller */
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.1));
+        }
+
+        /* Animations for main content */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+
+        /* ========== Info Cards Grid ========== */
+        .info-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adaptive columns */
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        /* ========== Info Card Styles ========== */
+        .info-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .icon-wrapper {
+            background: var(--light-pink);
+            color: var(--primary-pink);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            min-width: 70px; /* Ensure icon wrapper doesn't shrink too much */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(255,105,180,0.3);
+        }
+
+        .info-card:hover .icon-wrapper {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-content h5 {
+            margin: 0 0 8px 0;
+            font-size: 1.10rem;
+            color: var(--deep-blue);
+            font-weight: 700;
+        }
+
+        .card-content p {
+            margin: 0;
+            font-size: 2.2rem;
+            color: var(--primary-pink);
+            font-weight: 800;
+            letter-spacing: -1px;
+            transition: color 0.4s ease;
+        }
+
+        .info-card:hover .card-content p {
+            color: var(--deep-blue);
+        }
+
+        /* ========== Section Boxes for Activity ========== */
+        .section-boxes-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Only one column for activity list */
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .section-box {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .section-box h5 {
+            margin-bottom: 20px;
+            color: var(--deep-blue);
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        /* ========== Activity List Styles ========== */
+        .activity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .activity-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border-light);
+        }
+
+        .activity-list .activity-icon {
+            color: var(--soft-blue);
+            font-size: 1.2rem;
+            margin-right: 12px;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+
+        .activity-list .activity-content {
+            flex-grow: 1; /* Allow content to take available space */
+        }
+
+        .activity-list .activity-content strong {
+            display: block;
+            color: var(--primary-pink);
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .activity-list .activity-content span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Table Styles (for appointments) ========== */
+        table {
+            width: 100%;
+            background-color: white;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            margin-bottom: 25px; /* Added margin */
+            table-layout: fixed; /* Ensures columns respect width rules */
+        }
+
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee; /* Lighter border */
+            text-align: left;
+            word-wrap: break-word; /* Break long words */
+        }
+
+        th {
+            background-color: var(--soft-blue); /* Blue header */
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--bg-light); /* Zebra striping */
+        }
+
+        .status-done {
+            color: green;
+            font-weight: 600;
+        }
+        .status-pending {
+            color: orange;
+            font-weight: 600;
+        }
+        .status-urgent {
+            color: red;
+            font-weight: 600;
+        }
+
+        /* Responsive Table - Make it scrollable on small screens */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+
+        /* ========== Alert Styles ========== */
+        .alert-box {
+            background-color: #ffeaa7;
+            border-left: 5px solid #fdcb6e;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 8px; /* Rounded corners */
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: var(--text-dark); /* Ensure text is readable */
+        }
+
+        /* ========== Calendar Styles ========== */
+        #calendar {
+            margin-top: 2rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* FullCalendar overrides for better aesthetics */
+        .fc .fc-button-primary {
+            background-color: var(--deep-blue) !important;
+            border-color: var(--deep-blue) !important;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .fc .fc-button-primary:hover {
+            background-color: var(--primary-pink) !important;
+            border-color: var(--primary-pink) !important;
+        }
+
+        .fc .fc-toolbar-title {
+            color: var(--deep-blue);
+            font-weight: 700;
+        }
+
+        .fc-daygrid-event {
+            background-color: var(--light-pink) !important;
+            border-color: var(--primary-pink) !important;
+            color: var(--text-dark) !important;
+            border-radius: 5px;
+            padding: 3px 5px;
+            font-size: 0.85rem;
+        }
+
+        /* ========== Responsive Design ========== */
+        @media (max-width: 992px) { /* For tablets or medium screens */
+            .dashboard-container {
+                flex-direction: column; /* Stack sidebar and main content */
+            }
+            .sidebar {
+                width: 100%; /* Full width sidebar */
+                height: auto; /* Auto height */
+                position: relative; /* Not fixed */
+                padding-top: 20px; /* Adjust padding */
+            }
+            .sidebar h5 {
+                display: block; /* Show title on smaller screens for top bar */
+                text-align: left;
+                padding-left: 15px;
+            }
+            .sidebar ul {
+                display: flex; /* Make sidebar items horizontal */
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px; /* Add horizontal padding to prevent overflow */
+            }
+            .sidebar li {
+                flex: 1; /* Distribute space */
+                min-width: 120px; /* Minimum width for each item */
+                margin-bottom: 5px; /* Adjust margin */
+            }
+            .sidebar a {
+                justify-content: center; /* Center content in sidebar links */
+                text-align: center;
+                padding: 10px; /* Adjust padding */
+            }
+            .sidebar a i {
+                margin-right: 5px; /* Reduce margin for icons */
+            }
+
+            .main-content {
+                margin-left: 0; /* Remove left margin */
+            }
+            .navbar {
+                justify-content: center; /* Center navbar items */
+                padding: 15px;
+            }
+            .navbar .search-input {
+                width: calc(100% - 40px); /* Adjust width to account for padding */
+                margin-bottom: 10px; /* Space below search */
+                order: 1; /* Place search input above user dropdown */
+            }
+            .user-dropdown {
+                order: 2; /* Place user dropdown below search input */
+            }
+            .info-cards-grid {
+                grid-template-columns: 1fr; /* Only one column for activity list */
+            }
+            /* Responsive adjustments for maincontent within media queries */
+            .maincontent-info {
+                text-align: center;
+            }
+            .maincontent-info p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 768px) { /* For smaller tablets and mobile */
+            .content-area {
+                padding: 15px; /* Reduce padding for content area */
+            }
+            .info-cards-grid {
+                grid-template-columns: 1fr; /* Show 1 column */
+            }
+            .sidebar ul {
+                flex-direction: column; /* Stack sidebar items vertically again for very small screens */
+                align-items: stretch; /* Stretch items to full width */
+            }
+            .sidebar a {
+                justify-content: flex-start; /* Align text to start for vertical menu */
+                padding-left: 20px; /* Indent slightly */
+            }
+            .sidebar h5 {
+                text-align: center; /* Center title again when stacked vertically */
+                padding-left: 0;
+            }
+            table th, table td {
+                padding: 0.6rem; /* Smaller padding for tables */
+                font-size: 0.85rem;
+            }
+            .maincontent {
+                padding: 40px 0;
+            }
+            .maincontent-info h1 {
+                font-size: 2.5rem;
+            }
+            .maincontent-info h2 {
+                font-size: 1.6rem;
+            }
+            .maincontent-info p {
+                font-size: 0.95rem;
+            }
+            .maincontent-btn {
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) { /* Extra small screens */
+            .content-area {
+                padding: 10px;
+            }
+            .navbar {
+                padding: 10px;
+            }
+            .search-input {
+                padding: 8px 12px;
+            }
+            .user-dropdown img {
+                width: 32px;
+                height: 32px;
+            }
+            .sidebar a {
+                font-size: 0.9rem;
+            }
+            .info-card {
+                padding: 20px;
+            }
+            .icon-wrapper {
+                width: 50px;
+                height: 50px;
+                font-size: 2rem;
+            }
+            .card-content h5 {
+                font-size: 1rem;
+            }
+            .card-content p {
+                font-size: 1.8rem;
+            }
+            .maincontent-info h1 {
+                font-size: 2rem;
+            }
+            .maincontent-info h2 {
+                font-size: 1.3rem;
+            }
+            .maincontent-info p {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div>🎓 มหาวิทยาลัยแห่งความสุข</div>
-    <div>👩‍⚕️ ดร.กาญจนา นักจิตวิทยา</div>
-  </header>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h5>LRU HeartCare</h5>
+            <ul>
+                <li><a href="#" class="active"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
+                <li><a href="#"><i class="bi bi-calendar-check"></i> การนัดหมาย</a></li>
+                <li><a href="#"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
+                <li><a href="#"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+            </ul>
+        </div>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Navbar Header -->
+            <nav class="navbar">
+                <input type="search" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt="Avatar"> <!-- Placeholder image with PS text for Psychologist -->
+                    <strong>นักจิตวิทยา</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- Content Area for Dashboard Widgets -->
+            <div class="content-area">
+                <!-- Start of inserted maincontent section -->
+                <section class="maincontent">
+                    <div class="container">
+                        <div class="maincontent-con">
+                            <div class="maincontent-info">
+                                <h1>ยินดีต้อนรับ ดร. สมหญิง ใจดี</h1>
+                                <h2>แดชบอร์ดส่วนตัวของคุณ</h2>
+                                <p>จัดการการนัดหมาย ผู้ป่วย และเข้าถึงเครื่องมือสำคัญได้อย่างง่ายดาย เพื่อให้การดูแลสุขภาพใจเป็นไปอย่างมีประสิทธิภาพสูงสุด</p>
+                                <a href="appointments.html" class="maincontent-btn">ดูนัดหมายวันนี้</a>
+                            </div>
 
-  <div class="sidebar">
-    <ul>
-      <li><a href="Homepage.html">📊 หน้าแรก</a></li>
-      <li><a href="student-info.html">📅 นัดหมายของฉัน</a></li>
-      <!-- <li>👩‍🎓 รายชื่อนักศึกษา</li> -->
-      <!-- <li>📝 บันทึกคำปรึกษา</li> -->
-      <!-- <li>📈 รายงาน / สถิติ</li> -->
-      <li><a href="#">⚙️ ออกจากระบบ</a></li>
-    </ul>
-  </div>
+                            <div class="maincontent-img">
+                                <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="[Image of Psychologist Dashboard]">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- End of inserted maincontent section -->
 
-  <div class="main">
-    <div class="cards">
-      <div class="card">
-        <h3>📅 นัดวันนี้</h3>
-        <p>5 นัด</p>
-      </div>
-      <div class="card">
-        <h3>🔄 รอดำเนินการ</h3>
-        <p>3 นัด</p>
-      </div>
-      <!-- <div class="card">
-        <h3>🧾 ปฏิเสธ</h3>
-        <p>0 รายการ</p>
-      </div> -->
-      <div class="card">
-        <h3>❗ เคสเร่งด่วน</h3>
-        <p>1 รายการ</p>
-      </div>
+                <h4>ภาพรวมระบบ</h4>
+                <!-- Info Cards Section -->
+                <div class="info-cards-grid">
+                    <div class="info-card">
+                        <div class="icon-wrapper"><i class="bi bi-calendar-event"></i></div> <!-- Changed icon to calendar-event for Total Appointments -->
+                        <div class="card-content">
+                            <h5>นัดหมายทั้งหมด</h5>
+                            <p>25</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon-wrapper"><i class="bi bi-calendar-check"></i></div>
+                        <div class="card-content">
+                            <h5>นัดหมายวันนี้</h5>
+                            <p>8</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon-wrapper"><i class="bi bi-hourglass-split"></i></div> <!-- Changed icon to hourglass for Pending -->
+                        <div class="card-content">
+                            <h5>รอดำเนินการ</h5>
+                            <p>3</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon-wrapper"><i class="bi bi-x-circle"></i></div> <!-- Changed icon to x-circle for Rejected -->
+                        <div class="card-content">
+                            <h5>ปฏิเสธ</h5>
+                            <p>0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Section -->
+                <div class="section-boxes-container">
+                    <div class="section-box">
+                        <h5>กิจกรรมล่าสุด</h5>
+                        <ul class="activity-list">
+                            <li><span class="activity-icon"><i class="bi bi-person-plus"></i></span><div class="activity-content"><strong>ผู้ใช้งานใหม่สมัครสมาชิก</strong><span>เมื่อ 5 นาทีที่แล้ว</span></div></li>
+                            <li><span class="activity-icon"><i class="bi bi-calendar-plus"></i></span><div class="activity-content"><strong>นพ.สมชาย เพิ่มตารางนัดหมาย</strong><span>เมื่อ 1 ชั่วโมงที่แล้ว</span></div></li>
+                            <li><span class="activity-icon"><i class="bi bi-file-earmark-text"></i></span><div class="activity-content"><strong>สร้างรายงานประจำสัปดาห์</strong><span>เมื่อวานนี้</span></div></li>
+                            <li><span class="activity-icon"><i class="bi bi-chat-dots"></i></span><div class="activity-content"><strong>ตอบกลับข้อความจากผู้ใช้งาน</strong><span>2 วันที่แล้ว</span></div></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Daily Appointments Table -->
+                <h4>นัดหมายวันนี้</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>เวลา</th>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>รหัสนักศึกษา</th>
+                                <th>เรื่องที่ปรึกษา</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>09:00</td>
+                                <td>อภิชาติ ก.</td>
+                                <td>65011234</td>
+                                <td>ความเครียดจากการเรียน</td>
+                                <td class="status-done">✅ เสร็จแล้ว</td>
+                            </tr>
+                            <tr>
+                                <td>10:00</td>
+                                <td>นิรชา ข.</td>
+                                <td>64019876</td>
+                                <td>ความกังวลใจส่วนตัว</td>
+                                <td class="status-pending">⏳ รอดำเนินการ</td>
+                            </tr>
+                            <tr>
+                                <td>11:00</td>
+                                <td>สมศักดิ์ ส.</td>
+                                <td>65023456</td>
+                                <td>ปัญหาครอบครัว</td>
+                                <td class="status-pending">⏳ รอดำเนินการ</td>
+                            </tr>
+                            <tr>
+                                <td>14:00</td>
+                                <td>ดวงใจ ค.</td>
+                                <td>66034567</td>
+                                <td>ภาวะซึมเศร้า</td>
+                                <td class="status-urgent">❗ เคสเร่งด่วน</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Alerts Section -->
+                <div class="alert-box">
+                    🔔 นิสิตขอยกเลิกนัดหมายในวันพรุ่งนี้<br>
+                    ❗ แจ้งเคสเร่งด่วน: นิสิตแจ้งปัญหาอารมณ์รุนแรงผ่านแบบฟอร์ม
+                </div>
+
+                <!-- Calendar Section -->
+                <h4>🗓️ ปฏิทินนัดหมาย</h4>
+                <div id="calendar"></div>
+
+            </div>
+        </div>
     </div>
 
-    <h2>📅 นัดหมายวันนี้</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>เวลา</th>
-          <th>ชื่อ-นามสกุล</th>
-          <th>รหัสนักศึกษา</th>
-          <th>เรื่องที่ปรึกษา</th>
-          <th>สถานะ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>09:00</td>
-          <td>อภิชาติ ก.</td>
-          <td>65011234</td>
-          <td>ความเครียดจากการเรียน</td>
-          <td class="status-done">✅ เสร็จแล้ว</td>
-        </tr>
-        <tr>
-          <td>10:00</td>
-          <td>นิรชา ข.</td>
-          <td>64019876</td>
-          <td>ความกังวลใจส่วนตัว</td>
-          <td class="status-pending">⏳ รอดำเนินการ</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Dropdown functionality for user profile
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown) {
+                userDropdown.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+                // Close dropdown if clicked outside
+                window.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target)) {
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
 
-    <div class="alert">
-      🔔 นิสิตขอยกเลิกนัดหมายในวันพรุ่งนี้<br>
-      ❗ แจ้งเคสเร่งด่วน: นิสิตแจ้งปัญหาอารมณ์รุนแรงผ่านแบบฟอร์ม
-    </div>
-
-    <h2>🗓️ ปฏิทินนัดหมาย</h2>
-    <div id="calendar"></div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const calendarEl = document.getElementById('calendar');
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'th',
-        events: [
-          {
-            title: 'อภิชาติ ก. - ความเครียด',
-            start: new Date().toISOString().split('T')[0] + 'T09:00:00'
-          },
-          {
-            title: 'นิรชา ข. - ความกังวลใจ',
-            start: new Date().toISOString().split('T')[0] + 'T10:00:00'
-          }
-        ]
-      });
-      calendar.render();
-    });
-  </script>
+            // FullCalendar for Appointment Calendar
+            const calendarEl = document.getElementById('calendar');
+            if (calendarEl) {
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'th', // Set locale to Thai
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: [
+                        {
+                            title: 'อภิชาติ ก. - ความเครียด',
+                            start: new Date().toISOString().split('T')[0] + 'T09:00:00',
+                            color: '#FFC0CB', // Light pink for events
+                            textColor: '#343a40' // Dark text for events
+                        },
+                        {
+                            title: 'นิรชา ข. - ความกังวลใจ',
+                            start: new Date().toISOString().split('T')[0] + 'T10:00:00',
+                            color: '#FFC0CB',
+                            textColor: '#343a40'
+                        },
+                        {
+                            title: 'สมศักดิ์ ส. - ปัญหาครอบครัว',
+                            start: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0] + 'T14:00:00', // Tomorrow
+                            color: '#87CEEB', // Soft blue for next day events
+                            textColor: '#343a40'
+                        },
+                        {
+                            title: 'ประชุมทีม',
+                            start: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString().split('T')[0],
+                            allDay: true,
+                            color: '#4682B4', // Deep blue for all-day events
+                            textColor: '#ffffff'
+                        }
+                    ]
+                });
+                calendar.render();
+            }
+        });
+    </script>
 </body>
 </html>
