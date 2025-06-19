@@ -22,7 +22,7 @@
       align-items: center;
     }
     .sidebar {
-      width: 220px;
+      width: 230px;
       background-color: #4682B4;
       color: white;
       height: 100vh;
@@ -31,17 +31,29 @@
       left: 0;
       padding-top: 70px;
     }
+
     .sidebar ul {
       list-style: none;
       padding: 0;
     }
+
     .sidebar li {
+      padding: 0;
+    }
+
+    .sidebar li a {
+      display: block;
       padding: 15px;
       cursor: pointer;
+      color: inherit;
+      text-decoration: none;
+      border-radius: 8px; /* เพิ่มขอบมนหากต้องการ */
     }
-    .sidebar li:hover {
+
+    .sidebar li a:hover {
       background-color: #FF69B4;
     }
+
     .main {
       margin-left: 240px;
       padding: 2rem;
@@ -99,41 +111,14 @@
 
   <div class="sidebar">
     <ul>
-      <li>📊 หน้าแรก</li>
-      <li>📅 นัดหมายของฉัน</li>
+      <li><a href="Homepage.html">📊 หน้าแรก</a></li>
+      <li><a href="student-info.html">📅 นัดหมายของฉัน</a></li>
       <!-- <li>👩‍🎓 รายชื่อนักศึกษา</li> -->
       <!-- <li>📝 บันทึกคำปรึกษา</li> -->
       <!-- <li>📈 รายงาน / สถิติ</li> -->
-      <li>⚙️ ออกจากระบบ</li>
+      <li><a href="#">⚙️ ออกจากระบบ</a></li>
     </ul>
   </div>    
-
-  <div class="main">
-    <h2>🗓️ ปฏิทินนัดหมาย</h2>
-    <div id="calendar"></div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const calendarEl = document.getElementById('calendar');
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'th',
-        events: [
-          {
-            title: 'อภิชาติ ก. - ความเครียด',
-            start: new Date().toISOString().split('T')[0] + 'T09:00:00'
-          },
-          {
-            title: 'นิรชา ข. - ความกังวลใจ',
-            start: new Date().toISOString().split('T')[0] + 'T10:00:00'
-          }
-        ]
-      });
-      calendar.render();
-    });
-  </script>
 
       <div class="container">
     <div class="filter">
