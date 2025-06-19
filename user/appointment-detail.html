@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare | ประวัติการนัดหมาย</title>
+    <title>LRU HeartCare | รายละเอียดการนัดหมาย</title>
     <style>
         /* ========== Variables - ตัวแปรสีและเงา ========== */
         :root {
@@ -39,7 +39,7 @@
 
         /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
         .container {
-            max-width: 1200px; /* ความกว้างสูงสุด */
+            max-width: 900px; /* ลดความกว้างสูงสุดสำหรับหน้ารายละเอียด */
             margin: 0 auto; /* จัดกึ่งกลาง */
             padding: 0 20px; /* ระยะห่างด้านข้าง */
         }
@@ -199,167 +199,157 @@
             border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
         }
 
-        /* ========== Appointment History Section - ส่วนเนื้อหาประวัติการนัดหมาย ========== */
-        .appointment-section {
+        /* ========== Appointment Detail Section - ส่วนเนื้อหารายละเอียดการนัดหมาย ========== */
+        .detail-section {
             padding: 80px 0; /* padding ด้านบนและล่าง */
             background: var(--bg-light); /* สีพื้นหลัง */
         }
 
-        .appointment-heading {
+        .detail-heading {
             text-align: center;
-            font-size: 2.8rem; /* ขนาดหัวข้อ */
+            font-size: 2.5rem; /* ขนาดหัวข้อ */
             color: var(--deep-blue);
-            margin-bottom: 60px; /* ระยะห่างด้านล่าง */
+            margin-bottom: 50px; /* ระยะห่างด้านล่าง */
             font-weight: 700;
             position: relative;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
 
-        .appointment-heading::after {
+        .detail-heading::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
+            width: 70px;
+            height: 3px;
             background-color: var(--primary-pink);
             border-radius: 2px;
         }
 
-        /* Table specific styles */
-        .table-container {
-            overflow-x: auto; /* ทำให้ตารางเลื่อนได้ในแนวนอนเมื่อหน้าจอเล็ก */
+        .detail-card {
             background: var(--white);
             border-radius: 15px;
             box-shadow: 0 8px 20px var(--shadow-light);
-            padding: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
             border: 1px solid var(--border-light);
         }
 
-        .appointment-table {
-            width: 100%;
-            border-collapse: separate; /* เพื่อให้ใช้ border-radius กับเซลล์ได้ */
-            border-spacing: 0;
-            text-align: left;
-            font-size: 0.95rem;
-        }
-
-        .appointment-table th,
-        .appointment-table td {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .appointment-table thead th {
-            background-color: var(--deep-blue);
-            color: var(--white);
+        .detail-card h3 {
+            font-size: 1.8rem;
+            color: var(--deep-blue);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-light);
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: sticky; /* ทำให้ header ตารางอยู่ด้านบนเมื่อเลื่อน */
-            top: 0;
-            z-index: 10;
         }
 
-        /* Rounded corners for table header */
-        .appointment-table thead th:first-child {
-            border-top-left-radius: 10px;
-        }
-        .appointment-table thead th:last-child {
-            border-top-right-radius: 10px;
-        }
-
-        .appointment-table tbody tr:last-child td {
-            border-bottom: none; /* ไม่มีเส้นขอบล่างสำหรับแถวสุดท้าย */
-        }
-
-        .appointment-table tbody tr:hover {
-            background-color: #f0f0f0; /* สีเมื่อ hover */
-            transition: background-color 0.2s ease;
-        }
-
-        .appointment-table td {
+        .detail-item {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
             color: var(--text-dark);
+            display: flex;
+            align-items: center; /* จัดให้ข้อความและไอคอนอยู่แนวเดียวกัน */
         }
 
-        .appointment-table td.status {
-            font-weight: 600;
-            text-align: center;
+        .detail-item strong {
+            color: var(--primary-pink); /* สีชมพูสำหรับหัวข้อข้อมูล */
+            min-width: 150px; /* กำหนดความกว้างขั้นต่ำเพื่อให้จัดเรียงสวยงาม */
+            display: inline-block;
+            margin-right: 10px;
         }
 
-        .status-completed {
-            color: #155724; /* Dark green */
-            background-color: #d4edda; /* Light green */
-            padding: 5px 10px;
-            border-radius: 15px;
+        .detail-item i {
+            margin-right: 10px;
+            color: var(--soft-blue); /* สีฟ้าสำหรับไอคอน */
+            font-size: 1.2em;
         }
 
-        .status-cancelled {
-            color: #721c24; /* Dark red */
-            background-color: #f8d7da; /* Light red */
-            padding: 5px 10px;
-            border-radius: 15px;
+        .consultation-summary {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px dashed var(--border-light);
+            margin-top: 20px;
         }
 
-        .status-missed {
-            color: #856404; /* Dark yellow */
-            background-color: #fff3cd; /* Light yellow */
-            padding: 5px 10px;
-            border-radius: 15px;
-        }
-
-        .table-action-btn {
-            background: var(--primary-pink);
+        .back-btn {
+            background: var(--soft-blue);
             color: var(--white);
             text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.05rem;
             font-weight: 600;
             transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             display: inline-block;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
+            margin-top: 40px;
+            box-shadow: 0 4px 10px rgba(135, 206, 235, 0.3);
+            border: 2px solid var(--soft-blue);
         }
 
-        .table-action-btn:hover {
-            background: #e05e9b;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+        .back-btn:hover {
+            background: var(--white);
+            color: var(--soft-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(135, 206, 235, 0.5);
+            border-color: var(--soft-blue);
         }
 
         /* Responsive adjustments */
         @media (max-width: 992px) {
-            .appointment-heading {
-                font-size: 2.2rem;
+            .detail-heading {
+                font-size: 2.0rem;
                 margin-bottom: 40px;
             }
-            /* Table responsiveness handled by overflow-x: auto */
+            .detail-card {
+                padding: 25px;
+            }
+            .detail-card h3 {
+                font-size: 1.6rem;
+            }
+            .detail-item {
+                font-size: 1rem;
+                flex-direction: column; /* เปลี่ยนเป็นแนวตั้งบนจอเล็ก */
+                align-items: flex-start;
+            }
+            .detail-item strong {
+                min-width: unset; /* ยกเลิก min-width */
+                margin-right: 0;
+                margin-bottom: 5px; /* เพิ่มระยะห่างด้านล่างหัวข้อ */
+            }
+            .back-btn {
+                font-size: 0.95rem;
+                padding: 10px 20px;
+            }
         }
 
         @media (max-width: 768px) {
-            .appointment-section {
+            .detail-section {
                 padding: 60px 0;
             }
-            .appointment-heading {
+            .detail-heading {
                 font-size: 1.8rem;
                 margin-bottom: 30px;
             }
-            .appointment-table th,
-            .appointment-table td {
-                padding: 10px 15px;
+            .detail-card {
+                padding: 20px;
             }
-            .appointment-table {
-                font-size: 0.9rem;
+            .detail-card h3 {
+                font-size: 1.4rem;
             }
-            .table-action-btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+            .consultation-summary {
+                font-size: 0.95rem;
+                padding: 15px;
             }
         }
     </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <script>
@@ -368,12 +358,12 @@
             const dropdownToggle = document.querySelector('.dropdown-toggle');
             const dropdown = dropdownToggle.closest('.dropdown');
             const arrow = dropdownToggle.querySelector('.arrow');
-        
+       
             dropdownToggle.addEventListener('click', function () {
                 dropdown.classList.toggle('show');
                 arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
             });
-        
+       
             // ปิด dropdown เมื่อคลิกนอกพื้นที่
             document.addEventListener('click', function (e) {
                 if (!dropdown.contains(e.target)) {
@@ -390,7 +380,7 @@
                 <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
                 <a href="#">LRU HeartCare</a>
             </div>
-        
+       
             <div class="menu-con">
                 <ul class="menu">
                     <li><a href="index.html">หน้าแรก</a></li>
@@ -411,89 +401,43 @@
         </div>
     </nav>
 
-    <section class="appointment-section">
+    <section class="detail-section">
         <div class="container">
-            <h2 class="appointment-heading">ประวัติการนัดหมายของคุณ</h2>
-            
-            <div class="table-container">
-                <table class="appointment-table">
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>รหัสนัดหมาย</th>
-                            <th>นักจิตวิทยา</th>
-                            <th>วันที่</th>
-                            <th>เวลา</th>
-                            <th>ช่องทาง</th>
-                            <th>สถานะ</th>
-                            <th>ดำเนินการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>#LRUC001</td>
-                            <td>อ.สมศรี ใจดี</td>
-                            <td>10 พ.ค. 2567</td>
-                            <td>14:00 - 15:00 น.</td>
-                            <td>แชท</td>
-                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
-                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>#LRUC002</td>
-                            <td>อ.ประภาส สุขใจ</td>
-                            <td>01 พ.ค. 2567</td>
-                            <td>10:30 - 11:30 น.</td>
-                            <td>แชท</td>
-                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
-                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>#LRUC003</td>
-                            <td>อ.สมศรี ใจดี</td>
-                            <td>25 เม.ย. 2567</td>
-                            <td>16:00 - 17:00 น.</td>
-                            <td>แชท</td>
-                            <td class="status"><span class="status-cancelled">ยกเลิก</span></td>
-                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>#LRUC004</td>
-                            <td>อ.ประภาส สุขใจ</td>
-                            <td>15 เม.ย. 2567</td>
-                            <td>09:00 - 10:00 น.</td>
-                            <td>แชท</td>
-                            <td class="status"><span class="status-missed">ขาดนัด</span></td>
-                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>#LRUC005</td>
-                            <td>อ.สมศรี ใจดี</td>
-                            <td>05 เม.ย. 2567</td>
-                            <td>11:00 - 12:00 น.</td>
-                            <td>แชท</td>
-                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
-                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>#LRUC006</td>
-                            <td>อ.ประภาส สุขใจ</td>
-                            <td>28 มี.ค. 2567</td>
-                            <td>13:30 - 14:30 น.</td>
-                            <td>แชท</td>
-                            <td class="status"><span class="status-completed">สำเร็จ</span></td>
-                            <td><a href="appointment-detail.html" class="table-action-btn">ดูรายละเอียด</a></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <h2 class="detail-heading">รายละเอียดการนัดหมาย #LRUC001</h2>
+           
+            <!-- Appointment Information -->
+            <div class="detail-card">
+                <h3>ข้อมูลการนัดหมาย</h3>
+                <p class="detail-item"><i class="fas fa-calendar-alt"></i> <strong>วันที่:</strong> 10 พฤษภาคม 2567</p>
+                <p class="detail-item"><i class="fas fa-clock"></i> <strong>เวลา:</strong> 14:00 - 15:00 น.</p>
+                <p class="detail-item"><i class="fas fa-comment-dots"></i> <strong>ช่องทาง:</strong> ปรึกษาผ่านแชท</p>
+                <p class="detail-item"><i class="fas fa-check-circle"></i> <strong>สถานะ:</strong> สำเร็จ</p>
+            </div>
+
+            <!-- Psychologist Information -->
+            <div class="detail-card">
+                <h3>ข้อมูลนักจิตวิทยา</h3>
+                <p class="detail-item"><i class="fas fa-user-tie"></i> <strong>ชื่อ:</strong> อ.สมศรี ใจดี</p>
+                <p class="detail-item"><i class="fas fa-certificate"></i> <strong>ความเชี่ยวชาญ:</strong> การจัดการความเครียด, ปัญหาความสัมพันธ์</p>
+                <p class="detail-item"><i class="fas fa-envelope"></i> <strong>อีเมล:</strong> somsri.jaidee@lru.ac.th</p>
+                <p class="detail-item"><i class="fas fa-phone-alt"></i> <strong>เบอร์โทรศัพท์:</strong> 081-234-5678</p>
+            </div>
+
+            <!-- Consultation Summary -->
+            <div class="detail-card">
+                <h3>สรุปการปรึกษา</h3>
+                <p class="consultation-summary">
+                    การปรึกษาครั้งนี้เน้นที่การจัดการความเครียดจากการเรียน ผู้ปรึกษาได้แบ่งปันความรู้สึกกังวลเกี่ยวกับผลการเรียนและแรงกดดันจากครอบครัว
+                    นักจิตวิทยาได้แนะนำเทคนิคการหายใจและการจัดการเวลา รวมถึงการตั้งเป้าหมายที่ยืดหยุ่นเพื่อลดความกดดัน
+                    และได้แนะนำให้ทำกิจกรรมที่ผ่อนคลายเพื่อรักษาสมดุลของสุขภาพจิต
+                </p>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="appointments.html" class="back-btn">กลับสู่ประวัติการนัดหมาย</a>
             </div>
         </div>
     </section>
 </body>
 </html>
+

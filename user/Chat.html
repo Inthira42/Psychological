@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | ห้องแชท</title>
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+            --input-bg: #fff; /* สีพื้นหลังของ input */
+            --input-border: #ced4da; /* สีขอบ input */
+            --form-card-bg: #fff; /* สีพื้นหลังของการ์ดฟอร์ม */
+            --chat-bg: #e0e0e0; /* สีพื้นหลังแชท */
+            --user-bubble-bg: var(--primary-pink); /* สีบับเบิ้ลข้อความผู้ใช้ */
+            --psychologist-bubble-bg: var(--soft-blue); /* สีบับเบิ้ลข้อความนักจิตวิทยา */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+        .container {
+            max-width: 1200px; /* ความกว้างสูงสุด */
+            margin: 0 auto; /* จัดกึ่งกลาง */
+            padding: 0 20px; /* ระยะห่างด้านข้าง */
+        }
+
+        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .nav {
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+            padding: 15px 0;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            color: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-con {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            height: 45px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .logo a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-con {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu li a {
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            display: block;
+            line-height: 1;
+        }
+
+        .menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--white);
+            padding: 10px 18px;
+            border-radius: 10px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 110%;
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px;
+            box-shadow: 0 8px 20px var(--shadow-medium);
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px;
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .logout a {
+            background: var(--primary-pink);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            letter-spacing: 0.5px;
+            border: 2px solid var(--primary-pink);
+            line-height: 1;
+            display: block;
+        }
+
+        .logout a:hover {
+            background: var(--white);
+            color: var(--primary-pink);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+            border-color: var(--primary-pink);
+        }
+
+        /* ========== Chat Section ========== */
+        .chat-section {
+            padding: 60px 0;
+            background-color: var(--bg-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+        }
+
+        .chat-container {
+            background-color: var(--white);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            height: 70vh; /* Adjust height for chat window */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, var(--primary-pink) 0%, var(--light-pink) 100%);
+            padding: 20px 25px;
+            color: var(--white);
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-header span {
+            font-weight: 400; /* Normal weight for "กับ" */
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--chat-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            line-height: 1.4;
+            word-wrap: break-word; /* Ensure long words break */
+        }
+
+        .message-user {
+            background-color: var(--user-bubble-bg);
+            color: var(--white);
+            align-self: flex-end; /* Align to right for user */
+            border-bottom-right-radius: 5px; /* Sharper corner for user side */
+        }
+
+        .message-psychologist {
+            background-color: var(--psychologist-bubble-bg);
+            color: var(--white);
+            align-self: flex-start; /* Align to left for psychologist */
+            border-bottom-left-radius: 5px; /* Sharper corner for psychologist side */
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-light);
+            background-color: var(--white);
+            gap: 10px;
+        }
+
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1px solid var(--input-border);
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chat-input input[type="text"]:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        .chat-input button {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(70, 130, 180, 0.3);
+        }
+
+        .chat-input button:hover {
+            background-color: #3a6b9a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(70, 130, 180, 0.4);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .nav-con {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .menu-con {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                align-items: stretch;
+            }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                text-align: center;
+            }
+            .menu li {
+                width: 100%;
+            }
+            .menu li a, .dropdown-toggle {
+                width: calc(100% - 30px);
+                text-align: center;
+                margin: 0 15px;
+            }
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
+            }
+            .logout {
+                width: 100%;
+                text-align: center;
+                padding: 0 15px;
+            }
+            .logout a {
+                display: block;
+                width: 100%;
+                margin: 0;
+            }
+
+            .chat-container {
+                height: 80vh; /* Make chat taller on medium screens */
+            }
+            .chat-header {
+                font-size: 1.4rem;
+                padding: 18px 20px;
+            }
+            .chat-messages {
+                padding: 15px;
+            }
+            .message-bubble {
+                max-width: 80%; /* Allow bubbles to be wider */
+                padding: 10px 15px;
+            }
+            .chat-input {
+                padding: 12px 15px;
+            }
+            .chat-input input[type="text"] {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+            }
+            .chat-input button {
+                padding: 10px 18px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-section {
+                padding: 40px 0;
+            }
+            .chat-container {
+                max-width: 95%; /* Wider container */
+                height: 85vh; /* Taller on smaller screens */
+            }
+            .chat-header {
+                font-size: 1.3rem;
+                padding: 15px 18px;
+            }
+            .chat-messages {
+                padding: 12px;
+            }
+            .message-bubble {
+                max-width: 90%; /* Even wider bubbles */
+                padding: 10px 15px;
+            }
+            .chat-input {
+                padding: 10px 12px;
+            }
+            .chat-input input[type="text"] {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            .chat-input button {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .chat-section {
+                padding: 20px 0;
+            }
+            .chat-container {
+                height: 90vh; /* Almost full height */
+                border-radius: 10px;
+            }
+            .chat-header {
+                font-size: 1.2rem;
+                padding: 12px 15px;
+            }
+            .chat-messages {
+                padding: 10px;
+                gap: 8px;
+            }
+            .message-bubble {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+                border-radius: 15px; /* Slightly less rounded */
+            }
+            .chat-input {
+                padding: 8px 10px;
+            }
+            .chat-input input[type="text"] {
+                padding: 6px 10px;
+                font-size: 0.85rem;
+            }
+            .chat-input button {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // JavaScript สำหรับการทำงานของ Dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            dropdownToggle.addEventListener('click', function () {
+                dropdown.classList.toggle('show');
+                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+            });
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    arrow.textContent = '▼';
+                }
+            });
+
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendMessageButton = document.getElementById('sendMessageButton');
+            const chatPsychologistName = document.getElementById('chatPsychologistName');
+
+            // Psychologist data to map ID to full name
+            const psychologists = {
+                'somchai': { name: 'นายสมชาย ใจดี', image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354093902080249906/image.png?ex=68142878&is=6812d6f8&hm=4326e0e78ed1dd3cc056610562fb36652876380cd738d91db4d3254a79092ba5&' },
+                'maneerat': { name: 'นางสาวมณีรัตน์ สุขใจ', image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354093987342061588/image.png?ex=6814288c&is=6812d70c&hm=b272b9cd7ecd3aa10b03f283638ae3c6c8048de67413cb9c3a79d1fb59ecb16b&' },
+                'oranong': { name: 'แพทย์หญิงอรอนงค์ รักษาใจ', image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354094057793523720/image.png?ex=6814289d&is=6812d71d&hm=a34d2c8467172292b92bfbd8942cfdd22466819aba3b7be7cf4471115f850eb&' },
+                'pimpa': { name: 'แพทย์หญิงพิมพา สุขสันต์', image: 'https://placehold.co/150x150/87CEEB/ffffff?text=Dr.+Pim' },
+                'deeprom': { name: 'นายดีพร้อม ยิ้มสู้', image: 'https://placehold.co/150x150/FF69B4/ffffff?text=Mr.+Dee' },
+                'chainant': { name: 'นางสาวชัยนันท์ มีชัย', image: 'https://placehold.co/150x150/4682B4/ffffff?text=Ms.+Chai' }
+            };
+
+            // Get psychologist ID and appointment ID from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const psychologistId = urlParams.get('psy');
+            const appointmentId = urlParams.get('appId'); // You can use this to load specific chat history
+
+            let currentPsychologistName = 'นักจิตวิทยา'; // Default name
+            if (psychologistId && psychologists[psychologistId]) {
+                currentPsychologistName = psychologists[psychologistId].name;
+            }
+            chatPsychologistName.textContent = currentPsychologistName;
+
+            // Function to add a message to the chat display
+            function addMessage(message, senderType) {
+                const messageBubble = document.createElement('div');
+                messageBubble.classList.add('message-bubble', `message-${senderType}`);
+                messageBubble.textContent = message;
+                chatMessagesDiv.appendChild(messageBubble);
+                // Scroll to the latest message
+                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+            }
+
+            // Initial greeting message from the psychologist
+            addMessage(`สวัสดีครับ/ค่ะ คุณ${currentPsychologistName} พร้อมให้คำปรึกษาแล้วครับ/ค่ะ`, 'psychologist');
+            addMessage(`กรุณาบอกเรื่องที่คุณต้องการปรึกษาได้เลยครับ/ค่ะ`, 'psychologist');
+
+            // Event listener for sending messages
+            sendMessageButton.addEventListener('click', function() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage(message, 'user');
+                    messageInput.value = ''; // Clear input field
+                    // Here you would typically send the message to a backend/AI model
+                    // For now, let's simulate a simple auto-reply
+                    setTimeout(() => {
+                        addMessage(`ได้รับข้อความของคุณแล้วครับ/ค่ะ กรุณารอสักครู่ ${currentPsychologistName} กำลังตอบกลับ`, 'psychologist');
+                    }, 1000);
+                }
+            });
+
+            // Allow sending message with Enter key
+            messageInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessageButton.click();
+                }
+            });
+        });
+    </script>
+
+    <nav class="nav">
+        <div class="nav-con">
+          <div class="logo">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
+            <a href="#">LRU HeartCare</a>
+          </div>
+    
+          <div class="menu-con">
+            <ul class="menu">
+              <li><a href="index.html">หน้าแรก</a></li>
+              <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="logout">
+              <a href="Login.html">ออกจากระบบ</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    <main class="chat-section">
+        <div class="chat-container">
+            <div class="chat-header">
+                แชทกับ <span id="chatPsychologistName">นักจิตวิทยา</span>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="พิมพ์ข้อความของคุณ...">
+                <button id="sendMessageButton">ส่ง</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
