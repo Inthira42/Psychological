@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare | ลงทะเบียน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sukhumvit+Set:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        :root {
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --red-error: #dc3545; /* สีแดงสำหรับข้อผิดพลาด */
+        }
+
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        body {
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #EBF5FF 0%, #FFF5FB 100%); /* ฟ้าอ่อนมากไปชมพูอ่อนมาก */
+            color: var(--text-dark); /* สีข้อความเริ่มต้น */
+            line-height: 1.6; /* ระยะห่างบรรทัด */
+            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Container - สำหรับหน้าลงทะเบียนทั้งหมด ========== */
+        .signup-container {
+            display: flex;
+            background-color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px var(--shadow-medium);
+            overflow: hidden;
+            max-width: 900px;
+            width: 95%; /* Responsive width */
+        }
+
+        /* ========== Sign-up Form Side ========== */
+        .signup-form-side {
+            flex: 1;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .signup-form-side h1 {
+            font-size: 2.5rem;
+            color: var(--deep-blue);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .input-box {
+            position: relative;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px 12px 12px 45px; /* Adjust padding for icon */
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-box input:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        .input-box label {
+            position: absolute;
+            top: 50%;
+            left: 45px; /* Align with input text */
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+            pointer-events: none;
+            transition: 0.3s ease;
+            background-color: transparent; /* Default transparent */
+            padding: 0;
+            border-radius: 0;
+            z-index: 0;
+        }
+
+        .input-box input:focus + label,
+        .input-box input:valid + label,
+        .input-box input.has-content + label { /* Added .has-content for pre-filled inputs */
+            top: 0;
+            left: 10px; /* Move label to top-left of input */
+            font-size: 0.8rem;
+            color: var(--primary-pink);
+            background-color: var(--bg-light); /* Background for label when floating */
+            padding: 0 5px;
+            border-radius: 5px;
+            z-index: 1; /* Ensure label is above input */
+        }
+
+        .input-box .icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--deep-blue);
+            font-size: 1.2rem;
+            z-index: 2; /* Ensure icon is above label */
+        }
+
+        .show-password-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Align to right */
+            width: 100%;
+            margin-top: -15px; /* Pull it up a bit */
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .show-password-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .show-password-group input[type="checkbox"] {
+            accent-color: var(--primary-pink); /* Style checkbox */
+        }
+
+        .btn-signup {
+            width: 100%;
+            padding: 15px 0;
+            background-color: var(--primary-pink);
+            border: none;
+            border-radius: 30px;
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-signup:hover {
+            background-color: #e05e9b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+        }
+
+        .login-link {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-top: 25px;
+        }
+
+        .login-link a {
+            color: var(--deep-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .login-link a:hover {
+            color: var(--primary-pink);
+        }
+
+        .error-message {
+            color: var(--red-error); /* Defined in root variables */
+            font-size: 0.85rem;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            text-align: left;
+            width: 100%;
+            display: none; /* Hidden by default */
+        }
+
+        /* ========== Explanation Side (Image & Text) ========== */
+        .explanation-side {
+            flex: 1;
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--soft-blue) 100%); /* ฟ้าเดิม */
+            color: var(--white);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 0 20px 20px 0;
+        }
+
+        .explanation-side img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .explanation-side h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            color: var(--light-pink);
+        }
+
+        .explanation-side h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .explanation-side p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* ========== Responsive Adjustments ========== */
+        @media (max-width: 768px) {
+            .signup-container {
+                flex-direction: column; /* Stack login and explanation vertically */
+                max-width: 450px; /* Smaller max-width for stacked layout */
+            }
+
+            .explanation-side {
+                border-radius: 0 0 20px 20px; /* Adjust border-radius for bottom */
+                padding: 30px;
+            }
+
+            .signup-form-side {
+                padding: 30px 20px;
+            }
+
+            .signup-form-side h1 {
+                font-size: 2rem;
+                margin-bottom: 25px;
+            }
+
+            .explanation-side h2 {
+                font-size: 1.8rem;
+            }
+
+            .explanation-side h3 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+            .explanation-side p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-form-side h1 {
+                font-size: 1.8rem;
+            }
+            .input-box input {
+                padding: 10px 10px 10px 40px;
+                font-size: 0.9rem;
+            }
+            .input-box .icon {
+                left: 10px;
+                font-size: 1rem;
+            }
+            .input-box label {
+                left: 40px;
+                font-size: 0.9rem;
+            }
+            .input-box input:focus + label,
+            .input-box input:valid + label,
+            .input-box input.has-content + label {
+                top: 0;
+                left: 8px;
+                font-size: 0.7rem;
+            }
+            .show-password-group, .login-link {
+                font-size: 0.8rem;
+            }
+            .btn-signup {
+                padding: 12px 0;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-form-side">
+            <h1>ลงทะเบียน</h1>
+            <form id="signupForm">
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" id="fullName" required>
+                    <label for="fullName">ชื่อ-นามสกุล</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-envelope"></i></span>
+                    <input type="email" id="email" required>
+                    <label for="email">อีเมลผู้ใช้</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="password" required>
+                    <label for="password">รหัสผ่าน</label>
+                </div>
+                <div class="show-password-group">
+                    <label>
+                        <input type="checkbox" data-password-field="password" onclick="togglePassword(this)">
+                        แสดงรหัสผ่าน
+                    </label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="confirmPassword" required>
+                    <label for="confirmPassword">ยืนยันรหัสผ่าน</label>
+                </div>
+                <div class="show-password-group">
+                    <label>
+                        <input type="checkbox" data-password-field="confirmPassword" onclick="togglePassword(this)">
+                        แสดงรหัสผ่าน
+                    </label>
+                </div>
+                <p id="passwordMatchError" class="error-message">รหัสผ่านไม่ตรงกัน!</p>
+                <button type="submit" class="btn-signup">ลงทะเบียน</button>
+                <div class="login-link">
+                    <p>มีบัญชีอยู่แล้ว? <a href="Login.html">เข้าสู่ระบบ</a></p>
+                </div>
+            </form>
+        </div>
+    
+        <div class="explanation-side">
+            <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU HeartCare" />
+            <h2>LRU HeartCare</h2>
+            <h3>พื้นที่ปลอดภัยสำหรับใจคุณ</h3>
+            <p>ระบบสนับสนุนทางจิตวิทยาสำหรับนักศึกษามหาวิทยาลัยราชภัฏเลย</p>
+        </div>
+    </div>
+    
+    <script>
+        function togglePassword(checkbox) {
+            const fieldId = checkbox.dataset.passwordField;
+            const passwordField = document.getElementById(fieldId);
+            passwordField.type = checkbox.checked ? "text" : "password";
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordMatchError = document.getElementById('passwordMatchError');
+
+            if (password !== confirmPassword) {
+                passwordMatchError.style.display = 'block'; // Show error message
+            } else {
+                passwordMatchError.style.display = 'none'; // Hide error message
+                // If passwords match, you can proceed with form submission logic here
+                // For demonstration, we'll just log success. In a real app, you'd send data to a server.
+                console.log('Registration successful!');
+                alert('ลงทะเบียนสำเร็จแล้ว! คุณสามารถเข้าสู่ระบบได้เลย'); // Use alert for quick demo, replace with custom modal in production
+                window.location.href = 'Login.html'; // Redirect to login page
+            }
+        });
+
+        // Ensure labels float when input has content on load (e.g., autofill)
+        document.querySelectorAll('.input-box input').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value !== '') {
+                    input.classList.add('has-content'); // Add a class for styling
+                } else {
+                    input.classList.remove('has-content');
+                }
+            });
+            // Trigger on load for autofilled fields
+            if (input.value !== '') {
+                input.classList.add('has-content');
+            }
+        });
+    </script>
+</body>
+</html>
