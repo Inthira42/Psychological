@@ -357,7 +357,7 @@
             box-shadow: 0 12px 30px rgba(135, 206, 235, 0.7);
         }
 
-        /* Modal Styles (Reused from appointment-booking) */
+        /* Modal Styles */
         .confirmation-modal {
             display: none; /* Hidden by default */
             position: fixed;
@@ -476,6 +476,67 @@
             box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
         }
 
+        /* Welcome Modal Specific Styles */
+        #welcomeModal .modal-content {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-pink) 100%);
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--primary-pink);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        #welcomeModal .modal-header h3 {
+            color: var(--deep-blue);
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            border-bottom: none; /* Remove border from welcome modal header */
+            padding-bottom: 0;
+        }
+
+        #welcomeModal .modal-body {
+            margin-bottom: 0;
+            padding-bottom: 20px;
+        }
+        
+        #welcomeModal .modal-body p {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            line-height: 1.5;
+            display: block; /* Ensure it's a block for margin */
+            margin-bottom: 20px;
+        }
+
+        #countdown {
+            font-size: 4em;
+            font-weight: 900;
+            color: var(--deep-blue);
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            animation: pulse 1.5s infinite; /* Animation for countdown */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .welcome-icon {
+            font-size: 3.5em; /* Size for heart icon */
+            color: var(--primary-pink);
+            margin-bottom: 20px;
+            animation: beat 1.2s infinite; /* Animation for heart */
+            display: inline-block;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
+        }
+
+
         /* Responsive Adjustments */
         @media (max-width: 992px) {
             .nav-con {
@@ -497,7 +558,7 @@
             .menu li {
                 width: 100%;
             }
-            .menu li a { /* No dropdown-toggle in this version */
+            .menu li a { 
                 width: calc(100% - 30px);
                 text-align: center;
                 margin: 0 15px;
@@ -522,18 +583,18 @@
                 margin-bottom: 30px;
             }
             .appointment-header-row {
-                grid-template-columns: repeat(3, minmax(100px, 1fr)); /* Reduce columns on medium screens */
+                grid-template-columns: repeat(3, minmax(100px, 1fr)); 
             }
-            .appointment-header-cell:nth-child(4), /* Hide status header */
-            .appointment-header-cell:nth-child(5) { /* Hide actions header */
+            .appointment-header-cell:nth-child(4), 
+            .appointment-header-cell:nth-child(5) { 
                 display: none;
             }
 
             .appointment-card {
-                grid-template-columns: repeat(3, minmax(100px, 1fr)); /* Reduce columns on medium screens */
+                grid-template-columns: repeat(3, minmax(100px, 1fr)); 
             }
-            .appointment-cell:nth-child(4), /* Hide status cell */
-            .appointment-cell:nth-child(5) { /* Hide actions cell */
+            .appointment-cell:nth-child(4), 
+            .appointment-cell:nth-child(5) { 
                 display: none;
             }
 
@@ -551,10 +612,23 @@
                 min-width: 120px;
             }
             .modal-footer {
-                flex-direction: column; /* Stack buttons vertically in modal footer */
+                flex-direction: column; 
             }
             .modal-footer button {
-                width: 100%; /* Full width for stacked buttons */
+                width: 100%; 
+            }
+
+            #welcomeModal .modal-header h3 {
+                font-size: 2.2rem;
+            }
+            #welcomeModal .modal-body p {
+                font-size: 1.1rem;
+            }
+            .welcome-icon {
+                font-size: 3em;
+            }
+            #countdown {
+                font-size: 3.5em;
             }
         }
 
@@ -574,21 +648,21 @@
                 height: 3px;
             }
             .appointment-header-row {
-                grid-template-columns: repeat(2, minmax(100px, 1fr)); /* Reduce to 2 columns on small screens */
+                grid-template-columns: repeat(2, minmax(100px, 1fr)); 
             }
-            .appointment-header-cell:nth-child(2) { /* Hide Date header */
+            .appointment-header-cell:nth-child(2) { 
                 display: none;
             }
 
             .appointment-card {
-                grid-template-columns: repeat(2, minmax(100px, 1fr)); /* Reduce to 2 columns on small screens */
+                grid-template-columns: repeat(2, minmax(100px, 1fr)); 
             }
-            .appointment-cell:nth-child(2) { /* Hide Date cell */
+            .appointment-cell:nth-child(2) { 
                 display: none;
             }
             
             .action-buttons {
-                flex-direction: column; /* Stack buttons vertically */
+                flex-direction: column; 
                 gap: 15px;
             }
             .action-buttons .btn {
@@ -609,6 +683,19 @@
                 padding: 10px 18px;
                 font-size: 0.9rem;
             }
+
+            #welcomeModal .modal-header h3 {
+                font-size: 1.8rem;
+            }
+            #welcomeModal .modal-body p {
+                font-size: 1rem;
+            }
+            .welcome-icon {
+                font-size: 2.8em;
+            }
+            #countdown {
+                font-size: 3em;
+            }
         }
 
         @media (max-width: 576px) {
@@ -624,32 +711,29 @@
                 margin-bottom: 20px;
             }
             .appointment-list-container {
-                padding: 0 5px; /* Reduce container padding further */
+                padding: 0 5px; 
             }
             .appointment-header-row {
-                /* On smallest screens, headers can wrap or some can be hidden */
-                grid-template-columns: 1fr; /* Make it a single column grid for headers */
+                grid-template-columns: 1fr; 
                 gap: 5px;
                 padding: 10px 15px;
-                text-align: left; /* Align header text to the left */
+                text-align: left; 
             }
             .appointment-header-cell {
-                text-align: left; /* Ensure header cells are left aligned when stacked */
+                text-align: left; 
                 font-size: 1rem;
-                padding: 2px 0; /* Adjust padding for stacked headers */
+                padding: 2px 0; 
             }
-            /* Hide headers that are not "ชื่อ - นามสกุล" if stacking all headers */
             .appointment-header-cell:not(:first-child) {
-                 display: none; /* Hide all headers except the first one */
+                 display: none; 
             }
 
-            /* Each appointment card becomes a vertical stack of its content */
             .appointment-card {
-                display: flex; /* Change to flexbox for vertical stacking of cells */
+                display: flex; 
                 flex-direction: column;
-                align-items: flex-start; /* Align text left within the card */
-                gap: 5px; /* Small gap between stacked items */
-                padding: 15px 20px; /* Padding for the card itself */
+                align-items: flex-start; 
+                gap: 5px; 
+                padding: 15px 20px; 
                 border-radius: 10px;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.08);
                 border: 1px solid var(--border-light);
@@ -660,38 +744,46 @@
             }
 
             .appointment-cell {
-                width: 100%; /* Each cell takes full width in stacked layout */
-                text-align: left; /* Align cell content to the left */
-                padding: 0; /* No padding on cell itself, padding is on the card */
-                border-bottom: none; /* No internal borders when stacked */
-                font-size: 0.95rem; /* Slightly smaller text for stacked cells */
+                width: 100%; 
+                text-align: left; 
+                padding: 0; 
+                border-bottom: none; 
+                font-size: 0.95rem; 
             }
 
-            /* Add labels to each stacked data item */
             .appointment-cell:nth-child(1)::before { content: 'ชื่อ - นามสกุล: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
             .appointment-cell:nth-child(2)::before { content: 'วันที่: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
             .appointment-cell:nth-child(3)::before { content: 'เวลา: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
             .appointment-cell:nth-child(4)::before { content: 'สถานะ: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
-            /* Actions cell does not need a prefix */
 
-            /* Ensure only the relevant cells are shown when stacked */
-            .appointment-cell:nth-child(2), /* Date cell (can be shown or hidden based on preference) */
-            .appointment-cell:nth-child(3), /* Time cell (can be shown or hidden based on preference) */
-            .appointment-cell:nth-child(4), /* Status cell (can be shown or hidden based on preference) */
-            .appointment-cell:nth-child(5) { /* Actions cell */
-                /* These cells are now visible because .appointment-card is flex column */
+            .appointment-cell:nth-child(2), 
+            .appointment-cell:nth-child(3), 
+            .appointment-cell:nth-child(4), 
+            .appointment-cell:nth-child(5) { 
             }
 
-            /* Detail button alignment within the stacked card */
             .appointment-card .detail-button {
-                align-self: flex-end; /* Push button to right */
-                margin-top: 10px; /* Space above button */
-                width: auto; /* Allow button to shrink */
-                padding: 8px 15px; /* Adjust button padding */
+                align-self: flex-end; 
+                margin-top: 10px; 
+                width: auto; 
+                padding: 8px 15px; 
             }
             .status-badge {
-                font-size: 0.9rem; /* Smaller status badge */
+                font-size: 0.9rem; 
                 padding: 4px 10px;
+            }
+
+            #welcomeModal .modal-header h3 {
+                font-size: 1.5rem;
+            }
+            #welcomeModal .modal-body p {
+                font-size: 0.9rem;
+            }
+            .welcome-icon {
+                font-size: 2.5em;
+            }
+            #countdown {
+                font-size: 2.5em;
             }
         }
     </style>
@@ -911,8 +1003,12 @@
                 <h3>ยินดีต้อนรับสู่ห้องแชท</h3>
             </div>
             <div class="modal-body">
-                <p style="text-align: center; margin-bottom: 15px;">กำลังนำคุณเข้าสู่การปรึกษา...</p>
-                <p style="text-align: center; font-size: 2.5em; font-weight: bold; color: var(--primary-pink);" id="countdown">3</p>
+                <!-- Heart Icon for welcoming -->
+                <div class="welcome-icon">
+                    &#10084; <!-- HTML entity for a heart symbol -->
+                </div>
+                <p style="text-align: center;">กำลังนำคุณเข้าสู่การปรึกษา...</p>
+                <p style="text-align: center;" id="countdown">3</p>
             </div>
         </div>
     </div>
