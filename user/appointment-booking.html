@@ -597,6 +597,35 @@
             box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
         }
 
+        /* Styles for the new Appointment Confirmation Modal */
+        #appointmentConfirmationModal .modal-content {
+            max-width: 600px; /* Adjust width to fit content */
+            text-align: left; /* Align text within this modal's body */
+        }
+
+        #appointmentConfirmationModal .modal-body p {
+            display: flex;
+            align-items: flex-start; /* Align label and content at start */
+            gap: 10px;
+            margin-bottom: 15px; /* Space between rows */
+        }
+
+        #appointmentConfirmationModal .modal-body p strong {
+            color: var(--deep-blue);
+            font-weight: 600;
+            min-width: 150px; /* Fixed width for labels */
+            flex-shrink: 0; /* Prevent label from shrinking */
+        }
+
+        #appointmentConfirmationModal .modal-body p span {
+            flex-grow: 1; /* Allow content to take remaining space */
+            word-break: break-word; /* Ensure long content wraps */
+        }
+
+        #appointmentConfirmationModal .modal-footer {
+            justify-content: center; /* Center buttons */
+        }
+
 
         /* Responsive Adjustments */
         @media (max-width: 992px) {
@@ -722,6 +751,15 @@
             #psychologistDetailModal .modal-body .bio {
                 font-size: 0.95rem;
                 padding: 0 15px;
+            }
+
+            #appointmentConfirmationModal .modal-body p {
+                flex-direction: column; /* Stack label and content for confirmation modal on smaller screens */
+                align-items: flex-start;
+                gap: 5px;
+            }
+            #appointmentConfirmationModal .modal-body p strong {
+                min-width: auto; /* Reset min-width for stacked labels */
             }
         }
 
@@ -982,6 +1020,19 @@
             const btnBookNowFromPsyModal = document.getElementById('btnBookNowFromPsyModal');
             const specialtyTagSpan = document.getElementById('specialtyTagSpan'); // Get reference to the specialty tag span
 
+            // Elements for the new Appointment Confirmation Modal
+            const appointmentConfirmationModal = document.getElementById('appointmentConfirmationModal');
+            const confirmDate = document.getElementById('confirmDate');
+            const confirmTime = document.getElementById('confirmTime');
+            const confirmFullName = document.getElementById('confirmFullName');
+            const confirmStudentId = document.getElementById('confirmStudentId');
+            const confirmMajor = document.getElementById('confirmMajor');
+            const confirmFaculty = document.getElementById('confirmFaculty');
+            const confirmReason = document.getElementById('confirmReason');
+            const confirmPsychologist = document.getElementById('confirmPsychologist');
+            const btnConfirmBooking = document.getElementById('btnConfirmBooking');
+            const btnEditBooking = document.getElementById('btnEditBooking');
+
             if (selectedPsychologist) {
                 document.getElementById('psychologistImage').src = selectedPsychologist.image;
                 document.getElementById('psychologistName').textContent = selectedPsychologist.name;
@@ -1044,7 +1095,7 @@
                 console.error('Psychologist not found for ID:', psychologistId);
             }
 
-            // Handle form submission (for demonstration, just logs to console)
+            // Handle form submission - Show confirmation modal
             appointmentForm.addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent default form submission
 
@@ -1062,25 +1113,63 @@
                     id: 'app' + Date.now() // Simple unique ID for demonstration
                 };
 
-                // Save to localStorage
-                let allAppointments = [];
-                const storedAppointments = localStorage.getItem('allAppointments');
-                if (storedAppointments) {
-                    try {
-                        allAppointments = JSON.parse(storedAppointments);
-                    } catch (e) {
-                        console.error("Error parsing existing appointments:", e);
+                // Populate confirmation modal with data
+                confirmDate.textContent = formData.date;
+                confirmTime.textContent = formData.time;
+                confirmFullName.textContent = formData.fullName;
+                confirmStudentId.textContent = formData.studentId;
+                confirmMajor.textContent = formData.major;
+                confirmFaculty.textContent = formData.faculty;
+                confirmReason.textContent = formData.reason;
+                confirmPsychologist.textContent = formData.psychologist;
+
+                // Store formData globally or pass it for confirmation
+                appointmentConfirmationModal.dataset.formData = JSON.stringify(formData);
+
+                appointmentConfirmationModal.classList.add('show'); // Show confirmation modal
+            });
+
+            // Handle "Confirm Booking" button in the confirmation modal
+            if (btnConfirmBooking) {
+                btnConfirmBooking.addEventListener('click', function() {
+                    const formDataString = appointmentConfirmationModal.dataset.formData;
+                    if (formDataString) {
+                        const formData = JSON.parse(formDataString);
+                        
+                        // Save to localStorage
+                        let allAppointments = [];
+                        const storedAppointments = localStorage.getItem('allAppointments');
+                        if (storedAppointments) {
+                            try {
+                                allAppointments = JSON.parse(storedAppointments);
+                            } catch (e) {
+                                console.error("Error parsing existing appointments:", e);
+                            }
+                        }
+                        allAppointments.push(formData);
+                        localStorage.setItem('allAppointments', JSON.stringify(allAppointments));
+
+                        console.log('ข้อมูลการนัดหมายถูกบันทึก:', formData);
+                        
+                        appointmentConfirmationModal.classList.remove('show'); // Hide modal
+                        alert('การนัดหมายถูกส่งเรียบร้อยแล้ว! โปรดรอการยืนยัน.');
+                        window.location.href = 'Viewinfo.html'; // Redirect to Viewinfo page after booking
                     }
+                });
+            }
+
+            // Handle "Edit Booking" button in the confirmation modal
+            if (btnEditBooking) {
+                btnEditBooking.addEventListener('click', function() {
+                    appointmentConfirmationModal.classList.remove('show'); // Hide modal to allow editing
+                });
+            }
+
+            // Close confirmation modal if user clicks outside
+            appointmentConfirmationModal.addEventListener('click', function(e) {
+                if (e.target === appointmentConfirmationModal) {
+                    appointmentConfirmationModal.classList.remove('show');
                 }
-                allAppointments.push(formData);
-                localStorage.setItem('allAppointments', JSON.stringify(allAppointments));
-
-                console.log('ข้อมูลการนัดหมายถูกบันทึก:', formData);
-
-                alert('การนัดหมายถูกส่งเรียบร้อยแล้ว! โปรดรอการยืนยัน.');
-                // Optionally, clear the form or redirect
-                appointmentForm.reset();
-                window.location.href = 'Viewinfo.html'; // Redirect to Viewinfo page after booking
             });
         });
     </script>
@@ -1169,7 +1258,7 @@
         </div>
     </main>
 
-    <!-- New Modal for Psychologist Details -->
+    <!-- Modal for Psychologist Details -->
     <div id="psychologistDetailModal" class="general-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1184,6 +1273,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn-secondary" id="btnClosePsyDetailModal">ปิด</button>
                 <button type="button" class="btn-book-now" id="btnBookNowFromPsyModal">จองการนัดหมายตอนนี้</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Modal for Appointment Confirmation -->
+    <div id="appointmentConfirmationModal" class="general-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ยืนยันข้อมูลการนัดหมาย</h3>
+            </div>
+            <div class="modal-body">
+                <p><strong>วันที่นัดหมาย:</strong> <span id="confirmDate"></span></p>
+                <p><strong>เวลานัดหมาย:</strong> <span id="confirmTime"></span></p>
+                <p><strong>ชื่อ - นามสกุล:</strong> <span id="confirmFullName"></span></p>
+                <p><strong>รหัสนักศึกษา:</strong> <span id="confirmStudentId"></span></p>
+                <p><strong>สาขา:</strong> <span id="confirmMajor"></span></p>
+                <p><strong>คณะ:</strong> <span id="confirmFaculty"></span></p>
+                <p><strong>เรื่องที่ต้องการปรึกษา:</strong> <span id="confirmReason"></span></p>
+                <p><strong>นักจิตวิทยา:</strong> <span id="confirmPsychologist"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="btnEditBooking">แก้ไขข้อมูล</button>
+                <button type="button" class="btn-primary" id="btnConfirmBooking">ยืนยันการจอง</button>
             </div>
         </div>
     </div>

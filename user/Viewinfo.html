@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare | ข้อมูลการนัดหมาย</title>
+    <title>LRU HeartCare | ข้อมูลการนัดหมาย</title> <!-- เปลี่ยนชื่อ Title ให้ตรงกับเนื้อหา -->
     <style>
         /* ========== Variables - ตัวแปรสีและเงา ========== */
         :root {
@@ -22,6 +22,9 @@
             --input-bg: #fff; /* สีพื้นหลังของ input */
             --input-border: #ced4da; /* สีขอบ input */
             --form-card-bg: #fff; /* สีพื้นหลังของการ์ดฟอร์ม */
+            --chat-bg: #e0e0e0; /* สีพื้นหลังแชท */
+            --user-bubble-bg: var(--primary-pink); /* สีบับเบิ้ลข้อความผู้ใช้ */
+            --psychologist-bubble-bg: var(--soft-blue); /* สีบับเบิ้ลข้อความนักจิตวิทยา */
         }
 
         /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
@@ -50,19 +53,19 @@
         /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
         .nav {
             background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
-            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
-            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
-            color: var(--white); /* สีข้อความ */
-            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+            padding: 15px 0;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            color: var(--white);
+            position: sticky;
             top: 0;
-            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
-            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
         .nav-con {
             display: flex;
-            justify-content: space-between; /* กระจายเนื้อหา */
-            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+            justify-content: space-between;
+            align-items: center;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
@@ -71,75 +74,135 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+            gap: 12px;
         }
 
         .logo img {
-            height: 45px; /* เพิ่มความสูงโลโก้ */
-            border-radius: 10px; /* เพิ่มขอบมน */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+            height: 45px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .logo a {
-            color: var(--white); /* สีลิงก์ */
-            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
-            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
-            font-weight: 700; /* น้ำหนักฟอนต์ */
-            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .menu-con {
             display: flex;
             align-items: center;
-            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+            gap: 20px;
         }
 
         .menu {
-            list-style: none; /* ไม่มีสไตล์ลิสต์ */
+            list-style: none;
             padding: 0;
             margin: 0;
             display: flex;
-            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+            gap: 20px;
         }
 
         .menu li a {
             color: var(--white);
             text-decoration: none;
-            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
-            border-radius: 10px; /* เพิ่มขอบมน */
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+            padding: 10px 18px;
+            border-radius: 10px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
             font-weight: 500;
-            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
-            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: block;
+            line-height: 1;
         }
 
         .menu li a:hover {
             background: var(--primary-pink);
-            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
-            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        /* Dropdown specific styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+            color: var(--white);
+            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+            border-radius: 10px; /* เพิ่มขอบมน */
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
+            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--primary-pink);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .dropdown-menu {
+            display: none; /* ซ่อน dropdown menu เริ่มต้น */
+            position: absolute;
+            top: 110%; /* ขยับลงมาเล็กน้อย */
+            left: 0;
+            background: var(--deep-blue);
+            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+            border-radius: 10px; /* ขอบมนมากขึ้น */
+            overflow: hidden;
+            z-index: 1000;
+            padding: 10px 0;
+            opacity: 0; /* ซ่อนด้วย opacity */
+            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+        }
+
+        .dropdown.show .dropdown-menu {
+            display: block; /* แสดง dropdown menu */
+            opacity: 1; /* แสดงด้วย opacity */
+            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+        }
+
+        .dropdown-menu li a {
+            color: var(--white);
+            padding: 12px 25px; /* เพิ่ม padding */
+            display: block;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .dropdown-menu li a:hover {
+            background: var(--primary-pink);
+            color: var(--white);
         }
 
         .logout a {
             background: var(--primary-pink);
             color: var(--white);
             text-decoration: none;
-            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
-            border-radius: 30px; /* ขอบมนมากขึ้น */
-            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
-            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 600;
             box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
-            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
-            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
-            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            letter-spacing: 0.5px;
+            border: 2px solid var(--primary-pink);
+            line-height: 1;
+            display: block;
         }
 
         .logout a:hover {
-            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
-            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
-            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
-            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+            background: var(--white);
+            color: var(--primary-pink);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6);
+            border-color: var(--primary-pink);
         }
 
         /* ========== Main Content Section ========== */
@@ -558,10 +621,20 @@
             .menu li {
                 width: 100%;
             }
-            .menu li a { 
+            .menu li a, .dropdown-toggle { /* Added .dropdown-toggle for responsive styles */
                 width: calc(100% - 30px);
                 text-align: center;
                 margin: 0 15px;
+            }
+            .dropdown-menu { /* Added dropdown-menu for responsive styles */
+                position: static;
+                width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 0;
+            }
+            .dropdown-menu li a {
+                padding: 10px 15px;
             }
             .logout {
                 width: 100%;
@@ -790,7 +863,27 @@
 </head>
 <body>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // JavaScript สำหรับการทำงานของ Dropdown ใน Navigation Bar
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            const dropdown = dropdownToggle.closest('.dropdown');
+            const arrow = dropdownToggle.querySelector('.arrow');
+        
+            if (dropdownToggle && dropdown && arrow) { // Ensure elements exist
+                dropdownToggle.addEventListener('click', function () {
+                    dropdown.classList.toggle('show');
+                    arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+                });
+            }
+        
+            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            document.addEventListener('click', function (e) {
+                if (dropdown && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                    if (arrow) arrow.textContent = '▼';
+                }
+            });
+
             // Modal elements for detailed view
             const appointmentDetailModal = document.getElementById('appointmentDetailModal');
             const detailDate = document.getElementById('detailDate');
@@ -872,7 +965,14 @@
               <li><a href="index.html">หน้าแรก</a></li>
               <li><a href="News.html">ข่าวสาร</a></li>
               <li><a href="Psychologist.html">เลือกนักจิตวิยา</a></li>
-              <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li> <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+              <!-- Dropdown สำหรับข้อมูลการนัดหมาย -->
+              <li class="dropdown">
+                <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
+                <ul class="dropdown-menu">
+                  <li><a href="Viewinfo.html">ข้อมูลการนัดหมาย</a></li>
+                  <li><a href="appointments.html">ประวัติการนัดหมาย</a></li>
+                </ul>
+              </li>
             </ul>
             <div class="logout">
               <a href="Login.html">ออกจากระบบ</a>
