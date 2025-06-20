@@ -262,6 +262,13 @@
             display: inline-block;
             margin-top: 15px; /* เพิ่มระยะห่างด้านบน */
             box-shadow: 0 3px 10px rgba(135, 206, 235, 0.3); /* เพิ่มเงา */
+            cursor: pointer; /* เพิ่ม cursor pointer เพื่อแสดงว่าคลิกได้ */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        .psychologist-info-card .specialty-tag:hover {
+            background-color: var(--deep-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.5);
         }
 
         .booking-form-card {
@@ -436,6 +443,160 @@
             box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
         }
 
+        /* Modal Styles - Reused and adapted for psychologist details */
+        .general-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001; /* Higher than nav bar */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); /* Dim background */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .general-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: auto;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            max-width: 500px; /* Default width for modals */
+            width: 100%;
+            animation: fadeInScale 0.3s ease-out;
+            position: relative;
+            text-align: center; /* Center content by default */
+        }
+
+        /* Keyframes for modal animation */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid var(--border-light);
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--deep-blue);
+            font-weight: 700;
+        }
+
+        .modal-body {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            text-align: left; /* Default left align for body content */
+        }
+        .modal-body p {
+            margin-bottom: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .modal-footer button {
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+        }
+        .modal-footer .btn-primary {
+            background-color: var(--primary-pink);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #e05e9b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+        }
+        .modal-footer .btn-secondary {
+            background-color: var(--text-muted);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+        }
+        .modal-footer .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        /* Specific styles for Psychologist Details Modal */
+        #psychologistDetailModal .modal-content {
+            max-width: 600px;
+        }
+        #psychologistDetailModal .modal-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center items in modal body */
+            gap: 15px;
+            padding: 10px 0;
+        }
+        #psychologistDetailModal .modal-body img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-pink);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+        #psychologistDetailModal .modal-body h4 {
+            font-size: 1.8rem;
+            color: var(--deep-blue);
+            margin: 0;
+            font-weight: 700;
+        }
+        #psychologistDetailModal .modal-body .specialty {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block; /* Ensure it's on its own line */
+        }
+        #psychologistDetailModal .modal-body .bio {
+            font-size: 1rem;
+            color: var(--text-dark);
+            text-align: center; /* Center bio text */
+            padding: 0 20px;
+        }
+        #psychologistDetailModal .modal-footer {
+            margin-top: 30px;
+        }
+        #psychologistDetailModal .modal-footer .btn-book-now {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
+        }
+        #psychologistDetailModal .modal-footer .btn-book-now:hover {
+            background-color: #3a6b9a;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
+        }
+
 
         /* Responsive Adjustments */
         @media (max-width: 992px) {
@@ -447,7 +608,7 @@
                 flex-direction: column;
                 gap: 15px;
                 width: 100%;
-                align-items: stretch;
+                align-items: stretch; /* ทำให้ menu-con ขยายเต็มความกว้าง */
             }
             .menu {
                 flex-direction: column;
@@ -459,12 +620,12 @@
                 width: 100%;
             }
             .menu li a, .dropdown-toggle {
-                width: calc(100% - 30px);
+                width: calc(100% - 30px); /* Full width minus padding (20px) and slight margin (10px) */
                 text-align: center;
-                margin: 0 15px;
+                margin: 0 15px; /* เพิ่ม margin ด้านข้าง */
             }
             .dropdown-menu {
-                position: static;
+                position: static; /* Change to static so it flows with content */
                 width: 100%;
                 border-radius: 0;
                 box-shadow: none;
@@ -476,12 +637,12 @@
             .logout {
                 width: 100%;
                 text-align: center;
-                padding: 0 15px;
+                padding: 0 15px; /* เพิ่ม padding ด้านข้าง */
             }
             .logout a {
                 display: block;
-                width: 100%;
-                margin: 0;
+                width: 100%; /* Adjust to full width */
+                margin: 0; /* Remove auto margin */
             }
 
             .appointment-section {
@@ -529,6 +690,38 @@
             }
             .psychologist-not-found p {
                 font-size: 1.1rem;
+            }
+            /* Modal Responsive */
+            .modal-content {
+                max-width: 90%;
+                padding: 25px;
+            }
+            .modal-header h3 {
+                font-size: 1.6rem;
+            }
+            .modal-body {
+                font-size: 1rem;
+            }
+            .modal-footer {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 10px;
+            }
+            .modal-footer button {
+                width: 100%; /* Full width */
+            }
+            #psychologistDetailModal .modal-body img {
+                width: 100px;
+                height: 100px;
+            }
+            #psychologistDetailModal .modal-body h4 {
+                font-size: 1.5rem;
+            }
+            #psychologistDetailModal .modal-body .specialty {
+                font-size: 1rem;
+            }
+            #psychologistDetailModal .modal-body .bio {
+                font-size: 0.95rem;
+                padding: 0 15px;
             }
         }
 
@@ -591,6 +784,34 @@
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
+            /* Modal Responsive */
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-header h3 {
+                font-size: 1.4rem;
+            }
+            .modal-body {
+                font-size: 0.9rem;
+            }
+            .modal-footer button {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+            #psychologistDetailModal .modal-body img {
+                width: 80px;
+                height: 80px;
+            }
+            #psychologistDetailModal .modal-body h4 {
+                font-size: 1.3rem;
+            }
+            #psychologistDetailModal .modal-body .specialty {
+                font-size: 0.9rem;
+            }
+            #psychologistDetailModal .modal-body .bio {
+                font-size: 0.85rem;
+                padding: 0 10px;
+            }
         }
 
         @media (max-width: 576px) {
@@ -652,6 +873,33 @@
             .psychologist-not-found p {
                 font-size: 0.95rem;
             }
+            /* Modal Responsive */
+            .modal-content {
+                padding: 15px;
+            }
+            .modal-header h3 {
+                font-size: 1.2rem;
+            }
+            .modal-body {
+                font-size: 0.85rem;
+            }
+            .modal-footer button {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+            #psychologistDetailModal .modal-body img {
+                width: 70px;
+                height: 70px;
+            }
+            #psychologistDetailModal .modal-body h4 {
+                font-size: 1.2rem;
+            }
+            #psychologistDetailModal .modal-body .specialty {
+                font-size: 0.85rem;
+            }
+            #psychologistDetailModal .modal-body .bio {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -663,15 +911,17 @@
             const dropdown = dropdownToggle.closest('.dropdown');
             const arrow = dropdownToggle.querySelector('.arrow');
         
-            dropdownToggle.addEventListener('click', function () {
-                dropdown.classList.toggle('show');
-                arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
-            });
+            if (dropdownToggle && dropdown && arrow) { // Ensure elements exist
+                dropdownToggle.addEventListener('click', function () {
+                    dropdown.classList.toggle('show');
+                    arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
+                });
+            }
         
             document.addEventListener('click', function (e) {
-                if (!dropdown.contains(e.target)) {
+                if (dropdown && !dropdown.contains(e.target)) {
                     dropdown.classList.remove('show');
-                    arrow.textContent = '▼';
+                    if (arrow) arrow.textContent = '▼';
                 }
             });
 
@@ -683,37 +933,37 @@
                 'somchai': {
                     name: 'นายสมชาย ใจดี',
                     specialty: 'ผู้เชี่ยวชาญ: ความเครียดและการเรียน',
-                    bio: 'นายสมชายมีประสบการณ์ในการให้คำปรึกษาแก่นักศึกษาที่เผชิญกับความกดดันด้านการเรียนและการจัดการความเครียด',
-                    image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354093902080249906/image.png?ex=68142878&is=6812d6f8&hm=4326e0e78ed1dd3cc056610562fb36652876380cd738d91db4d3254a79092ba5&'
+                    bio: 'นายสมชายมีประสบการณ์ในการให้คำปรึกษาแก่นักศึกษาที่เผชิญกับความกดดันด้านการเรียนและการจัดการความเครียด เขามุ่งเน้นการสร้างพื้นที่ปลอดภัยและสนับสนุนให้นักศึกษาค้นพบแนวทางแก้ไขปัญหาด้วยตนเอง',
+                    image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354093902080249906/image.png?ex=68142878&is=6812d6f8&hm=4326e0e78ed1dd3cc056610562fb36610562fb36652876380cd738d91db4d3254a79092ba5&'
                 },
                 'maneerat': {
                     name: 'นางสาวมณีรัตน์ สุขใจ',
                     specialty: 'ผู้เชี่ยวชาญ: ความสัมพันธ์และอารมณ์',
-                    bio: 'นางสาวมณีรัตน์ช่วยให้นักศึกษาพัฒนาทักษะการสื่อสาร จัดการอารมณ์ และสร้างความสัมพันธ์ที่ดีกับผู้อื่น',
+                    bio: 'นางสาวมณีรัตน์ช่วยให้นักศึกษาพัฒนาทักษะการสื่อสาร จัดการอารมณ์ และสร้างความสัมพันธ์ที่ดีกับผู้อื่น เธอมีความเข้าใจอย่างลึกซึ้งในพลวัตของความสัมพันธ์และพร้อมที่จะนำทางคุณ',
                     image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354093987342061588/image.png?ex=6814288c&is=6812d70c&hm=b272b9cd7ecd3aa10b03f283638ae3c6c8048de67413cb9c3a79d1fb59ecb16b&'
                 },
                 'oranong': {
                     name: 'แพทย์หญิงอรอนงค์ รักษาใจ',
                     specialty: 'ผู้เชี่ยวชาญ: การพัฒนาตนเอง',
-                    bio: 'แพทย์หญิงอรอนงค์เน้นการเสริมสร้างความมั่นใจ ค้นหาศักยภาพ และวางแผนเพื่ออนาคตที่สดใส',
+                    bio: 'แพทย์หญิงอรอนงค์เน้นการเสริมสร้างความมั่นใจ ค้นหาศักยภาพ และวางแผนเพื่ออนาคตที่สดใส เธอเชื่อว่าทุกคนมีศักยภาพในการเติบโตและเปลี่ยนแปลง',
                     image: 'https://cdn.discordapp.com/attachments/1072487445133803531/1354094057793523720/image.png?ex=6814289d&is=6812d71d&hm=a34d2c8467172292b92bfbd8942cfdd22466819aba3b7be7cf4471115f850eb&'
                 },
                 'pimpa': {
                     name: 'แพทย์หญิงพิมพา สุขสันต์',
                     specialty: 'ผู้เชี่ยวชาญ: ภาวะซึมเศร้าและวิตกกังวล',
-                    bio: 'แพทย์หญิงพิมพาให้การสนับสนุนผู้ที่มีภาวะซึมเศร้าและวิตกกังวล เพื่อให้กลับมามีคุณภาพชีวิตที่ดีขึ้น',
+                    bio: 'แพทย์หญิงพิมพาให้การสนับสนุนผู้ที่มีภาวะซึมเศร้าและวิตกกังวล เพื่อให้กลับมามีคุณภาพชีวิตที่ดีขึ้น ด้วยแนวทางที่อ่อนโยนและเข้าใจ',
                     image: 'https://placehold.co/150x150/87CEEB/ffffff?text=Dr.+Pim'
                 },
                 'deeprom': {
                     name: 'นายดีพร้อม ยิ้มสู้',
                     specialty: 'ผู้เชี่ยวชาญ: การปรับตัวและทักษะชีวิต',
-                    bio: 'นายดีพร้อมช่วยให้นักศึกษาปรับตัวเข้ากับสภาพแวดล้อมใหม่ๆ และพัฒนาทักษะชีวิตที่จำเป็น',
+                    bio: 'นายดีพร้อมช่วยให้นักศึกษาปรับตัวเข้ากับสภาพแวดล้อมใหม่ๆ และพัฒนาทักษะชีวิตที่จำเป็น ด้วยการนำเสนอแนวคิดที่ใช้ได้จริงในชีวิตประจำวัน',
                     image: 'https://placehold.co/150x150/FF69B4/ffffff?text=Mr.+Dee'
                 },
                 'chainant': {
                     name: 'นางสาวชัยนันท์ มีชัย',
                     specialty: 'ผู้เชี่ยวชาญ: การเรียนรู้และอาชีพ',
-                    bio: 'นางสาวชัยนันท์ให้คำแนะนำด้านการเรียนรู้ การวางแผนอาชีพ และการค้นหาเส้นทางที่เหมาะสม',
+                    bio: 'นางสาวชัยนันท์ให้คำแนะนำด้านการเรียนรู้ การวางแผนอาชีพ และการค้นหาเส้นทางที่เหมาะสม เพื่อให้นักศึกษาบรรลุเป้าหมายที่ตั้งไว้',
                     image: 'https://placehold.co/150x150/4682B4/ffffff?text=Ms.+Chai'
                 }
             };
@@ -722,6 +972,16 @@
             const appointmentForm = document.getElementById('appointmentForm');
             const selectedPsychologist = psychologists[psychologistId];
 
+            // Elements for the new Psychologist Detail Modal
+            const psychologistDetailModal = document.getElementById('psychologistDetailModal');
+            const detailPsyImage = document.getElementById('detailPsyImage');
+            const detailPsyName = document.getElementById('detailPsyName');
+            const detailPsySpecialty = document.getElementById('detailPsySpecialty');
+            const detailPsyBio = document.getElementById('detailPsyBio');
+            const btnClosePsyDetailModal = document.getElementById('btnClosePsyDetailModal');
+            const btnBookNowFromPsyModal = document.getElementById('btnBookNowFromPsyModal');
+            const specialtyTagSpan = document.getElementById('specialtyTagSpan'); // Get reference to the specialty tag span
+
             if (selectedPsychologist) {
                 document.getElementById('psychologistImage').src = selectedPsychologist.image;
                 document.getElementById('psychologistName').textContent = selectedPsychologist.name;
@@ -729,10 +989,45 @@
                 document.getElementById('psychologistBio').textContent = selectedPsychologist.bio;
                 // Ensure the form is visible if a valid psychologist is found
                 appointmentForm.style.display = 'block'; 
+
+                // Add event listener to the specialty tag to open the modal
+                if (specialtyTagSpan) {
+                    specialtyTagSpan.addEventListener('click', function() {
+                        detailPsyImage.src = selectedPsychologist.image;
+                        detailPsyName.textContent = selectedPsychologist.name;
+                        detailPsySpecialty.textContent = selectedPsychologist.specialty;
+                        detailPsyBio.textContent = selectedPsychologist.bio;
+                        psychologistDetailModal.classList.add('show');
+                    });
+                }
+
+                // Close modal when clicking the close button
+                if (btnClosePsyDetailModal) {
+                    btnClosePsyDetailModal.addEventListener('click', function() {
+                        psychologistDetailModal.classList.remove('show');
+                    });
+                }
+
+                // Handle "Book Now" button in the psychologist detail modal
+                if (btnBookNowFromPsyModal) {
+                    btnBookNowFromPsyModal.addEventListener('click', function() {
+                        psychologistDetailModal.classList.remove('show'); // Hide modal
+                        // Scroll to the booking form
+                        appointmentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }
+
+                // Close modal if user clicks outside
+                psychologistDetailModal.addEventListener('click', function(e) {
+                    if (e.target === psychologistDetailModal) {
+                        psychologistDetailModal.classList.remove('show');
+                    }
+                });
+
             } else {
                 // If psychologist ID is not found, hide the original info card and form
-                psychologistInfoCard.style.display = 'none';
-                appointmentForm.style.display = 'none'; 
+                if (psychologistInfoCard) psychologistInfoCard.style.display = 'none';
+                if (appointmentForm) appointmentForm.style.display = 'none'; 
 
                 // Create a new div to display the error message
                 const errorMessageDiv = document.createElement('div');
@@ -761,15 +1056,31 @@
                     major: document.getElementById('major').value,
                     faculty: document.getElementById('faculty').value,
                     reason: document.getElementById('reason').value,
-                    psychologist: selectedPsychologist ? selectedPsychologist.name : 'Unknown'
+                    psychologist: selectedPsychologist ? selectedPsychologist.name : 'Unknown',
+                    psychologistId: psychologistId, // Add psychologistId
+                    status: 'รอยืนยัน', // Initial status
+                    id: 'app' + Date.now() // Simple unique ID for demonstration
                 };
 
-                console.log('ข้อมูลการนัดหมาย:', formData);
+                // Save to localStorage
+                let allAppointments = [];
+                const storedAppointments = localStorage.getItem('allAppointments');
+                if (storedAppointments) {
+                    try {
+                        allAppointments = JSON.parse(storedAppointments);
+                    } catch (e) {
+                        console.error("Error parsing existing appointments:", e);
+                    }
+                }
+                allAppointments.push(formData);
+                localStorage.setItem('allAppointments', JSON.stringify(allAppointments));
 
-                // You would typically send this data to a backend server here
+                console.log('ข้อมูลการนัดหมายถูกบันทึก:', formData);
+
                 alert('การนัดหมายถูกส่งเรียบร้อยแล้ว! โปรดรอการยืนยัน.');
                 // Optionally, clear the form or redirect
                 appointmentForm.reset();
+                window.location.href = 'Viewinfo.html'; // Redirect to Viewinfo page after booking
             });
         });
     </script>
@@ -807,7 +1118,7 @@
             <h3 id="psychologistName"></h3>
             <p id="psychologistSpecialty"></p>
             <p id="psychologistBio"></p>
-            <span class="specialty-tag">รายละเอียดนักจิตวิทยา</span>
+            <span class="specialty-tag" id="specialtyTagSpan">รายละเอียดนักจิตวิทยา</span>
         </div>
 
         <div class="booking-form-card" id="appointmentForm">
@@ -857,5 +1168,24 @@
             </form>
         </div>
     </main>
+
+    <!-- New Modal for Psychologist Details -->
+    <div id="psychologistDetailModal" class="general-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>รายละเอียดนักจิตวิทยา</h3>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="รูปภาพนักจิตวิทยา" id="detailPsyImage">
+                <h4 id="detailPsyName"></h4>
+                <span class="specialty" id="detailPsySpecialty"></span>
+                <p class="bio" id="detailPsyBio"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="btnClosePsyDetailModal">ปิด</button>
+                <button type="button" class="btn-book-now" id="btnBookNowFromPsyModal">จองการนัดหมายตอนนี้</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
