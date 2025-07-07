@@ -3,43 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare - แชทออนไลน์</title>
+    <title>LRU HeartCare | การนัดหมาย</title>
     <!-- Google Fonts: Kanit for Thai text -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap Icons for a wide range of icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* ========== Variables ========== */
+        /* ========== Variables - ตัวแปรสีและเงา ========== */
         :root {
-            --primary-pink: #FF69B4;
-            --light-pink: #FFC0CB;
-            --soft-blue: #87CEEB;
-            --deep-blue: #4682B4;
-            --text-dark: #343a40;
-            --text-muted: #6c757d;
-            --bg-light: #f8f9fa;
-            --white: #ffffff;
-            --border-light: #e9ecef;
-            --shadow-light: rgba(0, 0, 0, 0.08);
-            --shadow-medium: rgba(0, 0, 0, 0.15);
-            --input-border: #ced4da;
-            --input-focus: #80bdff;
-            --chat-bubble-bg-user: #e0f7fa; /* Light blue for user */
-            --chat-bubble-bg-psychologist: #ffebee; /* Light pink for psychologist */
-            --error-red: #dc3545;
+            --primary-pink: #FF69B4; /* ชมพูหลัก */
+            --light-pink: #FFC0CB; /* ชมพูอ่อน */
+            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+            --text-dark: #343a40; /* สีข้อความเข้ม */
+            --text-muted: #6c757d; /* สีข้อความรอง */
+            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+            --white: #ffffff; /* สีขาว */
+            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+            --input-bg: #fff; /* สีพื้นหลังของ input */
+            --input-border: #ced4da; /* สีขอบ input */
+            --form-card-bg: #fff; /* สีพื้นหลังของการ์ดฟอร์ม */
         }
 
-        /* ========== Body ========== */
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
         body {
-            font-family: 'Kanit', sans-serif;
+            font-family: 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
             margin: 0;
             padding: 0;
             background: var(--bg-light);
             color: var(--text-dark);
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
 
-        /* ========== Layout ========== */
+        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ========== Layout - โครงสร้างหลักของแดชบอร์ด ========== */
         .dashboard-container {
             display: flex;
             min-height: 100vh;
@@ -51,20 +55,20 @@
             color: var(--white);
             padding: 20px;
             box-shadow: 2px 0 10px var(--shadow-light);
-            flex-shrink: 0;
-            transition: width 0.3s ease;
-            overflow-y: auto;
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+            transition: width 0.3s ease; /* Smooth transition for sidebar width */
+            overflow-y: auto; /* Allow sidebar to scroll if content overflows */
         }
 
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow-x: hidden; /* Prevent horizontal scrolling within main content */
+            overflow-y: auto; /* Allow main content to scroll */
         }
 
-        /* ========== Sidebar ========== */
+        /* ========== Sidebar - แถบด้านข้าง ========== */
         .sidebar h5 {
             text-align: center;
             margin-bottom: 30px;
@@ -74,13 +78,13 @@
         }
 
         .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+            list-style: none; /* Remove bullet points */
+            padding: 0; /* Remove default padding */
+            margin: 0; /* Remove default margin */
         }
 
         .sidebar li {
-            padding: 0;
+            padding: 0; /* Ensure no extra padding from list items */
         }
 
         .sidebar a {
@@ -106,7 +110,7 @@
             font-size: 1.1rem;
         }
 
-        /* ========== Navbar ========== */
+        /* ========== Navbar - แถบนำทางด้านบน ========== */
         .navbar {
             background: var(--white);
             padding: 15px 25px;
@@ -115,19 +119,20 @@
             justify-content: flex-end;
             align-items: center;
             gap: 20px;
-            flex-wrap: wrap;
-            position: sticky;
+            flex-wrap: wrap; /* Allow navbar items to wrap on smaller screens */
+            position: sticky; /* Make navbar sticky */
             top: 0;
-            z-index: 100;
+            z-index: 100; /* Ensure it stays on top */
         }
 
+        /* ========== Search Input - ช่องค้นหา ========== */
         .search-input {
             border: 1px solid var(--border-light);
             padding: 10px 15px;
             border-radius: 25px;
             max-width: 280px;
-            width: 100%;
-            box-sizing: border-box;
+            width: 100%; /* Ensure it takes full width when needed */
+            box-sizing: border-box; /* Include padding and border in the element's total width */
             outline: none;
             transition: 0.3s;
         }
@@ -137,6 +142,7 @@
             box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
         }
 
+        /* ========== User Dropdown - เมนูผู้ใช้ ========== */
         .user-dropdown {
             position: relative;
             cursor: pointer;
@@ -162,7 +168,7 @@
             border-radius: 8px;
             min-width: 160px;
             padding: 8px 0;
-            z-index: 10;
+            z-index: 10; /* Ensure dropdown is above other content */
         }
 
         .user-dropdown.active .user-dropdown-menu,
@@ -183,436 +189,445 @@
             color: var(--white);
         }
 
-        /* ========== Content Area ========== */
+        /* ========== Content Area - พื้นที่เนื้อหาหลัก ========== */
         .content-area {
             flex: 1;
             padding: 30px;
             background: var(--bg-light);
-            box-sizing: border-box;
-            display: flex; /* Make content area a flex container */
-            flex-direction: column; /* Stack components vertically */
+            box-sizing: border-box; /* Include padding in element's total width */
         }
 
-        /* ========== Chat Section Styles ========== */
-        .chat-section {
-            background-color: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            flex-grow: 1; /* Allow chat section to take available height */
-            max-height: calc(100vh - 180px); /* Adjust max-height to fit within viewport */
-            position: relative; /* For modal positioning */
-        }
-
-        .chat-section.active-chat {
-            display: flex; /* Show when chat is active */
-        }
-
-        .chat-header {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .content-area h4 {
+            margin-bottom: 25px;
             color: var(--deep-blue);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border-light);
-            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
         }
 
-        .chat-messages {
-            flex-grow: 1; /* Messages area takes up most space */
-            overflow-y: auto; /* Enable scrolling for messages */
-            padding-right: 10px; /* Space for scrollbar */
-            margin-bottom: 20px;
+        /* ========== Table Styles - สไตล์ตาราง ========== */
+        table {
+            width: 100%;
+            background-color: white;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            margin-bottom: 25px; /* Added margin */
+            table-layout: fixed; /* Ensures columns respect width rules */
         }
 
-        .message-bubble {
-            display: flex;
-            margin-bottom: 15px;
-            align-items: flex-end;
-        }
-
-        /* Swapped: User messages on the left */
-        .message-bubble.user {
-            justify-content: flex-start; /* Align user messages to the left */
-        }
-
-        /* Swapped: Psychologist messages on the right */
-        .message-bubble.psychologist {
-            justify-content: flex-end; /* Align psychologist messages to the right */
-        }
-
-        .message-content {
-            padding: 12px 18px;
-            border-radius: 20px;
-            max-width: 75%;
-            word-wrap: break-word; /* Wrap long words */
-            line-height: 1.5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* Swapped: User message bubble styling */
-        .message-bubble.user .message-content {
-            background-color: var(--chat-bubble-bg-user);
-            color: var(--text-dark);
-            border-bottom-left-radius: 5px; /* Sharpen corner towards sender */
-        }
-
-        /* Swapped: Psychologist message bubble styling */
-        .message-bubble.psychologist .message-content {
-            background-color: var(--chat-bubble-bg-psychologist);
-            color: var(--text-dark);
-            border-bottom-right-radius: 5px; /* Sharpen corner towards sender */
-        }
-
-        .message-info {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 5px;
-            /* Default to right, will be overridden by specific bubble types */
-        }
-        /* Swapped: User message info alignment */
-        .message-bubble.user .message-info {
+        th, td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee; /* Lighter border */
             text-align: left;
-        }
-        /* Swapped: Psychologist message info alignment */
-        .message-bubble.psychologist .message-info {
-            text-align: right;
+            word-wrap: break-word; /* Break long words */
         }
 
-        .chat-input-area {
+        th {
+            background-color: var(--soft-blue); /* Blue header */
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        tbody tr {
+            cursor: pointer; /* Indicate rows are clickable */
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f0f0f0; /* Light hover effect for rows */
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: var(--bg-light); /* Zebra striping */
+        }
+
+        /* Status Colors */
+        .status-pending-request {
+            color: #d1b000; /* Darker yellow/orange */
+            font-weight: 600;
+        }
+        .status-scheduled {
+            color: green;
+            font-weight: 600;
+        }
+        .status-rejected {
+            color: red;
+            font-weight: 600;
+        }
+        .status-completed {
+            color: var(--deep-blue); /* Use a blue for completed */
+            font-weight: 600;
+        }
+        .status-cancelled {
+            color: var(--text-muted); /* Grey for cancelled */
+            font-weight: 600;
+        }
+
+        /* Responsive Table - Make it scrollable on small screens */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+
+        /* ========== Action Buttons in Table ========== */
+        .table-actions button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            margin: 0 5px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+        .table-actions button:hover {
+            color: var(--primary-pink);
+        }
+        .table-actions .btn-accept {
+            color: green;
+        }
+        .table-actions .btn-reject {
+            color: red;
+        }
+        .table-actions .btn-schedule {
+            color: var(--soft-blue);
+        }
+        .table-actions .btn-view {
+            color: var(--deep-blue);
+        }
+
+
+        /* ========== Form Styles (for managing requests) - These styles are now for the new modal form ========== */
+        .modal-form-group { /* Renamed from form-group for clarity in modal */
+            margin-bottom: 15px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .modal-form-group input[type="text"],
+        .modal-form-group input[type="date"],
+        .modal-form-group input[type="time"],
+        .modal-form-group select,
+        .modal-form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .modal-form-group input[type="text"]:focus,
+        .modal-form-group input[type="date"]:focus,
+        .modal-form-group input[type="time"]:focus,
+        .modal-form-group select:focus,
+        .modal-form-group textarea:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+            outline: none;
+        }
+
+        .modal-form-group textarea {
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 80px;
+        }
+
+        /* Style for disabled inputs in modal */
+        .modal-form-group input:disabled,
+        .modal-form-group select:disabled,
+        .modal-form-group textarea:disabled {
+            background-color: #e9ecef; /* Lighter background for disabled fields */
+            cursor: not-allowed;
+        }
+
+        .modal-form-actions { /* Renamed from form-actions for clarity in modal */
             display: flex;
-            padding-top: 10px;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .modal-form-actions .btn-primary {
+            background-color: var(--primary-pink);
+            color: var(--white);
+        }
+
+        .modal-form-actions .btn-primary:hover {
+            background-color: #e6529c;
+            transform: translateY(-2px);
+        }
+
+        .modal-form-actions .btn-secondary {
+            background-color: var(--text-muted);
+            color: var(--white);
+        }
+
+        .modal-form-actions .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles - For displaying request details in a pop-up */
+        .general-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001; /* Higher than nav bar */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); /* Dim background */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .general-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: auto;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            max-width: 600px; /* Default width for modals */
+            width: 100%;
+            animation: fadeInScale 0.3s ease-out;
+            position: relative;
+            text-align: center; /* Center content by default */
+        }
+
+        /* Keyframes for modal animation */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid var(--border-light);
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--deep-blue);
+            font-weight: 700;
+        }
+
+        .modal-body {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            text-align: left; /* Default left align for body content */
+        }
+        .modal-body p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .modal-body p strong {
+            color: var(--deep-blue);
+            font-weight: 600;
+            min-width: 120px; /* Fixed width for labels in modal */
+            flex-shrink: 0;
+        }
+        .modal-body p span {
+            flex-grow: 1;
+            word-break: break-word;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 20px;
             border-top: 1px solid var(--border-light);
         }
 
-        .chat-input {
-            flex-grow: 1;
-            padding: 10px 15px;
-            border: 1px solid var(--input-border);
-            border-radius: 25px;
-            outline: none;
-            font-family: 'Kanit', sans-serif;
-            font-size: 1rem;
-            margin-right: 10px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .chat-input:focus {
-            border-color: var(--soft-blue);
-            box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.25);
-        }
-
-        .chat-input.error {
-            border-color: var(--error-red);
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-        }
-
-        .send-btn, .action-btn {
-            background-color: var(--primary-pink);
-            color: var(--white);
-            border: none;
-            border-radius: 25px;
-            padding: 10px 20px;
+        .modal-footer button {
+            padding: 12px 25px;
+            border-radius: 30px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            white-space: nowrap; /* Prevent text wrapping on buttons */
-        }
-
-        .action-btn.start-chat-btn {
-            background-color: var(--soft-blue);
-            box-shadow: 0 2px 8px rgba(135, 206, 235, 0.3);
-        }
-
-        .action-btn.start-chat-btn:hover {
-            background-color: #6fbbe0;
-            box-shadow: 0 4px 10px rgba(135, 206, 235, 0.5);
-        }
-
-        .action-btn.end-chat-btn {
-            background-color: var(--error-red);
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-        }
-
-        .action-btn.end-chat-btn:hover {
-            background-color: #c82333;
-            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.5);
-        }
-
-        .send-btn:hover, .action-btn:hover {
-            background-color: #e6529c;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.5);
-        }
-
-        .send-btn:disabled, .action-btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
-
-        /* Summary Modal Styles */
-        .summary-modal {
-            display: none; /* Hidden by default */
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            overflow-y: auto; /* Allow scrolling for modal content on small screens */
-        }
-
-        .summary-modal.active {
-            display: flex;
-        }
-
-        .summary-modal h3 {
-            color: var(--deep-blue);
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            text-align: center;
-        }
-
-        .summary-modal textarea {
-            width: 90%;
-            max-width: 600px;
-            min-height: 100px; /* Adjusted min-height */
-            padding: 15px;
-            border: 1px solid var(--input-border);
-            border-radius: 10px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 1rem;
-            resize: vertical;
-            margin-bottom: 15px; /* Adjusted margin */
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .summary-modal textarea:focus,
-        .summary-modal input[type="text"]:focus,
-        .summary-modal input[type="date"]:focus,
-        .summary-modal input[type="time"]:focus {
-            border-color: var(--soft-blue);
-            box-shadow: 0 0 0 0.2rem rgba(135, 206, 235, 0.25);
-        }
-
-        .summary-modal textarea.error,
-        .summary-modal input.error {
-            border-color: var(--error-red);
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-        }
-
-        .summary-modal button {
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .summary-modal .submit-summary-btn {
-            background-color: var(--deep-blue);
-            color: var(--white);
             border: none;
-            margin-top: 10px;
         }
-
-        .summary-modal .submit-summary-btn:hover {
-            background-color: #366591;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.5);
-        }
-
-        .status-message {
-            text-align: center;
-            margin-top: 10px;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-weight: 500;
+        .modal-footer .btn-primary {
+            background-color: var(--primary-pink);
             color: var(--white);
-            background-color: var(--deep-blue);
-            display: none; /* Hidden by default */
+            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+        }
+        .modal-footer .btn-primary:hover {
+            background-color: #e05e9b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+        }
+        .modal-footer .btn-secondary {
+            background-color: var(--text-muted);
+            color: var(--white);
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+        }
+        .modal-footer .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
         }
 
-        .status-message.active {
-            display: block;
-        }
+        /* Responsive Design */
+        @media (max-width: 992px) { /* For tablets or medium screens */
+            .dashboard-container {
+                flex-direction: column; /* Stack sidebar and main content */
+            }
+            .sidebar {
+                width: 100%; /* Full width sidebar */
+                height: auto; /* Auto height */
+                position: relative; /* Not fixed */
+                padding-top: 20px; /* Adjust padding */
+            }
+            .sidebar h5 {
+                display: block; /* Show title on smaller screens for top bar */
+                text-align: left;
+                padding-left: 15px;
+            }
+            .sidebar ul {
+                display: flex; /* Make sidebar items horizontal */
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px; /* Add horizontal padding to prevent overflow */
+            }
+            .sidebar li {
+                flex: 1; /* Distribute space */
+                min-width: 120px; /* Minimum width for each item */
+                margin-bottom: 5px; /* Adjust margin */
+            }
+            .sidebar a {
+                justify-content: center; /* Center content in sidebar links */
+                text-align: center;
+                padding: 10px; /* Adjust padding */
+            }
+            .sidebar a i {
+                margin-right: 5px; /* Reduce margin for icons */
+            }
 
-        .chat-actions {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        /* Next Appointment Section */
-        .next-appointment-section {
-            background-color: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-            display: flex; /* Changed to flex to be active by default */
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .next-appointment-section.hidden { /* Added hidden class for JS toggle */
-            display: none;
-        }
-
-        .next-appointment-section h3 {
-            color: var(--deep-blue);
-            margin-bottom: 15px;
-            font-size: 1.6rem;
-        }
-
-        .next-appointment-section p {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-            color: var(--text-dark);
-        }
-
-        .next-appointment-section strong {
-            color: var(--primary-pink);
-        }
-
-        /* New styles for next appointment inputs in modal */
-        .next-appointment-inputs {
-            width: 90%;
-            max-width: 600px;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border-light);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .next-appointment-inputs.active {
-            display: flex;
-        }
-
-        .next-appointment-inputs label {
-            font-weight: 500;
-            color: var(--text-dark);
-            margin-bottom: 5px;
-            display: block;
-            text-align: left;
-            width: 100%;
-        }
-
-        .next-appointment-inputs input[type="text"],
-        .next-appointment-inputs input[type="date"],
-        .next-appointment-inputs input[type="time"] {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid var(--input-border);
-            border-radius: 8px;
-            font-family: 'Kanit', sans-serif;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        .next-appointment-checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-
-        .next-appointment-checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary-pink); /* Style the checkbox */
-        }
-
-        /* Patient selection area before chat starts */
-        .patient-selection-area {
-            background-color: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-top: 20px;
-            display: flex; /* Visible by default */
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            max-width: 600px; /* Increased width for more details */
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-
-        .patient-selection-area.hidden {
-            display: none;
-        }
-
-        .patient-selection-area h3 {
-            color: var(--deep-blue);
-            font-size: 1.6rem;
-            margin-bottom: 10px;
-        }
-
-        .patient-info-grid {
-            display: grid;
-            grid-template-columns: auto 1fr; /* Label and value */
-            gap: 10px 15px;
-            width: 100%;
-            text-align: left;
-            padding: 10px 0;
-        }
-
-        .patient-info-grid strong {
-            color: var(--deep-blue);
-            font-weight: 600;
-            white-space: nowrap; /* Prevent label wrapping */
-        }
-
-        .patient-info-grid span {
-            color: var(--text-dark);
-        }
-
-        .patient-info-grid .full-width {
-            grid-column: 1 / -1; /* Span across both columns */
-        }
-
-        .patient-selection-area .action-btn {
-            margin-top: 10px;
-        }
-
-        /* Responsive adjustments for patient selection area */
-        @media (max-width: 768px) {
-            .patient-selection-area {
+            .main-content {
+                margin-left: 0; /* Remove left margin */
+            }
+            .navbar {
+                justify-content: center;
                 padding: 15px;
-                margin-top: 15px;
             }
-            .patient-info-grid {
-                grid-template-columns: 1fr; /* Stack labels and values on small screens */
+            .navbar .search-input {
+                width: calc(100% - 40px);
+                margin-bottom: 10px;
+                order: 1;
             }
-            .patient-info-grid .full-width {
-                grid-column: auto;
+            .user-dropdown {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) { /* For smaller tablets and mobile */
+            .content-area {
+                padding: 15px; /* Reduce padding for content area */
+            }
+            table th, table td {
+                padding: 0.6rem; /* Smaller padding for tables */
+                font-size: 0.85rem;
+            }
+            .form-section { /* This is now unused, but keeping for reference if needed */
+                padding: 20px;
+            }
+            .form-group input, /* These styles are now for modal-form-group */
+            .form-group select,
+            .form-group textarea {
+                font-size: 0.9rem;
+            }
+            .form-actions button { /* These styles are now for modal-form-actions */
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            .sidebar ul {
+                flex-direction: column; /* Stack sidebar items vertically again for very small screens */
+                align-items: stretch; /* Stretch items to full width */
+            }
+            .sidebar a {
+                justify-content: flex-start; /* Align text to start for vertical menu */
+                padding-left: 20px; /* Indent slightly */
+            }
+            .sidebar h5 {
+                text-align: center; /* Center title again when stacked vertically */
+                padding-left: 0;
+            }
+            /* Modal Responsive */
+            .modal-content {
+                max-width: 90%;
+                padding: 25px;
+            }
+            .modal-header h3 {
+                font-size: 1.6rem;
+            }
+            .modal-body {
+                font-size: 1rem;
+            }
+            .modal-footer {
+                flex-direction: column; /* Stack buttons vertically */
+                gap: 10px;
+            }
+            .modal-footer button {
+                width: 100%; /* Full width */
+            }
+            .modal-body p {
+                flex-direction: column; /* Stack label and content in modal body */
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .modal-body p strong {
+                min-width: auto; /* Reset min-width for stacked labels */
+            }
+        }
+
+        @media (max-width: 480px) { /* Extra small screens */
+            .content-area {
+                padding: 10px;
+            }
+            .navbar {
+                padding: 10px;
+            }
+            .search-input {
+                padding: 8px 12px;
+            }
+            .user-dropdown img {
+                width: 32px;
+                height: 32px;
+            }
+            .sidebar a {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -623,10 +638,10 @@
         <div class="sidebar">
             <h5>LRU HeartCare</h5>
             <ul>
-                <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
-                <li><a href="appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a></li>
-                <li><a href="online_chat.html" class="active"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
-                <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+                <li><a href="psychologist-dashboard.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
+                <li><a href="#" class="active"><i class="bi bi-bell"></i> การนัดหมาย</a></li>
+                <li><a href="#"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
+                <li><a href="#"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
             </ul>
         </div>
         <!-- Main Content Area -->
@@ -635,424 +650,526 @@
             <nav class="navbar">
                 <input type="search" class="search-input" placeholder="ค้นหา...">
                 <div class="user-dropdown" id="userDropdown">
-                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt="Avatar"> <!-- Placeholder image with PS text for Psychologist -->
+                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt=""> <!-- Placeholder image with PS text for Psychologist -->
                     <strong>นักจิตวิทยา</strong>
                     <ul class="user-dropdown-menu">
                         <li><a href="#">โปรไฟล์</a></li>
-                        <li><a href="Login.html">ออกจากระบบ</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
                     </ul>
                 </div>
             </nav>
-            <!-- Content Area for Chat Section -->
+            <!-- Content Area for Student Requests Management -->
             <div class="content-area">
-                <!-- Patient Selection Area -->
-                <div class="patient-selection-area" id="patientSelectionArea">
-                    <h3>รายละเอียดคำขอปรึกษา</h3>
-                    <div class="patient-info-grid">
-                        <strong>รหัสคำขอ:</strong> <span id="displayRequestId"></span>
-                        <strong>วันที่ส่ง:</strong> <span id="displaySubmissionDate"></span>
-                        <strong>ชื่อ-นามสกุล:</strong> <span id="displayPatientName"></span>
-                        <strong>รหัสนักศึกษา:</strong> <span id="displayStudentId"></span>
-                        <strong>สาขา:</strong> <span id="displayMajor"></span>
-                        <strong>คณะ:</strong> <span id="displayFaculty"></span>
-                        <strong class="full-width">หัวข้อปรึกษา:</strong> <span class="full-width" id="displayConsultationTopic"></span>
-                        <strong class="full-width">รายละเอียดจากนักศึกษา:</strong> <span class="full-width" id="displayStudentDetails"></span>
-                        <strong>วันที่ต้องการ (เสนอ):</strong> <span id="displayRequestedDate"></span>
-                        <strong>เวลาที่ต้องการ (เสนอ):</strong> <span id="displayRequestedTime"></span>
-                    </div>
-                    <button class="action-btn start-chat-btn" id="startManualChatBtn"><i class="bi bi-play-circle-fill"></i> เริ่มการปรึกษา</button>
+                <h4>คำขอคำปรึกษาของนักศึกษา</h4>
+
+                <!-- Consultation Request List Table -->
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>รหัสคำขอ</th>
+                                <th>วันที่ส่ง</th>
+                                <th>ชื่อนักศึกษา</th>
+                                <th>รหัสนักศึกษา</th>
+                                <th>หัวข้อ</th>
+                                <th>วันที่ต้องการ (เสนอ)</th>
+                                <th>เวลาที่ต้องการ (เสนอ)</th>
+                                <th>วัน-เวลาที่กำหนด</th> <!-- New column for actual appointment -->
+                                <th>สถานะ</th>
+                                <th>การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example Data - This would be dynamically loaded in a real application -->
+                            <tr data-request-id="REQ001" data-actual-date="" data-actual-time="" data-student-message="ฉันรู้สึกเครียดมากกับการเรียนและรู้สึกกดดันจากความคาดหวังของครอบครัว อยากจะหาทางจัดการกับความรู้สึกเหล่านี้" data-major="การตลาด" data-faculty="บริหารธุรกิจ">
+                                <td>REQ001</td>
+                                <td>2025-07-06</td>
+                                <td>อภิชาติ ก.</td>
+                                <td>65011234</td>
+                                <td>ความเครียดจากการเรียน</td>
+                                <td>2025-07-08</td>
+                                <td>10:00</td>
+                                <td>-</td> <!-- Placeholder for actual appointment -->
+                                <td class="status-pending-request">⏳ รอการพิจารณา</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-accept" title="ยอมรับคำขอ"><i class="bi bi-check-circle-fill"></i></button>
+                                    <button class="btn-reject" title="ปฏิเสธคำขอ"><i class="bi bi-x-circle-fill"></i></button>
+                                </td>
+                            </tr>
+                            <tr data-request-id="REQ002" data-actual-date="2025-07-07" data-actual-time="14:30" data-student-message="ช่วงนี้รู้สึกกังวลใจเกี่ยวกับอนาคตและไม่แน่ใจว่าจะเลือกทางเดินไหนดี" data-major="คอมพิวเตอร์" data-faculty="วิทยาศาสตร์">
+                                <td>REQ002</td>
+                                <td>2025-07-05</td>
+                                <td>นิรชา ข.</td>
+                                <td>64019876</td>
+                                <td>ความกังวลใจส่วนตัว</td>
+                                <td>2025-07-07</td>
+                                <td>14:30</td>
+                                <td>2025-07-07, 14:30</td>
+                                <td class="status-scheduled">✅ กำหนดเวลาแล้ว</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr data-request-id="REQ003" data-actual-date="" data-actual-time="" data-student-message="มีปัญหาขัดแย้งกับคนในครอบครัวบ่อยครั้ง ทำให้รู้สึกไม่สบายใจและอยากหาทางออก" data-major="นิเทศศาสตร์" data-faculty="มนุษยศาสตร์">
+                                <td>REQ003</td>
+                                <td>2025-07-04</td>
+                                <td>สมศักดิ์ ส.</td>
+                                <td>65023456</td>
+                                <td>ปัญหาครอบครัว</td>
+                                <td>2025-07-10</td>
+                                <td>09:00</td>
+                                <td>-</td>
+                                <td class="status-rejected">❌ ปฏิเสธ</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
+                                </td>
+                            </tr>
+                             <tr data-request-id="REQ004" data-actual-date="2025-07-05" data-actual-time="11:00" data-student-message="รู้สึกหดหู่ ไม่มีแรงบันดาลใจ และนอนไม่หลับมาหลายวันแล้ว" data-major="บัญชี" data-faculty="บริหารธุรกิจ">
+                                <td>REQ004</td>
+                                <td>2025-07-03</td>
+                                <td>ดวงใจ ค.</td>
+                                <td>66034567</td>
+                                <td>ภาวะซึมเศร้า</td>
+                                <td>2025-07-05</td>
+                                <td>11:00</td>
+                                <td>2025-07-05, 11:00</td>
+                                <td class="status-completed">✔ สำเร็จ</td>
+                                <td class="table-actions">
+                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Chat Section -->
-                <section class="chat-section" id="chatSection">
-                    <div class="chat-header">แชทกับ<span id="currentPatientName">...</span></div>
-                    <div class="status-message" id="consultationStatus">ยังไม่มีการปรึกษาที่กำลังดำเนินอยู่</div>
-                    <div class="chat-messages" id="chatMessages">
-                        <!-- Sample Chat Messages will be added dynamically -->
+    <!-- Request Detail Modal -->
+    <div id="requestDetailModal" class="general-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>รายละเอียดคำขอคำปรึกษา</h3>
+            </div>
+            <div class="modal-body">
+                <p><strong>รหัสคำขอ:</strong> <span id="modalRequestId"></span></p>
+                <p><strong>วันที่ส่ง:</strong> <span id="modalRequestDateSent"></span></p>
+                <p><strong>ชื่อ-นามสกุล:</strong> <span id="modalStudentName"></span></p>
+                <p><strong>รหัสนักศึกษา:</strong> <span id="modalStudentIdNumber"></span></p>
+                <p><strong>สาขา:</strong> <span id="modalMajor"></span></p>
+                <p><strong>คณะ:</strong> <span id="modalFaculty"></span></p>
+                <p><strong>หัวข้อปรึกษา:</strong> <span id="modalRequestTopic"></span></p>
+                <p><strong>รายละเอียดจากนักศึกษา:</strong> <span id="modalStudentMessage"></span></p>
+                <p><strong>วันที่ต้องการ (เสนอ):</strong> <span id="modalSuggestedDate"></span></p>
+                <p><strong>เวลาที่ต้องการ (เสนอ):</strong> <span id="modalSuggestedTime"></span></p>
+                <p><strong>วัน-เวลาที่กำหนด:</strong> <span id="modalActualAppointmentDateTime"></span></p>
+                <p><strong>สถานะปัจจุบัน:</strong> <span id="modalRequestStatus"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="closeRequestDetailModal">ปิด</button>
+                <button type="button" class="btn-primary" id="openManageRequestModal">จัดการคำขอ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Request Modal (New Pop-up Form) -->
+    <div id="manageRequestModal" class="general-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>จัดการคำขอคำปรึกษา</h3>
+            </div>
+            <div class="modal-body">
+                <form id="manageRequestFormModal">
+                    <div class="modal-form-group">
+                        <label for="modalManageRequestId">รหัสคำขอ:</label>
+                        <input type="text" id="modalManageRequestId" name="requestId" readonly>
                     </div>
-                    <div class="chat-input-area">
-                        <input type="text" class="chat-input" id="messageInput" placeholder="พิมพ์ข้อความที่นี่..." disabled>
-                        <button class="send-btn" id="sendMessageBtn" disabled><i class="bi bi-send-fill"></i> ส่ง</button>
+                    <div class="modal-form-group">
+                        <label for="modalManageStudentName">ชื่อ-นามสกุล นักศึกษา:</label>
+                        <input type="text" id="modalManageStudentName" name="studentName" readonly>
                     </div>
-                    <div class="chat-actions" id="chatActions">
-                        <button class="action-btn end-chat-btn" id="endChatBtn" disabled><i class="bi bi-x-circle-fill"></i> จบการปรึกษา</button>
+                    <div class="modal-form-group">
+                        <label for="modalManageStudentIdNumber">รหัสนักศึกษา:</label>
+                        <input type="text" id="modalManageStudentIdNumber" name="studentIdNumber" readonly>
                     </div>
-                </section>
-
-                <!-- Summary Modal - MOVED OUTSIDE chat-section -->
-                <div class="summary-modal" id="summaryModal">
-                    <h3>สรุปการให้คำปรึกษา</h3>
-                    <textarea id="summaryText" placeholder="พิมพ์สรุปการให้คำปรึกษาที่นี่..."></textarea>
-                    
-                    <div class="next-appointment-checkbox-group">
-                        <input type="checkbox" id="hasNextAppointment">
-                        <label for="hasNextAppointment">มีการนัดหมายครั้งต่อไปหรือไม่?</label>
+                    <div class="modal-form-group">
+                        <label for="modalManageMajor">สาขา:</label>
+                        <input type="text" id="modalManageMajor" name="major" readonly>
                     </div>
-
-                    <div class="next-appointment-inputs" id="nextAppointmentInputs">
-                        <h4>ข้อมูลการนัดหมายครั้งต่อไป</h4>
-                        <label for="nextAppointmentPatientInput">ผู้ป่วย:</label>
-                        <input type="text" id="nextAppointmentPatientInput" placeholder="ชื่อผู้ป่วย">
-
-                        <label for="nextAppointmentDateInput">วันที่:</label>
-                        <input type="date" id="nextAppointmentDateInput">
-
-                        <label for="nextAppointmentTimeInput">เวลา:</label>
-                        <input type="time" id="nextAppointmentTimeInput">
-
-                        <label for="nextAppointmentTopicInput">หัวข้อ:</label>
-                        <input type="text" id="nextAppointmentTopicInput" placeholder="หัวข้อการปรึกษา">
+                    <div class="modal-form-group">
+                        <label for="modalManageFaculty">คณะ:</label>
+                        <input type="text" id="modalManageFaculty" name="faculty" readonly>
                     </div>
-
-                    <button class="submit-summary-btn" id="submitSummaryBtn">ส่งสรุป</button>
-                </div>
-
-                <!-- Next Appointment Section (displayed after submission if applicable) -->
-                <section class="next-appointment-section" id="nextAppointmentSection">
-                    <h3>การนัดหมายครั้งต่อไป</h3>
-                    <p><strong>ผู้ป่วย:</strong> <span id="nextAppointmentPatient"></span></p>
-                    <p><strong>วันที่:</strong> <span id="nextAppointmentDate"></span></p>
-                    <p><strong>เวลา:</strong> <span id="nextAppointmentTime"></span></p>
-                    <p><strong>หัวข้อ:</strong> <span id="nextAppointmentTopic"></span></p>
-                </section>
+                    <div class="modal-form-group">
+                        <label for="modalManageRequestTopic">หัวข้อที่ปรึกษา:</label>
+                        <input type="text" id="modalManageRequestTopic" name="requestTopic" readonly>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalManageSuggestedDate">วันที่นักศึกษาต้องการ (เสนอ):</label>
+                        <input type="date" id="modalManageSuggestedDate" name="suggestedDate" readonly>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalManageSuggestedTime">เวลาที่นักศึกษาต้องการ (เสนอ):</label>
+                        <input type="time" id="modalManageSuggestedTime" name="suggestedTime" readonly>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalManageActualAppointmentDate">วันนัดหมายที่กำหนด:</label>
+                        <input type="date" id="modalManageActualAppointmentDate" name="actualAppointmentDate" disabled>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalManageActualAppointmentTime">เวลานัดหมายที่กำหนด:</label>
+                        <input type="time" id="modalManageActualAppointmentTime" name="actualAppointmentTime" disabled>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalManageActionNotes">หมายเหตุ/ข้อมูลเพิ่มเติมจากนักจิตวิทยา:</label>
+                        <textarea id="modalManageActionNotes" name="actionNotes" rows="3" placeholder="ระบุการนัดหมาย, คำแนะนำ หรือเหตุผลการปฏิเสธ"></textarea>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="modalManageRequestStatus">สถานะคำขอ:</label>
+                        <select id="modalManageRequestStatus" name="requestStatus">
+                            <option value="pending-request">⏳ รอการพิจารณา</option>
+                            <option value="scheduled">✅ กำหนดเวลาแล้ว</option>
+                            <option value="rejected">❌ ปฏิเสธ</option>
+                            <option value="completed">✔ สำเร็จ</option>
+                            <option value="cancelled">✖ ยกเลิก</option>
+                        </select>
+                    </div>
+                    <div class="modal-form-actions">
+                        <button type="button" class="btn-secondary" id="closeManageRequestModal">ยกเลิก</button>
+                        <button type="submit" class="btn-primary">บันทึกการจัดการ</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Elements
-            const userDropdown = document.getElementById('userDropdown');
-            const messageInput = document.getElementById('messageInput');
-            const sendMessageBtn = document.getElementById('sendMessageBtn');
-            const chatMessages = document.getElementById('chatMessages');
-            const endChatBtn = document.getElementById('endChatBtn');
-            const summaryModal = document.getElementById('summaryModal');
-            const summaryTextarea = document.getElementById('summaryText');
-            const hasNextAppointmentCheckbox = document.getElementById('hasNextAppointment');
-            const nextAppointmentInputsDiv = document.getElementById('nextAppointmentInputs');
-            const nextAppointmentPatientInput = document.getElementById('nextAppointmentPatientInput');
-            const nextAppointmentDateInput = document.getElementById('nextAppointmentDateInput');
-            const nextAppointmentTimeInput = document.getElementById('nextAppointmentTimeInput');
-            const nextAppointmentTopicInput = document.getElementById('nextAppointmentTopicInput');
-            const submitSummaryBtn = document.getElementById('submitSummaryBtn');
-            const consultationStatus = document.getElementById('consultationStatus');
-            const nextAppointmentSection = document.getElementById('nextAppointmentSection');
-            const nextAppointmentPatientDisplay = document.getElementById('nextAppointmentPatient');
-            const nextAppointmentDateDisplay = document.getElementById('nextAppointmentDate');
-            const nextAppointmentTimeDisplay = document.getElementById('nextAppointmentTime');
-            const nextAppointmentTopicDisplay = document.getElementById('nextAppointmentTopic');
-
-            // Elements for patient selection and auto-start
-            const patientSelectionArea = document.getElementById('patientSelectionArea');
-            const startManualChatBtn = document.getElementById('startManualChatBtn');
-            const currentPatientNameSpan = document.getElementById('currentPatientName');
-            const chatActionsDiv = document.getElementById('chatActions');
-            const chatSection = document.getElementById('chatSection'); // Get the chat section
-
-            // Elements for displaying student info
-            const displayRequestId = document.getElementById('displayRequestId');
-            const displaySubmissionDate = document.getElementById('displaySubmissionDate');
-            const displayPatientName = document.getElementById('displayPatientName');
-            const displayStudentId = document.getElementById('displayStudentId');
-            const displayMajor = document.getElementById('displayMajor');
-            const displayFaculty = document.getElementById('displayFaculty');
-            const displayConsultationTopic = document.getElementById('displayConsultationTopic');
-            const displayStudentDetails = document.getElementById('displayStudentDetails');
-            const displayRequestedDate = document.getElementById('displayRequestedDate');
-            const displayRequestedTime = document.getElementById('displayRequestedTime');
-
-            // Global variable to track if a consultation is active
-            let isConsultationActive = false;
-
-            // Mock student data from image_ddabe5.png
-            const studentData = {
-                requestId: 'REQ001',
-                submissionDate: '2025-07-06',
-                patientName: 'อภิชาติ ก.',
-                studentId: '65011234',
-                major: 'การตลาด',
-                faculty: 'บริหารธุรกิจ',
-                consultationTopic: 'ความเครียดจากการเรียน',
-                studentDetails: 'ฉันรู้สึกเครียดมากกับการเรียนและรู้สึกท้อแท้จากความคาดหวังของครอบครัว อยากจะหาทางจัดการกับความรู้สึกเหล่านี้',
-                requestedDate: '2025-07-08',
-                requestedTime: '10:00'
-            };
-
-            // Mock scheduled appointment data (derived from studentData for auto-popup)
-            const mockScheduledAppointment = {
-                patient: studentData.patientName,
-                date: studentData.requestedDate,
-                time: studentData.requestedTime
-            };
-
-            // Initial UI setup
-            function initializeUI() {
-                // Hide chat section initially
-                chatSection.classList.remove('active-chat'); 
-                
-                // Show patient selection area
-                patientSelectionArea.classList.remove('hidden'); 
-
-                messageInput.disabled = true;
-                sendMessageBtn.disabled = true;
-                endChatBtn.disabled = true;
-                chatActionsDiv.classList.add('hidden'); // Hide chat actions initially
-                
-                consultationStatus.classList.add('active'); // Show initial status
-                consultationStatus.textContent = 'ยังไม่มีการปรึกษาที่กำลังดำเนินอยู่';
-                consultationStatus.style.backgroundColor = 'var(--deep-blue)';
-
-                // Populate student details
-                displayRequestId.textContent = studentData.requestId;
-                displaySubmissionDate.textContent = studentData.submissionDate;
-                displayPatientName.textContent = studentData.patientName;
-                displayStudentId.textContent = studentData.studentId;
-                displayMajor.textContent = studentData.major;
-                displayFaculty.textContent = studentData.faculty;
-                displayConsultationTopic.textContent = studentData.consultationTopic;
-                displayStudentDetails.textContent = studentData.studentDetails;
-                displayRequestedDate.textContent = studentData.requestedDate;
-                displayRequestedTime.textContent = studentData.requestedTime + ' น.';
-
-                // Display mock scheduled appointment in the next appointment section
-                nextAppointmentPatientDisplay.textContent = mockScheduledAppointment.patient;
-                nextAppointmentDateDisplay.textContent = new Date(mockScheduledAppointment.date).toLocaleDateString('th-TH', { day: '2-digit', month: 'long', year: 'numeric' });
-                nextAppointmentTimeDisplay.textContent = mockScheduledAppointment.time + ' น.';
-                nextAppointmentTopicDisplay.textContent = studentData.consultationTopic; // Use student's topic
-                nextAppointmentSection.classList.remove('hidden'); // Show next appointment section by default
-                
-                currentPatientNameSpan.textContent = '...'; // Reset patient name in header
-
-                // Clear any existing sample messages from the chat area
-                chatMessages.innerHTML = '';
+            // --- Helper functions for Modals ---
+            function showModal(modalId) {
+                document.getElementById(modalId).classList.add('show');
             }
 
-            initializeUI(); // Call on DOMContentLoaded
+            function hideModal(modalId) {
+                document.getElementById(modalId).classList.remove('show');
+            }
 
-            // Dropdown functionality for user profile
+            // --- Dropdown functionality for user profile ---
+            const userDropdown = document.getElementById('userDropdown');
             if (userDropdown) {
-                userDropdown.addEventListener('click', function() {
-                    this.classList.toggle('active');
+                userDropdown.addEventListener('click', function(event) {
+                    // Prevent closing if clicking inside the dropdown menu itself
+                    if (!event.target.closest('.user-dropdown-menu')) {
+                        this.classList.toggle('active');
+                    }
                 });
+
                 // Close dropdown if clicked outside
-                window.addEventListener('click', function(e) {
-                    if (!userDropdown.contains(e.target)) {
+                window.addEventListener('click', function(event) {
+                    if (!userDropdown.contains(event.target)) {
                         userDropdown.classList.remove('active');
                     }
                 });
             }
 
-            // Function to add a message to the chat display
-            function addMessage(text, senderType) {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+            // --- Modal Elements (Request Detail Modal) ---
+            const requestDetailModal = document.getElementById('requestDetailModal');
+            const modalRequestId = document.getElementById('modalRequestId');
+            const modalRequestDateSent = document.getElementById('modalRequestDateSent');
+            const modalStudentName = document.getElementById('modalStudentName');
+            const modalStudentIdNumber = document.getElementById('modalStudentIdNumber');
+            const modalMajor = document.getElementById('modalMajor'); // New
+            const modalFaculty = document.getElementById('modalFaculty'); // New
+            const modalRequestTopic = document.getElementById('modalRequestTopic');
+            const modalStudentMessage = document.getElementById('modalStudentMessage');
+            const modalSuggestedDate = document.getElementById('modalSuggestedDate');
+            const modalSuggestedTime = document.getElementById('modalSuggestedTime');
+            const modalActualAppointmentDateTime = document.getElementById('modalActualAppointmentDateTime');
+            const modalRequestStatus = document.getElementById('modalRequestStatus');
+            const closeRequestDetailModalBtn = document.getElementById('closeRequestDetailModal');
+            const openManageRequestModalBtn = document.getElementById('openManageRequestModal'); // Renamed from manageRequestFromModal
 
-                const messageBubble = document.createElement('div');
-                messageBubble.classList.add('message-bubble', senderType);
+            // --- Modal Elements (Manage Request Modal) ---
+            const manageRequestModal = document.getElementById('manageRequestModal');
+            const manageRequestFormModal = document.getElementById('manageRequestFormModal');
+            const modalManageRequestId = document.getElementById('modalManageRequestId');
+            const modalManageStudentName = document.getElementById('modalManageStudentName');
+            const modalManageStudentIdNumber = document.getElementById('modalManageStudentIdNumber'); // New
+            const modalManageMajor = document.getElementById('modalManageMajor'); // New
+            const modalManageFaculty = document.getElementById('modalManageFaculty'); // New
+            const modalManageRequestTopic = document.getElementById('modalManageRequestTopic');
+            const modalManageSuggestedDate = document.getElementById('modalManageSuggestedDate');
+            const modalManageSuggestedTime = document.getElementById('modalManageSuggestedTime');
+            const modalManageActualAppointmentDate = document.getElementById('modalManageActualAppointmentDate');
+            const modalManageActualAppointmentTime = document.getElementById('modalManageActualAppointmentTime');
+            const modalManageActionNotes = document.getElementById('modalManageActionNotes');
+            const modalManageRequestStatus = document.getElementById('modalManageRequestStatus');
+            const closeManageRequestModalBtn = document.getElementById('closeManageRequestModal');
 
-                messageBubble.innerHTML = `
-                    <div class="message-content">${text}</div>
-                    <div class="message-info">ส่งเมื่อ ${timeString} น.</div>
-                `;
-                chatMessages.appendChild(messageBubble);
-
-                // Scroll to the bottom of the chat
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Function to enable/disable actual appointment fields in the NEW manage modal form
+            function toggleActualAppointmentFieldsInManageModal() {
+                const isScheduled = modalManageRequestStatus.value === 'scheduled';
+                modalManageActualAppointmentDate.disabled = !isScheduled;
+                modalManageActualAppointmentTime.disabled = !isScheduled;
             }
 
-            // Send message functionality
-            function sendMessage() {
-                const messageText = messageInput.value.trim();
-                if (messageText !== '') {
-                    addMessage(messageText, 'psychologist'); 
-                    messageInput.value = ''; // Clear input field
-                }
+            // Listen for status change in the NEW manage modal to toggle fields
+            modalManageRequestStatus.addEventListener('change', toggleActualAppointmentFieldsInManageModal);
+
+            // Function to populate the Request Detail Modal from a given table row
+            function populateRequestDetailModal(row) {
+                const cells = row.querySelectorAll('td');
+
+                modalRequestId.innerText = cells[0].innerText;
+                modalRequestDateSent.innerText = cells[1].innerText;
+                modalStudentName.innerText = cells[2].innerText;
+                modalStudentIdNumber.innerText = cells[3].innerText;
+                modalRequestTopic.innerText = cells[4].innerText;
+                modalStudentMessage.innerText = row.getAttribute('data-student-message') || "ไม่มีรายละเอียดเพิ่มเติม"; // Get from data attribute
+                modalSuggestedDate.innerText = cells[5].innerText;
+                modalSuggestedTime.innerText = cells[6].innerText;
+                modalActualAppointmentDateTime.innerText = cells[7].innerText;
+                modalRequestStatus.innerText = cells[8].innerText; // Status text directly from cell
+
+                // New: Populate Major and Faculty
+                modalMajor.innerText = row.getAttribute('data-major') || '-';
+                modalFaculty.innerText = row.getAttribute('data-faculty') || '-';
+
+                // Store the row data in the modal's dataset for easy access when "จัดการคำขอ" is clicked
+                requestDetailModal.dataset.requestId = cells[0].innerText;
+                requestDetailModal.dataset.requestDateSent = cells[1].innerText;
+                requestDetailModal.dataset.studentName = cells[2].innerText;
+                requestDetailModal.dataset.studentIdNumber = cells[3].innerText; // New
+                requestDetailModal.dataset.requestTopic = cells[4].innerText;
+                requestDetailModal.dataset.studentMessage = row.getAttribute('data-student-message') || "";
+                requestDetailModal.dataset.suggestedDate = cells[5].innerText;
+                requestDetailModal.dataset.suggestedTime = cells[6].innerText;
+                requestDetailModal.dataset.actualAppointmentDate = row.getAttribute('data-actual-date');
+                requestDetailModal.dataset.actualAppointmentTime = row.getAttribute('data-actual-time');
+                requestDetailModal.dataset.requestStatus = cells[8].className.replace('status-', ''); // Store raw status value
+                // New: Add Major and Faculty to dataset
+                requestDetailModal.dataset.major = row.getAttribute('data-major') || "";
+                requestDetailModal.dataset.faculty = row.getAttribute('data-faculty') || "";
+
+                showModal('requestDetailModal');
             }
 
-            // Event listeners for chat input and send button
-            if (sendMessageBtn && messageInput) {
-                sendMessageBtn.addEventListener('click', sendMessage);
-                messageInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' && !messageInput.disabled) {
-                        sendMessage();
-                    }
-                });
+            // Function to populate the Manage Request Modal from a given table row or modal dataset
+            function populateManageRequestModal(data) {
+                modalManageRequestId.value = data.requestId;
+                modalManageStudentName.value = data.studentName;
+                modalManageStudentIdNumber.value = data.studentIdNumber; // New
+                modalManageMajor.value = data.major; // New
+                modalManageFaculty.value = data.faculty; // New
+                modalManageRequestTopic.value = data.requestTopic;
+                modalManageSuggestedDate.value = data.suggestedDate;
+                modalManageSuggestedTime.value = data.suggestedTime;
+                modalManageActualAppointmentDate.value = data.actualAppointmentDate;
+                modalManageActualAppointmentTime.value = data.actualAppointmentTime;
+                modalManageActionNotes.value = data.actionNotes || ''; // Clear or set existing notes
+                modalManageRequestStatus.value = data.requestStatus;
+
+                toggleActualAppointmentFieldsInManageModal(); // Set initial disabled state
+
+                showModal('manageRequestModal');
             }
 
-            // Function to start a consultation
-            function startConsultation(patientName) {
-                if (isConsultationActive) return; // Prevent starting if already active
+            // --- Handle Manage Request Form Submission (inside the new modal) ---
+            if (manageRequestFormModal) {
+                manageRequestFormModal.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent default form submission
 
-                isConsultationActive = true;
-                currentPatientNameSpan.textContent = patientName;
+                    // Collect form data from the modal
+                    const requestId = modalManageRequestId.value;
+                    const actualAppointmentDate = modalManageActualAppointmentDate.value;
+                    const actualAppointmentTime = modalManageActualAppointmentTime.value;
+                    const actionNotes = modalManageActionNotes.value;
+                    const requestStatus = modalManageRequestStatus.value;
 
-                patientSelectionArea.classList.add('hidden'); // Hide patient selection area
-                chatActionsDiv.classList.remove('hidden'); // Show chat actions
-                nextAppointmentSection.classList.add('hidden'); // Hide next appointment section when chat starts
+                    console.log('Managed Request Data (from modal):', {
+                        requestId,
+                        actualAppointmentDate,
+                        actualAppointmentTime,
+                        actionNotes,
+                        requestStatus
+                    });
 
-                chatSection.classList.add('active-chat'); // Show chat section
+                    // Update the corresponding row in the table (for demonstration purposes)
+                    const rowToUpdate = document.querySelector(`tr[data-request-id="${requestId}"]`);
+                    if (rowToUpdate) {
+                        // Update data attributes for actual appointment
+                        rowToUpdate.setAttribute('data-actual-date', actualAppointmentDate);
+                        rowToUpdate.setAttribute('data-actual-time', actualAppointmentTime);
 
-                messageInput.disabled = false;
-                sendMessageBtn.disabled = false;
-                endChatBtn.disabled = false;
-
-                consultationStatus.textContent = 'กำลังปรึกษา...';
-                consultationStatus.style.backgroundColor = 'var(--primary-pink)';
-
-                chatMessages.innerHTML = ''; // Clear previous messages
-                addMessage(`การปรึกษาได้เริ่มต้นขึ้นแล้ว มีอะไรให้ช่วยคุณ${patientName} ไหมคะ?`, 'psychologist');
-            }
-
-            // Manual start consultation button (uses displayed patient name)
-            if (startManualChatBtn) {
-                startManualChatBtn.addEventListener('click', function() {
-                    // Get patient name directly from the displayed info
-                    const patientName = displayPatientName.textContent.trim(); 
-                    if (patientName === '') {
-                        console.error('ไม่พบชื่อผู้ป่วยที่จะเริ่มการปรึกษา');
-                        // Optionally, add visual feedback here if needed
-                        return;
-                    }
-                    startConsultation(patientName);
-                });
-            }
-
-            // Function to end a consultation
-            if (endChatBtn) {
-                endChatBtn.addEventListener('click', endConsultation);
-            }
-
-            function endConsultation() {
-                isConsultationActive = false; // Set consultation as inactive
-                messageInput.disabled = true;
-                sendMessageBtn.disabled = true;
-                endChatBtn.disabled = true;
-                chatActionsDiv.classList.add('hidden');
-
-                chatSection.classList.remove('active-chat'); // Hide chat section
-                
-                // Show the summary modal
-                summaryModal.classList.add('active'); // This line makes the summary modal appear
-                summaryTextarea.value = '';
-                summaryTextarea.classList.remove('error');
-                hasNextAppointmentCheckbox.checked = false;
-                nextAppointmentInputsDiv.classList.remove('active');
-                nextAppointmentPatientInput.value = '';
-                nextAppointmentDateInput.value = '';
-                nextAppointmentTimeInput.value = '';
-                nextAppointmentTopicInput.value = '';
-                nextAppointmentPatientInput.classList.remove('error');
-                nextAppointmentDateInput.classList.remove('error');
-                nextAppointmentTimeInput.classList.remove('error');
-                nextAppointmentTopicInput.classList.remove('error');
-
-                consultationStatus.textContent = 'สิ้นสุดการปรึกษา กรุณาสรุป';
-                consultationStatus.style.backgroundColor = 'var(--soft-blue)';
-            }
-
-            // Toggle visibility of next appointment inputs based on checkbox
-            if (hasNextAppointmentCheckbox && nextAppointmentInputsDiv) {
-                hasNextAppointmentCheckbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        nextAppointmentInputsDiv.classList.add('active');
-                    } else {
-                        nextAppointmentInputsDiv.classList.remove('active');
-                        nextAppointmentPatientInput.value = '';
-                        nextAppointmentDateInput.value = '';
-                        nextAppointmentTimeInput.value = '';
-                        nextAppointmentTopicInput.value = '';
-                        nextAppointmentPatientInput.classList.remove('error');
-                        nextAppointmentDateInput.classList.remove('error');
-                        nextAppointmentTimeInput.classList.remove('error');
-                        nextAppointmentTopicInput.classList.remove('error');
-                    }
-                });
-            }
-
-            // Submit summary functionality
-            if (submitSummaryBtn) {
-                submitSummaryBtn.addEventListener('click', () => {
-                    const summaryContent = summaryTextarea.value.trim();
-                    let isValid = true;
-
-                    if (summaryContent === '') {
-                        summaryTextarea.classList.add('error');
-                        isValid = false;
-                    } else {
-                        summaryTextarea.classList.remove('error');
-                    }
-
-                    let nextAppointmentData = null;
-                    if (hasNextAppointmentCheckbox.checked) {
-                        const patient = nextAppointmentPatientInput.value.trim();
-                        const date = nextAppointmentDateInput.value.trim();
-                        const time = nextAppointmentTimeInput.value.trim();
-                        const topic = nextAppointmentTopicInput.value.trim();
-
-                        if (patient === '') { nextAppointmentPatientInput.classList.add('error'); isValid = false; } else { nextAppointmentPatientInput.classList.remove('error'); }
-                        if (date === '') { nextAppointmentDateInput.classList.add('error'); isValid = false; } else { nextAppointmentDateInput.classList.remove('error'); }
-                        if (time === '') { nextAppointmentTimeInput.classList.add('error'); isValid = false; } else { nextAppointmentTimeInput.classList.remove('error'); }
-                        if (topic === '') { nextAppointmentTopicInput.classList.add('error'); isValid = false; } else { nextAppointmentTopicInput.classList.remove('error'); }
-
-                        if (isValid) {
-                            nextAppointmentData = { patient, date, time, topic };
+                        // Update status class and text
+                        rowToUpdate.querySelector('td:nth-child(9)').className = `status-${requestStatus}`; // Status column index
+                        let statusText = '';
+                        switch(requestStatus) {
+                            case 'pending-request': statusText = '⏳ รอการพิจารณา'; break;
+                            case 'scheduled': statusText = '✅ กำหนดเวลาแล้ว'; break;
+                            case 'rejected': statusText = '❌ ปฏิเสธ'; break;
+                            case 'completed': statusText = '✔ สำเร็จ'; break;
+                            case 'cancelled': statusText = '✖ ยกเลิก'; break;
                         }
-                    }
+                        rowToUpdate.querySelector('td:nth-child(9)').innerText = statusText;
 
-                    if (isValid) {
-                        console.log('Summary Submitted:', summaryContent);
-                        if (nextAppointmentData) {
-                            console.log('Next Appointment Scheduled:', nextAppointmentData);
+                        // Update Actual Appointment Date/Time column
+                        const actualDateTimeCell = rowToUpdate.querySelector('td:nth-child(8)'); // Actual Date/Time column index
+                        if (requestStatus === 'scheduled' && actualAppointmentDate && actualAppointmentTime) {
+                            actualDateTimeCell.innerText = `${actualAppointmentDate}, ${actualAppointmentTime}`;
+                        } else {
+                            actualDateTimeCell.innerText = '-';
                         }
-                        
-                        setTimeout(() => {
-                            summaryModal.classList.remove('active');
-                            
-                            consultationStatus.textContent = 'สรุปถูกส่งเรียบร้อยแล้ว';
-                            consultationStatus.style.backgroundColor = 'var(--deep-blue)';
-                            
-                            chatMessages.innerHTML = ''; 
-                            addMessage('การปรึกษาครั้งที่แล้วสิ้นสุดลงแล้ว คุณสามารถเริ่มการปรึกษาใหม่ได้', 'psychologist');
 
-                            if (nextAppointmentData) {
-                                nextAppointmentPatientDisplay.textContent = nextAppointmentData.patient;
-                                nextAppointmentDateDisplay.textContent = new Date(nextAppointmentData.date).toLocaleDateString('th-TH', { day: '2-digit', month: 'long', year: 'numeric' });
-                                nextAppointmentTimeDisplay.textContent = nextAppointmentData.time + ' น.';
-                                nextAppointmentTopicDisplay.textContent = nextAppointmentData.topic;
-                                nextAppointmentSection.classList.remove('hidden'); // Show the new next appointment
+                        // Disable/hide action buttons if status is finalized
+                        const actionButtons = rowToUpdate.querySelectorAll('.table-actions button');
+                        actionButtons.forEach(btn => {
+                            if (requestStatus === 'scheduled' || requestStatus === 'rejected' || requestStatus === 'completed' || requestStatus === 'cancelled') {
+                                if (btn.classList.contains('btn-accept') || btn.classList.contains('btn-reject')) {
+                                    btn.style.display = 'none'; // Hide accept/reject
+                                }
                             } else {
-                                nextAppointmentSection.classList.add('hidden'); // Hide if no new appointment
+                                btn.style.display = ''; // Show all buttons if not finalized
                             }
+                        });
+                    }
 
-                            patientSelectionArea.classList.remove('hidden'); // Show patient selection for next manual start
-                            currentPatientNameSpan.textContent = '...'; // Reset patient name in header
+                    alert(`บันทึกการจัดการคำขอ ${requestId} เรียบร้อยแล้ว (ข้อมูลนี้ยังไม่ได้ถูกบันทึกลงฐานข้อมูลจริง)`);
+                    hideModal('manageRequestModal'); // Close the manage modal
+                    manageRequestFormModal.reset(); // Clear the modal form
+                    toggleActualAppointmentFieldsInManageModal(); // Reset field states
+                    // In a real app, you'd likely refresh the table data from backend here
+                });
+            }
 
-                        }, 500);
-                        
-                    } else {
-                        console.error('กรุณากรอกข้อมูลให้ครบถ้วน');
+            // --- Functionality for "View" buttons in table ---
+            document.querySelectorAll('.btn-view').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent row click from firing
+                    const row = this.closest('tr');
+                    populateRequestDetailModal(row);
+                });
+            });
+
+            // --- Add click listener to table rows ---
+            document.querySelectorAll('tbody tr').forEach(row => {
+                row.addEventListener('click', function(event) {
+                    // Check if the click target is not an action button
+                    // This prevents double-triggering if an action button is clicked
+                    if (!event.target.closest('.table-actions button')) {
+                        populateRequestDetailModal(this);
+                    }
+                });
+            });
+
+            // --- Request Detail Modal Buttons Functionality ---
+            if (closeRequestDetailModalBtn) {
+                closeRequestDetailModalBtn.addEventListener('click', function() {
+                    hideModal('requestDetailModal');
+                });
+            }
+
+            if (requestDetailModal) {
+                // Close modal when clicking on the overlay
+                requestDetailModal.addEventListener('click', function(event) {
+                    if (event.target === requestDetailModal) {
+                        hideModal('requestDetailModal');
                     }
                 });
             }
 
-            // Auto-start consultation based on mock scheduled appointment time
-            const checkAppointmentTime = setInterval(() => {
-                const now = new Date();
-                const [year, month, day] = mockScheduledAppointment.date.split('-').map(Number);
-                const [hours, minutes] = mockScheduledAppointment.time.split(':').map(Number);
-                
-                // Note: Month is 0-indexed in JavaScript Date object
-                const appointmentDateTime = new Date(year, month - 1, day, hours, minutes);
+            if (openManageRequestModalBtn) {
+                openManageRequestModalBtn.addEventListener('click', function() {
+                    hideModal('requestDetailModal'); // Close detail modal
 
-                // Check if current time is past or equal to appointment time
-                // And if no consultation is currently active
-                // And if the patient selection area is currently visible (meaning no manual start has happened yet)
-                if (!isConsultationActive && now >= appointmentDateTime && !patientSelectionArea.classList.contains('hidden')) {
-                    startConsultation(mockScheduledAppointment.patient);
-                    clearInterval(checkAppointmentTime); // Stop checking once consultation starts
-                }
-            }, 5000); // Check every 5 seconds
+                    // Prepare data for the manage modal from the detail modal's dataset
+                    const dataToManage = {
+                        requestId: requestDetailModal.dataset.requestId,
+                        studentName: requestDetailModal.dataset.studentName,
+                        studentIdNumber: requestDetailModal.dataset.studentIdNumber, // New
+                        major: requestDetailModal.dataset.major, // New
+                        faculty: requestDetailModal.dataset.faculty, // New
+                        requestTopic: requestDetailModal.dataset.requestTopic,
+                        suggestedDate: requestDetailModal.dataset.suggestedDate,
+                        suggestedTime: requestDetailModal.dataset.suggestedTime,
+                        actualAppointmentDate: requestDetailModal.dataset.actualAppointmentDate,
+                        actualAppointmentTime: requestDetailModal.dataset.actualAppointmentTime,
+                        requestStatus: requestDetailModal.dataset.requestStatus,
+                        actionNotes: '' // Clear notes when opening from detail modal for fresh input
+                    };
+                    populateManageRequestModal(dataToManage);
+                });
+            }
+
+            // --- Manage Request Modal Buttons Functionality ---
+            if (closeManageRequestModalBtn) {
+                closeManageRequestModalBtn.addEventListener('click', function() {
+                    hideModal('manageRequestModal');
+                    manageRequestFormModal.reset(); // Clear form on cancel
+                    toggleActualAppointmentFieldsInManageModal(); // Reset field states
+                });
+            }
+
+            if (manageRequestModal) {
+                // Close modal when clicking on the overlay
+                manageRequestModal.addEventListener('click', function(event) {
+                    if (event.target === manageRequestModal) {
+                        hideModal('manageRequestModal');
+                        manageRequestFormModal.reset(); // Clear form on overlay click
+                        toggleActualAppointmentFieldsInManageModal(); // Reset field states
+                    }
+                });
+            }
+
+            // Functionality for Accept/Reject buttons (quick actions from table)
+            document.querySelectorAll('.btn-accept').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const requestId = row.querySelector('td:nth-child(1)').innerText;
+                    
+                    // Prepare data for the manage modal
+                    const dataToManage = {
+                        requestId: requestId,
+                        studentName: row.querySelector('td:nth-child(3)').innerText,
+                        studentIdNumber: row.querySelector('td:nth-child(4)').innerText, // New
+                        major: row.getAttribute('data-major') || '', // New
+                        faculty: row.getAttribute('data-faculty') || '', // New
+                        requestTopic: row.querySelector('td:nth-child(5)').innerText,
+                        suggestedDate: row.querySelector('td:nth-child(6)').innerText,
+                        suggestedTime: row.querySelector('td:nth-child(7)').innerText,
+                        actualAppointmentDate: row.querySelector('td:nth-child(6)').innerText, // Pre-fill with suggested
+                        actualAppointmentTime: row.querySelector('td:nth-child(7)').innerText, // Pre-fill with suggested
+                        requestStatus: 'scheduled', // Set status to scheduled
+                        actionNotes: `คำขอถูกยอมรับและกำหนดเวลาแล้ว สำหรับคำขอ ${requestId} กรุณาติดต่อกลับนักศึกษาเพื่อยืนยันวันและเวลาที่แน่นอน`
+                    };
+                    populateManageRequestModal(dataToManage);
+                });
+            });
+
+            document.querySelectorAll('.btn-reject').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const requestId = row.querySelector('td:nth-child(1)').innerText;
+                    
+                    // Prepare data for the manage modal
+                    const dataToManage = {
+                        requestId: requestId,
+                        studentName: row.querySelector('td:nth-child(3)').innerText,
+                        studentIdNumber: row.querySelector('td:nth-child(4)').innerText, // New
+                        major: row.getAttribute('data-major') || '', // New
+                        faculty: row.getAttribute('data-faculty') || '', // New
+                        requestTopic: row.querySelector('td:nth-child(5)').innerText,
+                        suggestedDate: row.querySelector('td:nth-child(6)').innerText,
+                        suggestedTime: row.querySelector('td:nth-child(7)').innerText,
+                        actualAppointmentDate: '', // Clear actual appointment on rejection
+                        actualAppointmentTime: '', // Clear actual appointment on rejection
+                        requestStatus: 'rejected', // Set status to rejected
+                        actionNotes: `คำขอถูกปฏิเสธแล้ว สำหรับคำขอ ${requestId} โปรดระบุเหตุผลการปฏิเสธและเสนอทางเลือกอื่น (ถ้ามี)`
+                    };
+                    populateManageRequestModal(dataToManage);
+                });
+            });
         });
     </script>
 </body>
