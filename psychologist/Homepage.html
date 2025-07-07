@@ -711,7 +711,7 @@
                             </div>
 
                             <div class="maincontent-img">
-                                <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="[Image of Psychologist Dashboard]">
+                                <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="">
                             </div>
                         </div>
                     </div>
@@ -825,7 +825,6 @@
     </div>
 
     <!-- FullCalendar JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Dropdown functionality for user profile
@@ -873,13 +872,22 @@
                             textColor: '#343a40'
                         },
                         {
-                            title: 'ประชุมทีม',
-                            start: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString().split('T')[0],
-                            allDay: true,
-                            color: '#4682B4', // Deep blue for all-day events
+                            title: 'ประชุมทีม - วางแผนเดือนหน้า',
+                            start: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString().split('T')[0] + 'T10:00:00', // 3 days from now
+                            color: '#4682B4', // Deep blue for team meetings
+                            textColor: '#ffffff'
+                        },
+                        {
+                            title: 'ดวงใจ ค. - ภาวะซึมเศร้า (เร่งด่วน)',
+                            start: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0] + 'T09:30:00', // 2 days from now
+                            color: '#FF69B4', // Primary pink for urgent cases
                             textColor: '#ffffff'
                         }
-                    ]
+                    ],
+                    eventDidMount: function(info) {
+                        // Optional: Add custom styling or tooltips to events
+                        info.el.style.fontWeight = 'bold';
+                    }
                 });
                 calendar.render();
             }
@@ -887,3 +895,4 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
