@@ -3,1174 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare | การนัดหมาย</title>
-    <!-- Google Fonts: Kanit for Thai text -->
+    <title>LRU HeartCare | นัดหมายทั้งหมด</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Bootstrap Icons for a wide range of icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* ========== Variables - ตัวแปรสีและเงา ========== */
         :root {
-            --primary-pink: #FF69B4; /* ชมพูหลัก */
-            --light-pink: #FFC0CB; /* ชมพูอ่อน */
-            --soft-blue: #87CEEB; /* ฟ้าอ่อน */
-            --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
-            --text-dark: #343a40; /* สีข้อความเข้ม */
-            --text-muted: #6c757d; /* สีข้อความรอง */
-            --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
-            --white: #ffffff; /* สีขาว */
-            --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
-            --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
-            --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
-            --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
-            --input-bg: #fff; /* สีพื้นหลังของ input */
-            --input-border: #ced4da; /* สีขอบ input */
-            --form-card-bg: #fff; /* สีพื้นหลังของการ์ดฟอร์ม */
+            --primary-pink: #FF69B4;
+            --light-pink: #FFC0CB;
+            --soft-blue: #87CEEB;
+            --deep-blue: #4682B4;
+            --text-dark: #343a40;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --button-gray: #f0f0f0;
+            --button-gray-hover: #e0e0e0;
         }
 
-        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
-        body {
-            font-family: 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
-            margin: 0;
-            padding: 0;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            overflow-x: hidden; /* Prevent horizontal scrolling */
-        }
+        body { font-family: 'Kanit', sans-serif; margin: 0; background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+        *, *::before, *::after { box-sizing: border-box; }
 
-        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: var(--deep-blue); color: var(--white); padding: 20px; box-shadow: 2px 0 10px var(--shadow-light); flex-shrink: 0; }
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        
+        /* Sidebar */
+        .sidebar h5 { text-align: center; margin-bottom: 30px; color: var(--light-pink); font-size: 1.5rem; font-weight: 700; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar a { display: flex; align-items: center; color: var(--white); text-decoration: none; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
+        .sidebar a:hover, .sidebar a.active { background: var(--primary-pink); }
+        .sidebar a i { margin-right: 12px; }
 
-        /* ========== Layout - โครงสร้างหลักของแดชบอร์ด ========== */
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
+        /* Navbar */
+        .navbar { background: var(--white); padding: 15px 25px; box-shadow: 0 2px 8px var(--shadow-light); display: flex; justify-content: flex-end; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; }
+        .search-input { border: 1px solid var(--border-light); padding: 8px 15px; border-radius: 8px; width: 200px; }
+        .user-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+        .user-profile .avatar { font-weight: bold; background-color: var(--deep-blue); color: var(--white); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+        
+        /* Content Area */
+        .content-area { padding: 30px; }
+        .content-area h4 { margin-top: 0; margin-bottom: 25px; color: var(--text-dark); font-size: 1.8rem; font-weight: 600; }
+        
+        /* Filter Controls */
+        .filter-controls { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 25px; }
+        .filter-group { display: flex; align-items: center; gap: 10px; }
+        .filter-group label { font-weight: 500; color: var(--text-muted); }
+        .filter-group select, .filter-group input { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-family: 'Kanit', sans-serif; font-size: 0.95rem; }
+        .btn-filter, .btn-clear { padding: 8px 20px; border: 1px solid #ccc; border-radius: 6px; font-family: 'Kanit', sans-serif; font-size: 0.95rem; cursor: pointer; background-color: var(--button-gray); transition: background-color 0.2s; }
+        .btn-filter:hover, .btn-clear:hover { background-color: var(--button-gray-hover); }
 
-        .sidebar {
-            width: 250px;
-            background: var(--deep-blue);
-            color: var(--white);
-            padding: 20px;
-            box-shadow: 2px 0 10px var(--shadow-light);
-            flex-shrink: 0; /* Prevent sidebar from shrinking */
-            transition: width 0.3s ease; /* Smooth transition for sidebar width */
-            overflow-y: auto; /* Allow sidebar to scroll if content overflows */
-        }
+        /* Table */
+        .table-container { background: var(--white); border-radius: 8px; box-shadow: 0 4px 15px var(--shadow-light); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border-light); }
+        th { background-color: var(--deep-blue); color: var(--white); font-weight: 500; }
+        tbody tr:hover { background-color: #f0f8ff; }
+        .table-responsive { overflow-x: auto; }
+        
+        .status { font-weight: 500; }
+        .status.confirmed { color: #28a745; }
+        .status.pending { color: #ffc107; }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden; /* Prevent horizontal scrolling within main content */
-            overflow-y: auto; /* Allow main content to scroll */
-        }
+        .btn-details { background-color: var(--button-gray); border: 1px solid #ccc; padding: 6px 15px; border-radius: 6px; font-family: 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; }
+        .btn-details:hover { background-color: var(--button-gray-hover); }
 
-        /* ========== Sidebar - แถบด้านข้าง ========== */
-        .sidebar h5 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--light-pink);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .sidebar ul {
-            list-style: none; /* Remove bullet points */
-            padding: 0; /* Remove default padding */
-            margin: 0; /* Remove default margin */
-        }
-
-        .sidebar li {
-            padding: 0; /* Ensure no extra padding from list items */
-        }
-
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            color: var(--white);
-            text-decoration: none;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            transition: 0.3s;
-            font-weight: 500;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active {
-            background: var(--primary-pink);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .sidebar a i {
-            margin-right: 12px;
-            font-size: 1.1rem;
-        }
-
-        /* ========== Navbar - แถบนำทางด้านบน ========== */
-        .navbar {
-            background: var(--white);
-            padding: 15px 25px;
-            box-shadow: 0 2px 8px var(--shadow-light);
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap; /* Allow navbar items to wrap on smaller screens */
-            position: sticky; /* Make navbar sticky */
-            top: 0;
-            z-index: 100; /* Ensure it stays on top */
-        }
-
-        /* ========== Search Input - ช่องค้นหา ========== */
-        .search-input {
-            border: 1px solid var(--border-light);
-            padding: 10px 15px;
-            border-radius: 25px;
-            max-width: 280px;
-            width: 100%; /* Ensure it takes full width when needed */
-            box-sizing: border-box; /* Include padding and border in the element's total width */
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .search-input:focus {
-            border-color: var(--soft-blue);
-            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
-        }
-
-        /* ========== User Dropdown - เมนูผู้ใช้ ========== */
-        .user-dropdown {
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .user-dropdown img {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            margin-right: 10px;
-            border: 2px solid var(--light-pink);
-        }
-
-        .user-dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: var(--white);
-            box-shadow: 0 5px 15px var(--shadow-medium);
-            border-radius: 8px;
-            min-width: 160px;
-            padding: 8px 0;
-            z-index: 10; /* Ensure dropdown is above other content */
-        }
-
-        .user-dropdown.active .user-dropdown-menu,
-        .user-dropdown:hover .user-dropdown-menu {
-            display: block;
-        }
-
-        .user-dropdown-menu a {
-            display: block;
-            padding: 10px 18px;
-            color: var(--text-dark);
-            text-decoration: none;
-            transition: 0.2s;
-        }
-
-        .user-dropdown-menu a:hover {
-            background: var(--light-pink);
-            color: var(--white);
-        }
-
-        /* ========== Content Area - พื้นที่เนื้อหาหลัก ========== */
-        .content-area {
-            flex: 1;
-            padding: 30px;
-            background: var(--bg-light);
-            box-sizing: border-box; /* Include padding in element's total width */
-        }
-
-        .content-area h4 {
-            margin-bottom: 25px;
-            color: var(--deep-blue);
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-
-        /* ========== Table Styles - สไตล์ตาราง ========== */
-        table {
-            width: 100%;
-            background-color: white;
-            border-collapse: collapse;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Stronger shadow */
-            margin-bottom: 25px; /* Added margin */
-            table-layout: fixed; /* Ensures columns respect width rules */
-        }
-
-        th, td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee; /* Lighter border */
-            text-align: left;
-            word-wrap: break-word; /* Break long words */
-        }
-
-        th {
-            background-color: var(--soft-blue); /* Blue header */
-            color: var(--white);
-            font-weight: 600;
-        }
-
-        tbody tr {
-            cursor: pointer; /* Indicate rows are clickable */
-            transition: background-color 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background-color: #f0f0f0; /* Light hover effect for rows */
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: var(--bg-light); /* Zebra striping */
-        }
-
-        /* Status Colors */
-        .status-pending-request {
-            color: #d1b000; /* Darker yellow/orange */
-            font-weight: 600;
-        }
-        .status-scheduled {
-            color: green;
-            font-weight: 600;
-        }
-        .status-rejected {
-            color: red;
-            font-weight: 600;
-        }
-        .status-completed {
-            color: var(--deep-blue); /* Use a blue for completed */
-            font-weight: 600;
-        }
-        .status-cancelled {
-            color: var(--text-muted); /* Grey for cancelled */
-            font-weight: 600;
-        }
-
-        /* Responsive Table - Make it scrollable on small screens */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        }
-
-        /* ========== Action Buttons in Table ========== */
-        .table-actions button {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            margin: 0 5px;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: color 0.2s ease;
-        }
-        .table-actions button:hover {
-            color: var(--primary-pink);
-        }
-        .table-actions .btn-accept {
-            color: green;
-        }
-        .table-actions .btn-reject {
-            color: red;
-        }
-        .table-actions .btn-schedule {
-            color: var(--soft-blue);
-        }
-        .table-actions .btn-view {
-            color: var(--deep-blue);
-        }
-
-
-        /* ========== Form Styles (for managing requests) - These styles are now for the new modal form ========== */
-        .modal-form-group { /* Renamed from form-group for clarity in modal */
-            margin-bottom: 15px;
-        }
-
-        .modal-form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .modal-form-group input[type="text"],
-        .modal-form-group input[type="date"],
-        .modal-form-group input[type="time"],
-        .modal-form-group select,
-        .modal-form-group textarea {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: 'Kanit', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .modal-form-group input[type="text"]:focus,
-        .modal-form-group input[type="date"]:focus,
-        .modal-form-group input[type="time"]:focus,
-        .modal-form-group select:focus,
-        .modal-form-group textarea:focus {
-            border-color: var(--soft-blue);
-            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
-            outline: none;
-        }
-
-        .modal-form-group textarea {
-            resize: vertical; /* Allow vertical resizing */
-            min-height: 80px;
-        }
-
-        /* Style for disabled inputs in modal */
-        .modal-form-group input:disabled,
-        .modal-form-group select:disabled,
-        .modal-form-group textarea:disabled {
-            background-color: #e9ecef; /* Lighter background for disabled fields */
-            cursor: not-allowed;
-        }
-
-        .modal-form-actions { /* Renamed from form-actions for clarity in modal */
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .modal-form-actions button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .modal-form-actions .btn-primary {
-            background-color: var(--primary-pink);
-            color: var(--white);
-        }
-
-        .modal-form-actions .btn-primary:hover {
-            background-color: #e6529c;
-            transform: translateY(-2px);
-        }
-
-        .modal-form-actions .btn-secondary {
-            background-color: var(--text-muted);
-            color: var(--white);
-        }
-
-        .modal-form-actions .btn-secondary:hover {
-            background-color: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        /* Modal Styles - For displaying request details in a pop-up */
-        .general-modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 1001; /* Higher than nav bar */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7); /* Dim background */
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .general-modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background-color: var(--white);
-            margin: auto;
-            padding: 30px;
-            border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            max-width: 600px; /* Default width for modals */
-            width: 100%;
-            animation: fadeInScale 0.3s ease-out;
-            position: relative;
-            text-align: center; /* Center content by default */
-        }
-
-        /* Keyframes for modal animation */
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .modal-header {
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-            text-align: center;
-            border-bottom: 2px solid var(--border-light);
-        }
-        .modal-header h3 {
-            margin: 0;
-            font-size: 2rem;
-            color: var(--deep-blue);
-            font-weight: 700;
-        }
-
-        .modal-body {
-            font-size: 1.1rem;
-            color: var(--text-dark);
-            line-height: 1.7;
-            margin-bottom: 25px;
-            text-align: left; /* Default left align for body content */
-        }
-        .modal-body p {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .modal-body p strong {
-            color: var(--deep-blue);
-            font-weight: 600;
-            min-width: 120px; /* Fixed width for labels in modal */
-            flex-shrink: 0;
-        }
-        .modal-body p span {
-            flex-grow: 1;
-            word-break: break-word;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .modal-footer button {
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            border: none;
-        }
-        .modal-footer .btn-primary {
-            background-color: var(--primary-pink);
-            color: var(--white);
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
-        }
-        .modal-footer .btn-primary:hover {
-            background-color: #e05e9b;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-        }
-        .modal-footer .btn-secondary {
-            background-color: var(--text-muted);
-            color: var(--white);
-            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
-        }
-        .modal-footer .btn-secondary:hover {
-            background-color: #5a6268;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 992px) { /* For tablets or medium screens */
-            .dashboard-container {
-                flex-direction: column; /* Stack sidebar and main content */
-            }
-            .sidebar {
-                width: 100%; /* Full width sidebar */
-                height: auto; /* Auto height */
-                position: relative; /* Not fixed */
-                padding-top: 20px; /* Adjust padding */
-            }
-            .sidebar h5 {
-                display: block; /* Show title on smaller screens for top bar */
-                text-align: left;
-                padding-left: 15px;
-            }
-            .sidebar ul {
-                display: flex; /* Make sidebar items horizontal */
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 0 10px; /* Add horizontal padding to prevent overflow */
-            }
-            .sidebar li {
-                flex: 1; /* Distribute space */
-                min-width: 120px; /* Minimum width for each item */
-                margin-bottom: 5px; /* Adjust margin */
-            }
-            .sidebar a {
-                justify-content: center; /* Center content in sidebar links */
-                text-align: center;
-                padding: 10px; /* Adjust padding */
-            }
-            .sidebar a i {
-                margin-right: 5px; /* Reduce margin for icons */
-            }
-
-            .main-content {
-                margin-left: 0; /* Remove left margin */
-            }
-            .navbar {
-                justify-content: center;
-                padding: 15px;
-            }
-            .navbar .search-input {
-                width: calc(100% - 40px);
-                margin-bottom: 10px;
-                order: 1;
-            }
-            .user-dropdown {
-                order: 2;
-            }
-        }
-
-        @media (max-width: 768px) { /* For smaller tablets and mobile */
-            .content-area {
-                padding: 15px; /* Reduce padding for content area */
-            }
-            table th, table td {
-                padding: 0.6rem; /* Smaller padding for tables */
-                font-size: 0.85rem;
-            }
-            .form-section { /* This is now unused, but keeping for reference if needed */
-                padding: 20px;
-            }
-            .form-group input, /* These styles are now for modal-form-group */
-            .form-group select,
-            .form-group textarea {
-                font-size: 0.9rem;
-            }
-            .form-actions button { /* These styles are now for modal-form-actions */
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-            .sidebar ul {
-                flex-direction: column; /* Stack sidebar items vertically again for very small screens */
-                align-items: stretch; /* Stretch items to full width */
-            }
-            .sidebar a {
-                justify-content: flex-start; /* Align text to start for vertical menu */
-                padding-left: 20px; /* Indent slightly */
-            }
-            .sidebar h5 {
-                text-align: center; /* Center title again when stacked vertically */
-                padding-left: 0;
-            }
-            /* Modal Responsive */
-            .modal-content {
-                max-width: 90%;
-                padding: 25px;
-            }
-            .modal-header h3 {
-                font-size: 1.6rem;
-            }
-            .modal-body {
-                font-size: 1rem;
-            }
-            .modal-footer {
-                flex-direction: column; /* Stack buttons vertically */
-                gap: 10px;
-            }
-            .modal-footer button {
-                width: 100%; /* Full width */
-            }
-            .modal-body p {
-                flex-direction: column; /* Stack label and content in modal body */
-                align-items: flex-start;
-                gap: 5px;
-            }
-            .modal-body p strong {
-                min-width: auto; /* Reset min-width for stacked labels */
-            }
-        }
-
-        @media (max-width: 480px) { /* Extra small screens */
-            .content-area {
-                padding: 10px;
-            }
-            .navbar {
-                padding: 10px;
-            }
-            .search-input {
-                padding: 8px 12px;
-            }
-            .user-dropdown img {
-                width: 32px;
-                height: 32px;
-            }
-            .sidebar a {
-                font-size: 0.9rem;
-            }
-        }
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; }
+        .modal.show { display: flex; }
+        .modal-content { background-color: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); max-width: 500px; width: 100%; animation: zoomIn 0.3s; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { text-align: center; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; margin-bottom: 20px; }
+        .modal-header h3 { margin: 0; font-size: 1.6rem; color: var(--deep-blue); }
+        .modal-body p { margin: 0 0 12px 0; display: flex; }
+        .modal-body p strong { color: var(--text-dark); width: 120px; flex-shrink: 0; font-weight: 500; }
+        .modal-footer { text-align: right; margin-top: 25px; }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigation -->
         <div class="sidebar">
             <h5>LRU HeartCare</h5>
             <ul>
-              <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
-                <li><a href="confirmed_data.html" class="active"><i class="bi bi-bell"></i> การนัดหมาย</a></li>
-                <li><a href="chat.html"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
+                <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
+                <li><a href="eiei.html" ><i class="bi bi-bell"></i> การนัดหมาย</a></li>
+                <li><a href="confirmed_data.html" class="active" ><i class="bi bi-bell"></i> การนัดหมายทั้งหมด</a></li>
+                <li><a href="chat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
                 <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
-            </ul>
         </div>
-        <!-- Main Content Area -->
         <div class="main-content">
-            <!-- Navbar Header -->
             <nav class="navbar">
                 <input type="search" class="search-input" placeholder="ค้นหา...">
-                <div class="user-dropdown" id="userDropdown">
-                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt=""> <!-- Placeholder image with PS text for Psychologist -->
-                    <strong>นักจิตวิทยา</strong>
-                    <ul class="user-dropdown-menu">
-                        <li><a href="#">โปรไฟล์</a></li>
-                        <li><a href="#">ออกจากระบบ</a></li>
-                    </ul>
+                <div class="user-profile">
+                    <div class="avatar">PS</div>
+                    <span>นักจิตวิทยา</span>
                 </div>
             </nav>
-            <!-- Content Area for Student Requests Management -->
             <div class="content-area">
-                <h4>คำขอคำปรึกษาของนักศึกษา</h4>
+                <h4>นัดหมายที่กำลังจะมาถึง</h4>
 
-                <!-- Consultation Request List Table -->
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>รหัสคำขอ</th>
-                                <th>วันที่ส่ง</th>
-                                <th>ชื่อนักศึกษา</th>
-                                <th>รหัสนักศึกษา</th>
-                                <th>หัวข้อ</th>
-                                <th>วันที่ต้องการ (เสนอ)</th>
-                                <th>เวลาที่ต้องการ (เสนอ)</th>
-                                <th>วัน-เวลาที่กำหนด</th> <!-- New column for actual appointment -->
-                                <th>สถานะ</th>
-                                <th>การจัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Example Data - This would be dynamically loaded in a real application -->
-                            <tr data-request-id="REQ001" data-actual-date="" data-actual-time="" data-student-message="ฉันรู้สึกเครียดมากกับการเรียนและรู้สึกกดดันจากความคาดหวังของครอบครัว อยากจะหาทางจัดการกับความรู้สึกเหล่านี้" data-major="การตลาด" data-faculty="บริหารธุรกิจ">
-                                <td>REQ001</td>
-                                <td>2025-07-06</td>
-                                <td>อภิชาติ ก.</td>
-                                <td>65011234</td>
-                                <td>ความเครียดจากการเรียน</td>
-                                <td>2025-07-08</td>
-                                <td>10:00</td>
-                                <td>-</td> <!-- Placeholder for actual appointment -->
-                                <td class="status-pending-request">⏳ รอการพิจารณา</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
-                                    <button class="btn-accept" title="ยอมรับคำขอ"><i class="bi bi-check-circle-fill"></i></button>
-                                    <button class="btn-reject" title="ปฏิเสธคำขอ"><i class="bi bi-x-circle-fill"></i></button>
-                                </td>
-                            </tr>
-                            <tr data-request-id="REQ002" data-actual-date="2025-07-07" data-actual-time="14:30" data-student-message="ช่วงนี้รู้สึกกังวลใจเกี่ยวกับอนาคตและไม่แน่ใจว่าจะเลือกทางเดินไหนดี" data-major="คอมพิวเตอร์" data-faculty="วิทยาศาสตร์">
-                                <td>REQ002</td>
-                                <td>2025-07-05</td>
-                                <td>นิรชา ข.</td>
-                                <td>64019876</td>
-                                <td>ความกังวลใจส่วนตัว</td>
-                                <td>2025-07-07</td>
-                                <td>14:30</td>
-                                <td>2025-07-07, 14:30</td>
-                                <td class="status-scheduled">✅ กำหนดเวลาแล้ว</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
-                                </td>
-                            </tr>
-                            <tr data-request-id="REQ003" data-actual-date="" data-actual-time="" data-student-message="มีปัญหาขัดแย้งกับคนในครอบครัวบ่อยครั้ง ทำให้รู้สึกไม่สบายใจและอยากหาทางออก" data-major="นิเทศศาสตร์" data-faculty="มนุษยศาสตร์">
-                                <td>REQ003</td>
-                                <td>2025-07-04</td>
-                                <td>สมศักดิ์ ส.</td>
-                                <td>65023456</td>
-                                <td>ปัญหาครอบครัว</td>
-                                <td>2025-07-10</td>
-                                <td>09:00</td>
-                                <td>-</td>
-                                <td class="status-rejected">❌ ปฏิเสธ</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
-                                </td>
-                            </tr>
-                             <tr data-request-id="REQ004" data-actual-date="2025-07-05" data-actual-time="11:00" data-student-message="รู้สึกหดหู่ ไม่มีแรงบันดาลใจ และนอนไม่หลับมาหลายวันแล้ว" data-major="บัญชี" data-faculty="บริหารธุรกิจ">
-                                <td>REQ004</td>
-                                <td>2025-07-03</td>
-                                <td>ดวงใจ ค.</td>
-                                <td>66034567</td>
-                                <td>ภาวะซึมเศร้า</td>
-                                <td>2025-07-05</td>
-                                <td>11:00</td>
-                                <td>2025-07-05, 11:00</td>
-                                <td class="status-completed">✔ สำเร็จ</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" title="ดูรายละเอียด"><i class="bi bi-eye"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="dateFilter">ช่วงเวลา:</label>
+                        <select id="dateFilter">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="today">วันนี้</option>
+                            <option value="this_week">สัปดาห์นี้</option>
+                            <option value="this_month">เดือนนี้</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">สถานะ:</label>
+                        <select id="statusFilter">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="confirmed">ยืนยันแล้ว</option>
+                            <option value="completed">เสร็จสิ้น</option>
+                        </select>
+                    </div>
+                    <button id="filterBtn" class="btn-filter">กรอง</button>
+                    <button id="clearBtn" class="btn-clear">ล้างค่า</button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table id="appointmentsTable">
+                            <thead>
+                                <tr>
+                                    <th>วันที่</th>
+                                    <th>เวลา</th>
+                                    <th>ชื่อ-นามสกุล</th>
+                                    <th>หัวข้อ</th>
+                                    <th>สถานะ</th>
+                                    <th>การดำเนินการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-date="2025-10-02" data-status="confirmed" data-details='{"id":"N001","name":"นายสมศักดิ์ จริงใจ","topic":"ความเครียดจากการทำงาน","status":"ยืนยันแล้ว"}'>
+                                    <td>2025-10-02</td>
+                                    <td>09:00</td>
+                                    <td>นายสมศักดิ์ จริงใจ</td>
+                                    <td>ความเครียดจากการทำงาน</td>
+                                    <td class="status confirmed">ยืนยันแล้ว</td>
+                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                </tr>
+                                <tr data-date="2025-10-02" data-status="confirmed" data-details='{"id":"N002","name":"นางสาวมานี มีสุข","topic":"ปัญหาความสัมพันธ์","status":"ยืนยันแล้ว"}'>
+                                    <td>2025-10-02</td>
+                                    <td>10:30</td>
+                                    <td>นางสาวมานี มีสุข</td>
+                                    <td>ปัญหาความสัมพันธ์</td>
+                                    <td class="status confirmed">ยืนยันแล้ว</td>
+                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                </tr>
+                                 <tr data-date="2025-10-03" data-status="confirmed" data-details='{"id":"N003","name":"นายปิติ ยินดี","topic":"ความวิตกกังวล","status":"ยืนยันแล้ว"}'>
+                                    <td>2025-10-03</td>
+                                    <td>11:00</td>
+                                    <td>นายปิติ ยินดี</td>
+                                    <td>ความวิตกกังวล</td>
+                                    <td class="status confirmed">ยืนยันแล้ว</td>
+                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                </tr>
+                                <tr data-date="2025-09-28" data-status="completed" data-details='{"id":"N004","name":"นางสาวสุดา แจ่มใส","topic":"ภาวะซึมเศร้า","status":"เสร็จสิ้น"}'>
+                                    <td>2025-09-28</td>
+                                    <td>14:00</td>
+                                    <td>นางสาวสุดา แจ่มใส</td>
+                                    <td>ภาวะซึมเศร้า</td>
+                                    <td class="status">เสร็จสิ้น</td>
+                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Request Detail Modal -->
-    <div id="requestDetailModal" class="general-modal">
+    <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>รายละเอียดคำขอคำปรึกษา</h3>
+                <h3>รายละเอียดนัดหมาย</h3>
             </div>
             <div class="modal-body">
-                <p><strong>รหัสคำขอ:</strong> <span id="modalRequestId"></span></p>
-                <p><strong>วันที่ส่ง:</strong> <span id="modalRequestDateSent"></span></p>
-                <p><strong>ชื่อ-นามสกุล:</strong> <span id="modalStudentName"></span></p>
-                <p><strong>รหัสนักศึกษา:</strong> <span id="modalStudentIdNumber"></span></p>
-                <p><strong>สาขา:</strong> <span id="modalMajor"></span></p>
-                <p><strong>คณะ:</strong> <span id="modalFaculty"></span></p>
-                <p><strong>หัวข้อปรึกษา:</strong> <span id="modalRequestTopic"></span></p>
-                <p><strong>รายละเอียดจากนักศึกษา:</strong> <span id="modalStudentMessage"></span></p>
-                <p><strong>วันที่ต้องการ (เสนอ):</strong> <span id="modalSuggestedDate"></span></p>
-                <p><strong>เวลาที่ต้องการ (เสนอ):</strong> <span id="modalSuggestedTime"></span></p>
-                <p><strong>วัน-เวลาที่กำหนด:</strong> <span id="modalActualAppointmentDateTime"></span></p>
-                <p><strong>สถานะปัจจุบัน:</strong> <span id="modalRequestStatus"></span></p>
+                <p><strong>รหัสนัดหมาย:</strong> <span id="modal-id"></span></p>
+                <p><strong>ชื่อ-นามสกุล:</strong> <span id="modal-name"></span></p>
+                <p><strong>วันที่:</strong> <span id="modal-date"></span></p>
+                <p><strong>เวลา:</strong> <span id="modal-time"></span></p>
+                <p><strong>หัวข้อ:</strong> <span id="modal-topic"></span></p>
+                <p><strong>สถานะ:</strong> <span id="modal-status"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="closeRequestDetailModal">ปิด</button>
-                <button type="button" class="btn-primary" id="openManageRequestModal">จัดการคำขอ</button>
+                <button class="btn-details" data-close-modal>ปิด</button>
             </div>
         </div>
     </div>
 
-    <!-- Manage Request Modal (New Pop-up Form) -->
-    <div id="manageRequestModal" class="general-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>จัดการคำขอคำปรึกษา</h3>
-            </div>
-            <div class="modal-body">
-                <form id="manageRequestFormModal">
-                    <div class="modal-form-group">
-                        <label for="modalManageRequestId">รหัสคำขอ:</label>
-                        <input type="text" id="modalManageRequestId" name="requestId" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageStudentName">ชื่อ-นามสกุล นักศึกษา:</label>
-                        <input type="text" id="modalManageStudentName" name="studentName" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageStudentIdNumber">รหัสนักศึกษา:</label>
-                        <input type="text" id="modalManageStudentIdNumber" name="studentIdNumber" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageMajor">สาขา:</label>
-                        <input type="text" id="modalManageMajor" name="major" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageFaculty">คณะ:</label>
-                        <input type="text" id="modalManageFaculty" name="faculty" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageRequestTopic">หัวข้อที่ปรึกษา:</label>
-                        <input type="text" id="modalManageRequestTopic" name="requestTopic" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageSuggestedDate">วันที่นักศึกษาต้องการ (เสนอ):</label>
-                        <input type="date" id="modalManageSuggestedDate" name="suggestedDate" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageSuggestedTime">เวลาที่นักศึกษาต้องการ (เสนอ):</label>
-                        <input type="time" id="modalManageSuggestedTime" name="suggestedTime" readonly>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageActualAppointmentDate">วันนัดหมายที่กำหนด:</label>
-                        <input type="date" id="modalManageActualAppointmentDate" name="actualAppointmentDate" disabled>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageActualAppointmentTime">เวลานัดหมายที่กำหนด:</label>
-                        <input type="time" id="modalManageActualAppointmentTime" name="actualAppointmentTime" disabled>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageActionNotes">หมายเหตุ/ข้อมูลเพิ่มเติมจากนักจิตวิทยา:</label>
-                        <textarea id="modalManageActionNotes" name="actionNotes" rows="3" placeholder="ระบุการนัดหมาย, คำแนะนำ หรือเหตุผลการปฏิเสธ"></textarea>
-                    </div>
-                    <div class="modal-form-group">
-                        <label for="modalManageRequestStatus">สถานะคำขอ:</label>
-                        <select id="modalManageRequestStatus" name="requestStatus">
-                            <option value="pending-request">⏳ รอการพิจารณา</option>
-                            <option value="scheduled">✅ กำหนดเวลาแล้ว</option>
-                            <option value="rejected">❌ ปฏิเสธ</option>
-                            <option value="completed">✔ สำเร็จ</option>
-                            <option value="cancelled">✖ ยกเลิก</option>
-                        </select>
-                    </div>
-                    <div class="modal-form-actions">
-                        <button type="button" class="btn-secondary" id="closeManageRequestModal">ยกเลิก</button>
-                        <button type="submit" class="btn-primary">บันทึกการจัดการ</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.querySelector('#appointmentsTable tbody');
+    const detailModal = document.getElementById('detailModal');
+    const filterBtn = document.getElementById('filterBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const allRows = Array.from(tableBody.querySelectorAll('tr'));
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // --- Helper functions for Modals ---
-            function showModal(modalId) {
-                document.getElementById(modalId).classList.add('show');
+    // --- Modal Logic ---
+    tableBody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-details')) {
+            const row = event.target.closest('tr');
+            const details = JSON.parse(row.dataset.details);
+            
+            document.getElementById('modal-id').textContent = details.id;
+            document.getElementById('modal-name').textContent = details.name;
+            document.getElementById('modal-date').textContent = row.cells[0].textContent;
+            document.getElementById('modal-time').textContent = row.cells[1].textContent;
+            document.getElementById('modal-topic').textContent = details.topic;
+            document.getElementById('modal-status').textContent = details.status;
+
+            detailModal.classList.add('show');
+        }
+    });
+
+    detailModal.addEventListener('click', (event) => {
+        if (event.target === detailModal || event.target.hasAttribute('data-close-modal')) {
+            detailModal.classList.remove('show');
+        }
+    });
+
+    // --- Filter Logic ---
+    const applyFilters = () => {
+        const dateFilter = document.getElementById('dateFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        const now = new Date('2025-10-02T10:00:00'); // Using a fixed date for consistent demo
+
+        allRows.forEach(row => {
+            let dateMatch = true;
+            let statusMatch = true;
+
+            // Date filtering
+            if (dateFilter !== 'all') {
+                const rowDate = new Date(row.dataset.date);
+                if (dateFilter === 'today') {
+                    dateMatch = rowDate.toDateString() === now.toDateString();
+                } else if (dateFilter === 'this_week') {
+                    const weekStart = new Date(now);
+                    weekStart.setDate(now.getDate() - now.getDay());
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekStart.getDate() + 6);
+                    dateMatch = rowDate >= weekStart && rowDate <= weekEnd;
+                } else if (dateFilter === 'this_month') {
+                    dateMatch = rowDate.getMonth() === now.getMonth() && rowDate.getFullYear() === now.getFullYear();
+                }
             }
 
-            function hideModal(modalId) {
-                document.getElementById(modalId).classList.remove('show');
+            // Status filtering
+            if (statusFilter !== 'all') {
+                statusMatch = row.dataset.status === statusFilter;
             }
 
-            // --- Dropdown functionality for user profile ---
-            const userDropdown = document.getElementById('userDropdown');
-            if (userDropdown) {
-                userDropdown.addEventListener('click', function(event) {
-                    // Prevent closing if clicking inside the dropdown menu itself
-                    if (!event.target.closest('.user-dropdown-menu')) {
-                        this.classList.toggle('active');
-                    }
-                });
-
-                // Close dropdown if clicked outside
-                window.addEventListener('click', function(event) {
-                    if (!userDropdown.contains(event.target)) {
-                        userDropdown.classList.remove('active');
-                    }
-                });
-            }
-
-            // --- Modal Elements (Request Detail Modal) ---
-            const requestDetailModal = document.getElementById('requestDetailModal');
-            const modalRequestId = document.getElementById('modalRequestId');
-            const modalRequestDateSent = document.getElementById('modalRequestDateSent');
-            const modalStudentName = document.getElementById('modalStudentName');
-            const modalStudentIdNumber = document.getElementById('modalStudentIdNumber');
-            const modalMajor = document.getElementById('modalMajor'); // New
-            const modalFaculty = document.getElementById('modalFaculty'); // New
-            const modalRequestTopic = document.getElementById('modalRequestTopic');
-            const modalStudentMessage = document.getElementById('modalStudentMessage');
-            const modalSuggestedDate = document.getElementById('modalSuggestedDate');
-            const modalSuggestedTime = document.getElementById('modalSuggestedTime');
-            const modalActualAppointmentDateTime = document.getElementById('modalActualAppointmentDateTime');
-            const modalRequestStatus = document.getElementById('modalRequestStatus');
-            const closeRequestDetailModalBtn = document.getElementById('closeRequestDetailModal');
-            const openManageRequestModalBtn = document.getElementById('openManageRequestModal'); // Renamed from manageRequestFromModal
-
-            // --- Modal Elements (Manage Request Modal) ---
-            const manageRequestModal = document.getElementById('manageRequestModal');
-            const manageRequestFormModal = document.getElementById('manageRequestFormModal');
-            const modalManageRequestId = document.getElementById('modalManageRequestId');
-            const modalManageStudentName = document.getElementById('modalManageStudentName');
-            const modalManageStudentIdNumber = document.getElementById('modalManageStudentIdNumber'); // New
-            const modalManageMajor = document.getElementById('modalManageMajor'); // New
-            const modalManageFaculty = document.getElementById('modalManageFaculty'); // New
-            const modalManageRequestTopic = document.getElementById('modalManageRequestTopic');
-            const modalManageSuggestedDate = document.getElementById('modalManageSuggestedDate');
-            const modalManageSuggestedTime = document.getElementById('modalManageSuggestedTime');
-            const modalManageActualAppointmentDate = document.getElementById('modalManageActualAppointmentDate');
-            const modalManageActualAppointmentTime = document.getElementById('modalManageActualAppointmentTime');
-            const modalManageActionNotes = document.getElementById('modalManageActionNotes');
-            const modalManageRequestStatus = document.getElementById('modalManageRequestStatus');
-            const closeManageRequestModalBtn = document.getElementById('closeManageRequestModal');
-
-            // Function to enable/disable actual appointment fields in the NEW manage modal form
-            function toggleActualAppointmentFieldsInManageModal() {
-                const isScheduled = modalManageRequestStatus.value === 'scheduled';
-                modalManageActualAppointmentDate.disabled = !isScheduled;
-                modalManageActualAppointmentTime.disabled = !isScheduled;
-            }
-
-            // Listen for status change in the NEW manage modal to toggle fields
-            modalManageRequestStatus.addEventListener('change', toggleActualAppointmentFieldsInManageModal);
-
-            // Function to populate the Request Detail Modal from a given table row
-            function populateRequestDetailModal(row) {
-                const cells = row.querySelectorAll('td');
-
-                modalRequestId.innerText = cells[0].innerText;
-                modalRequestDateSent.innerText = cells[1].innerText;
-                modalStudentName.innerText = cells[2].innerText;
-                modalStudentIdNumber.innerText = cells[3].innerText;
-                modalRequestTopic.innerText = cells[4].innerText;
-                modalStudentMessage.innerText = row.getAttribute('data-student-message') || "ไม่มีรายละเอียดเพิ่มเติม"; // Get from data attribute
-                modalSuggestedDate.innerText = cells[5].innerText;
-                modalSuggestedTime.innerText = cells[6].innerText;
-                modalActualAppointmentDateTime.innerText = cells[7].innerText;
-                modalRequestStatus.innerText = cells[8].innerText; // Status text directly from cell
-
-                // New: Populate Major and Faculty
-                modalMajor.innerText = row.getAttribute('data-major') || '-';
-                modalFaculty.innerText = row.getAttribute('data-faculty') || '-';
-
-                // Store the row data in the modal's dataset for easy access when "จัดการคำขอ" is clicked
-                requestDetailModal.dataset.requestId = cells[0].innerText;
-                requestDetailModal.dataset.requestDateSent = cells[1].innerText;
-                requestDetailModal.dataset.studentName = cells[2].innerText;
-                requestDetailModal.dataset.studentIdNumber = cells[3].innerText; // New
-                requestDetailModal.dataset.requestTopic = cells[4].innerText;
-                requestDetailModal.dataset.studentMessage = row.getAttribute('data-student-message') || "";
-                requestDetailModal.dataset.suggestedDate = cells[5].innerText;
-                requestDetailModal.dataset.suggestedTime = cells[6].innerText;
-                requestDetailModal.dataset.actualAppointmentDate = row.getAttribute('data-actual-date');
-                requestDetailModal.dataset.actualAppointmentTime = row.getAttribute('data-actual-time');
-                requestDetailModal.dataset.requestStatus = cells[8].className.replace('status-', ''); // Store raw status value
-                // New: Add Major and Faculty to dataset
-                requestDetailModal.dataset.major = row.getAttribute('data-major') || "";
-                requestDetailModal.dataset.faculty = row.getAttribute('data-faculty') || "";
-
-                showModal('requestDetailModal');
-            }
-
-            // Function to populate the Manage Request Modal from a given table row or modal dataset
-            function populateManageRequestModal(data) {
-                modalManageRequestId.value = data.requestId;
-                modalManageStudentName.value = data.studentName;
-                modalManageStudentIdNumber.value = data.studentIdNumber; // New
-                modalManageMajor.value = data.major; // New
-                modalManageFaculty.value = data.faculty; // New
-                modalManageRequestTopic.value = data.requestTopic;
-                modalManageSuggestedDate.value = data.suggestedDate;
-                modalManageSuggestedTime.value = data.suggestedTime;
-                modalManageActualAppointmentDate.value = data.actualAppointmentDate;
-                modalManageActualAppointmentTime.value = data.actualAppointmentTime;
-                modalManageActionNotes.value = data.actionNotes || ''; // Clear or set existing notes
-                modalManageRequestStatus.value = data.requestStatus;
-
-                toggleActualAppointmentFieldsInManageModal(); // Set initial disabled state
-
-                showModal('manageRequestModal');
-            }
-
-            // --- Handle Manage Request Form Submission (inside the new modal) ---
-            if (manageRequestFormModal) {
-                manageRequestFormModal.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Prevent default form submission
-
-                    // Collect form data from the modal
-                    const requestId = modalManageRequestId.value;
-                    const actualAppointmentDate = modalManageActualAppointmentDate.value;
-                    const actualAppointmentTime = modalManageActualAppointmentTime.value;
-                    const actionNotes = modalManageActionNotes.value;
-                    const requestStatus = modalManageRequestStatus.value;
-
-                    console.log('Managed Request Data (from modal):', {
-                        requestId,
-                        actualAppointmentDate,
-                        actualAppointmentTime,
-                        actionNotes,
-                        requestStatus
-                    });
-
-                    // Update the corresponding row in the table (for demonstration purposes)
-                    const rowToUpdate = document.querySelector(`tr[data-request-id="${requestId}"]`);
-                    if (rowToUpdate) {
-                        // Update data attributes for actual appointment
-                        rowToUpdate.setAttribute('data-actual-date', actualAppointmentDate);
-                        rowToUpdate.setAttribute('data-actual-time', actualAppointmentTime);
-
-                        // Update status class and text
-                        rowToUpdate.querySelector('td:nth-child(9)').className = `status-${requestStatus}`; // Status column index
-                        let statusText = '';
-                        switch(requestStatus) {
-                            case 'pending-request': statusText = '⏳ รอการพิจารณา'; break;
-                            case 'scheduled': statusText = '✅ กำหนดเวลาแล้ว'; break;
-                            case 'rejected': statusText = '❌ ปฏิเสธ'; break;
-                            case 'completed': statusText = '✔ สำเร็จ'; break;
-                            case 'cancelled': statusText = '✖ ยกเลิก'; break;
-                        }
-                        rowToUpdate.querySelector('td:nth-child(9)').innerText = statusText;
-
-                        // Update Actual Appointment Date/Time column
-                        const actualDateTimeCell = rowToUpdate.querySelector('td:nth-child(8)'); // Actual Date/Time column index
-                        if (requestStatus === 'scheduled' && actualAppointmentDate && actualAppointmentTime) {
-                            actualDateTimeCell.innerText = `${actualAppointmentDate}, ${actualAppointmentTime}`;
-                        } else {
-                            actualDateTimeCell.innerText = '-';
-                        }
-
-                        // Disable/hide action buttons if status is finalized
-                        const actionButtons = rowToUpdate.querySelectorAll('.table-actions button');
-                        actionButtons.forEach(btn => {
-                            if (requestStatus === 'scheduled' || requestStatus === 'rejected' || requestStatus === 'completed' || requestStatus === 'cancelled') {
-                                if (btn.classList.contains('btn-accept') || btn.classList.contains('btn-reject')) {
-                                    btn.style.display = 'none'; // Hide accept/reject
-                                }
-                            } else {
-                                btn.style.display = ''; // Show all buttons if not finalized
-                            }
-                        });
-                    }
-
-                    alert(`บันทึกการจัดการคำขอ ${requestId} เรียบร้อยแล้ว (ข้อมูลนี้ยังไม่ได้ถูกบันทึกลงฐานข้อมูลจริง)`);
-                    hideModal('manageRequestModal'); // Close the manage modal
-                    manageRequestFormModal.reset(); // Clear the modal form
-                    toggleActualAppointmentFieldsInManageModal(); // Reset field states
-                    // In a real app, you'd likely refresh the table data from backend here
-                });
-            }
-
-            // --- Functionality for "View" buttons in table ---
-            document.querySelectorAll('.btn-view').forEach(button => {
-                button.addEventListener('click', function(event) {
-                    event.stopPropagation(); // Prevent row click from firing
-                    const row = this.closest('tr');
-                    populateRequestDetailModal(row);
-                });
-            });
-
-            // --- Add click listener to table rows ---
-            document.querySelectorAll('tbody tr').forEach(row => {
-                row.addEventListener('click', function(event) {
-                    // Check if the click target is not an action button
-                    // This prevents double-triggering if an action button is clicked
-                    if (!event.target.closest('.table-actions button')) {
-                        populateRequestDetailModal(this);
-                    }
-                });
-            });
-
-            // --- Request Detail Modal Buttons Functionality ---
-            if (closeRequestDetailModalBtn) {
-                closeRequestDetailModalBtn.addEventListener('click', function() {
-                    hideModal('requestDetailModal');
-                });
-            }
-
-            if (requestDetailModal) {
-                // Close modal when clicking on the overlay
-                requestDetailModal.addEventListener('click', function(event) {
-                    if (event.target === requestDetailModal) {
-                        hideModal('requestDetailModal');
-                    }
-                });
-            }
-
-            if (openManageRequestModalBtn) {
-                openManageRequestModalBtn.addEventListener('click', function() {
-                    hideModal('requestDetailModal'); // Close detail modal
-
-                    // Prepare data for the manage modal from the detail modal's dataset
-                    const dataToManage = {
-                        requestId: requestDetailModal.dataset.requestId,
-                        studentName: requestDetailModal.dataset.studentName,
-                        studentIdNumber: requestDetailModal.dataset.studentIdNumber, // New
-                        major: requestDetailModal.dataset.major, // New
-                        faculty: requestDetailModal.dataset.faculty, // New
-                        requestTopic: requestDetailModal.dataset.requestTopic,
-                        suggestedDate: requestDetailModal.dataset.suggestedDate,
-                        suggestedTime: requestDetailModal.dataset.suggestedTime,
-                        actualAppointmentDate: requestDetailModal.dataset.actualAppointmentDate,
-                        actualAppointmentTime: requestDetailModal.dataset.actualAppointmentTime,
-                        requestStatus: requestDetailModal.dataset.requestStatus,
-                        actionNotes: '' // Clear notes when opening from detail modal for fresh input
-                    };
-                    populateManageRequestModal(dataToManage);
-                });
-            }
-
-            // --- Manage Request Modal Buttons Functionality ---
-            if (closeManageRequestModalBtn) {
-                closeManageRequestModalBtn.addEventListener('click', function() {
-                    hideModal('manageRequestModal');
-                    manageRequestFormModal.reset(); // Clear form on cancel
-                    toggleActualAppointmentFieldsInManageModal(); // Reset field states
-                });
-            }
-
-            if (manageRequestModal) {
-                // Close modal when clicking on the overlay
-                manageRequestModal.addEventListener('click', function(event) {
-                    if (event.target === manageRequestModal) {
-                        hideModal('manageRequestModal');
-                        manageRequestFormModal.reset(); // Clear form on overlay click
-                        toggleActualAppointmentFieldsInManageModal(); // Reset field states
-                    }
-                });
-            }
-
-            // Functionality for Accept/Reject buttons (quick actions from table)
-            document.querySelectorAll('.btn-accept').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const requestId = row.querySelector('td:nth-child(1)').innerText;
-                    
-                    // Prepare data for the manage modal
-                    const dataToManage = {
-                        requestId: requestId,
-                        studentName: row.querySelector('td:nth-child(3)').innerText,
-                        studentIdNumber: row.querySelector('td:nth-child(4)').innerText, // New
-                        major: row.getAttribute('data-major') || '', // New
-                        faculty: row.getAttribute('data-faculty') || '', // New
-                        requestTopic: row.querySelector('td:nth-child(5)').innerText,
-                        suggestedDate: row.querySelector('td:nth-child(6)').innerText,
-                        suggestedTime: row.querySelector('td:nth-child(7)').innerText,
-                        actualAppointmentDate: row.querySelector('td:nth-child(6)').innerText, // Pre-fill with suggested
-                        actualAppointmentTime: row.querySelector('td:nth-child(7)').innerText, // Pre-fill with suggested
-                        requestStatus: 'scheduled', // Set status to scheduled
-                        actionNotes: `คำขอถูกยอมรับและกำหนดเวลาแล้ว สำหรับคำขอ ${requestId} กรุณาติดต่อกลับนักศึกษาเพื่อยืนยันวันและเวลาที่แน่นอน`
-                    };
-                    populateManageRequestModal(dataToManage);
-                });
-            });
-
-            document.querySelectorAll('.btn-reject').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const requestId = row.querySelector('td:nth-child(1)').innerText;
-                    
-                    // Prepare data for the manage modal
-                    const dataToManage = {
-                        requestId: requestId,
-                        studentName: row.querySelector('td:nth-child(3)').innerText,
-                        studentIdNumber: row.querySelector('td:nth-child(4)').innerText, // New
-                        major: row.getAttribute('data-major') || '', // New
-                        faculty: row.getAttribute('data-faculty') || '', // New
-                        requestTopic: row.querySelector('td:nth-child(5)').innerText,
-                        suggestedDate: row.querySelector('td:nth-child(6)').innerText,
-                        suggestedTime: row.querySelector('td:nth-child(7)').innerText,
-                        actualAppointmentDate: '', // Clear actual appointment on rejection
-                        actualAppointmentTime: '', // Clear actual appointment on rejection
-                        requestStatus: 'rejected', // Set status to rejected
-                        actionNotes: `คำขอถูกปฏิเสธแล้ว สำหรับคำขอ ${requestId} โปรดระบุเหตุผลการปฏิเสธและเสนอทางเลือกอื่น (ถ้ามี)`
-                    };
-                    populateManageRequestModal(dataToManage);
-                });
-            });
+            // Show/hide row
+            row.style.display = (dateMatch && statusMatch) ? '' : 'none';
         });
-    </script>
+    };
+
+    filterBtn.addEventListener('click', applyFilters);
+
+    clearBtn.addEventListener('click', () => {
+        document.getElementById('dateFilter').value = 'all';
+        document.getElementById('statusFilter').value = 'all';
+        allRows.forEach(row => row.style.display = '');
+    });
+});
+</script>
 </body>
 </html>
