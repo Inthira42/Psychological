@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LRU HeartCare | หน้าแรก - พื้นที่ปลอดภัยสำหรับใจคุณ</title>
     <style>
-        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        /* ========== Variables - ตัวแปรสีและเงา (คงเดิม) ========== */
         :root {
             --primary-pink: #FF69B4; /* ชมพูหลัก */
             --light-pink: #FFC0CB; /* ชมพูอ่อน */
@@ -19,538 +19,318 @@
             --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
             --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
             --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+            --warning-yellow: #ffc107;
+            --danger-red: #dc3545;
+            --success-green: #28a745;
         }
 
-        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด (คงเดิม) ========== */
+        *, *::before, *::after { box-sizing: border-box; }
         body {
-            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
-            margin: 0;
-            padding: 0;
-            background: var(--bg-light); /* สีพื้นหลังเริ่มต้น */
-            color: var(--text-dark); /* สีข้อความเริ่มต้น */
-            line-height: 1.6; /* ระยะห่างบรรทัด */
-            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif;
+            margin: 0; padding: 0; background: var(--bg-light); 
+            color: var(--text-dark); line-height: 1.6; 
         }
-
-        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
-        /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
-        .container {
-            max-width: 1200px; /* ความกว้างสูงสุด */
-            margin: 0 auto; /* จัดกึ่งกลาง */
-            padding: 0 20px; /* ระยะห่างด้านข้าง */
-        }
-
-        /* ========== Navigation Bar - แถบนำทางด้านบน ========== */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        /* ... CSS ส่วน Nav, Hero, Content, Consultant (เหมือนเดิม) ... */
+        
         .nav {
-            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
-            padding: 15px 0; /* ลด padding ลงเล็กน้อย */
-            box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
-            color: var(--white); /* สีข้อความ */
-            position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
-            top: 0;
-            z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
-            transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+            background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%);
+            padding: 15px 0; box-shadow: 0 4px 15px var(--shadow-medium); 
+            color: var(--white); position: sticky; top: 0; z-index: 1000; transition: all 0.3s ease;
         }
-
         .nav-con {
-            display: flex;
-            justify-content: space-between; /* กระจายเนื้อหา */
-            align-items: center; /* จัดกึ่งกลางแนวตั้ง */
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center; max-width: 1200px;
+            margin: 0 auto; padding: 0 20px;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
-        }
-
-        .logo img {
-            height: 45px; /* เพิ่มความสูงโลโก้ */
-            border-radius: 10px; /* เพิ่มขอบมน */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
-        }
-
-        .logo a {
-            color: var(--white); /* สีลิงก์ */
-            text-decoration: none; /* ไม่มีขีดเส้นใต้ */
-            font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
-            font-weight: 700; /* น้ำหนักฟอนต์ */
-            letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
-        }
-
-        .menu-con {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
-        }
-
-        .menu {
-            list-style: none; /* ไม่มีสไตล์ลิสต์ */
-            padding: 0;
-            margin: 0;
-            display: flex;
-            gap: 20px; /* ลดระยะห่างระหว่างเมนู */
-        }
-
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 45px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .logo a { color: var(--white); text-decoration: none; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+        .menu-con { display: flex; align-items: center; gap: 20px; }
+        .menu { list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; }
         .menu li a {
-            color: var(--white);
-            text-decoration: none;
-            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
-            border-radius: 10px; /* เพิ่มขอบมน */
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
-            font-weight: 500;
-            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
-            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            color: var(--white); text-decoration: none; padding: 10px 18px; border-radius: 10px;
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; font-weight: 500;
+            display: block; line-height: 1;
         }
-
-        .menu li a:hover {
-            background: var(--primary-pink);
-            color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
-            transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
-        }
-
-        /* Dropdown specific styles */
-        .dropdown {
-            position: relative;
-        }
-
+        .menu li a:hover { background: var(--primary-pink); color: var(--white); transform: translateY(-3px); }
+        .dropdown { position: relative; }
         .dropdown-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
-            cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
-            color: var(--white);
-            padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
-            border-radius: 10px; /* เพิ่มขอบมน */
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            font-weight: 500;
-            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--white);
+            padding: 10px 18px; border-radius: 10px; transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            font-weight: 500; line-height: 1;
         }
-
-        .dropdown-toggle:hover {
-            background: var(--primary-pink);
-            color: var(--white);
-            transform: translateY(-3px);
-        }
-
+        .dropdown-toggle:hover { background: var(--primary-pink); color: var(--white); transform: translateY(-3px); }
         .dropdown-menu {
-            display: none; /* ซ่อน dropdown menu เริ่มต้น */
-            position: absolute;
-            top: 110%; /* ขยับลงมาเล็กน้อย */
-            left: 0;
-            background: var(--deep-blue);
-            min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
-            box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
-            border-radius: 10px; /* ขอบมนมากขึ้น */
-            overflow: hidden;
-            z-index: 1000;
-            padding: 10px 0;
-            opacity: 0; /* ซ่อนด้วย opacity */
-            transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
-            transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+            display: none; position: absolute; top: 110%; left: 0; background: var(--deep-blue);
+            min-width: 200px; box-shadow: 0 8px 20px var(--shadow-medium); border-radius: 10px;
+            overflow: hidden; z-index: 1000; padding: 10px 0; opacity: 0; transform: translateY(15px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-
-        .dropdown.show .dropdown-menu {
-            display: block; /* แสดง dropdown menu */
-            opacity: 1; /* แสดงด้วย opacity */
-            transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
-        }
-
+        .dropdown.show .dropdown-menu { display: block; opacity: 1; transform: translateY(0); }
         .dropdown-menu li a {
-            color: var(--white);
-            padding: 12px 25px; /* เพิ่ม padding */
-            display: block;
-            text-decoration: none;
+            color: var(--white); padding: 12px 25px; display: block; text-decoration: none; 
             transition: background 0.2s ease, color 0.2s ease;
         }
-
-        .dropdown-menu li a:hover {
-            background: var(--primary-pink);
-            color: var(--white);
-        }
-
+        .dropdown-menu li a:hover { background: var(--primary-pink); color: var(--white); }
         .logout a {
-            background: var(--primary-pink);
-            color: var(--white);
-            text-decoration: none;
-            padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
-            border-radius: 30px; /* ขอบมนมากขึ้น */
-            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
-            font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
-            box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-            letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
-            border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
-            line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
-            display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            background: var(--primary-pink); color: var(--white); text-decoration: none;
+            padding: 10px 18px; border-radius: 30px; transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 600; box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4); letter-spacing: 0.5px;
+            border: 2px solid var(--primary-pink); line-height: 1; display: block;
         }
-
         .logout a:hover {
-            background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
-            color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
-            transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
-            border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+            background: var(--white); color: var(--primary-pink); transform: translateY(-4px); 
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); border-color: var(--primary-pink);
         }
 
-        /* ========== Main Content Section - ส่วนเนื้อหาหลัก (Hero Section) ========== */
-        .maincontent {
-            background: linear-gradient(135deg, var(--soft-blue) 0%, var(--light-pink) 100%); /* ไล่โทนสี */
-            padding: 100px 0; /* เพิ่ม padding ให้ใหญ่ขึ้น */
-            color: var(--white);
-            text-align: center;
-        }
-
-        .maincontent-con {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap; /* ให้เนื้อหาและรูปภาพขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
-            gap: 50px; /* เพิ่มระยะห่าง */
-        }
-
-        .maincontent-info {
-            flex: 1;
-            min-width: 300px;
-            text-align: left;
-            max-width: 600px;
-            padding-right: 20px; /* เพิ่มระยะห่างด้านขวา */
-        }
-
-        .maincontent-info h1 {
-            font-size: 3.5rem; /* เพิ่มขนาดฟอนต์ */
-            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
-            color: var(--deep-blue);
-            font-weight: 800;
-            line-height: 1.2;
-        }
-
-        .maincontent-info h2 {
-            font-size: 2.2rem; /* เพิ่มขนาดฟอนต์ */
-            margin-bottom: 30px; /* เพิ่มระยะห่างด้านล่าง */
-            color: var(--primary-pink);
-            font-weight: 600;
-        }
-
-        .maincontent-info p {
-            font-size: 1.2rem; /* เพิ่มขนาดฟอนต์ */
-            margin-bottom: 40px; /* เพิ่มระยะห่างด้านล่าง */
-            color: var(--text-dark);
-        }
-
+        .maincontent { background: linear-gradient(135deg, var(--soft-blue) 0%, var(--light-pink) 100%); padding: 100px 0; color: var(--white); text-align: center; }
+        .maincontent-con { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 50px; }
+        .maincontent-info { flex: 1; min-width: 300px; text-align: left; max-width: 600px; padding-right: 20px; }
+        .maincontent-info h1 { font-size: 3.5rem; margin-bottom: 20px; color: var(--deep-blue); font-weight: 800; line-height: 1.2; }
+        .maincontent-info h2 { font-size: 2.2rem; margin-bottom: 30px; color: var(--primary-pink); font-weight: 600; }
+        .maincontent-info p { font-size: 1.2rem; margin-bottom: 40px; color: var(--text-dark); }
         .maincontent-btn {
-            background: var(--primary-pink);
-            color: var(--white);
-            text-decoration: none;
-            padding: 18px 35px; /* เพิ่ม padding */
-            border-radius: 35px; /* ขอบมนมากขึ้น */
-            font-size: 1.2rem; /* เพิ่มขนาดฟอนต์ */
-            font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5); /* เงาเข้มขึ้น */
-            display: inline-block;
+            background: var(--primary-pink); color: var(--white); text-decoration: none; padding: 18px 35px;
+            border-radius: 35px; font-size: 1.2rem; font-weight: 600; transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5); display: inline-block;
         }
-
-        .maincontent-btn:hover {
-            background: #e05e9b;
-            transform: translateY(-5px); /* เลื่อนขึ้นมากขึ้น */
-            box-shadow: 0 12px 30px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้นและกว้างขึ้น */
-        }
-
-        .maincontent-img {
-            flex: 1;
-            min-width: 300px;
-            text-align: center;
-        }
-
-        .maincontent-img img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ========== Content Section - ส่วนแสดงข่าวสาร ========== */
-        .content {
-            padding: 80px 0; /* เพิ่ม padding */
-            background: var(--white);
-        }
-
-        .content-heading {
-            text-align: center;
-            font-size: 2.5rem;
-            color: var(--deep-blue);
-            margin-bottom: 50px;
-            font-weight: 700;
-        }
-
-        .container-con {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .content-con {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px; /* เพิ่มระยะห่าง */
-        }
-
+        .maincontent-btn:hover { background: #e05e9b; transform: translateY(-5px); box-shadow: 0 12px 30px rgba(255, 105, 180, 0.6); }
+        .maincontent-img { flex: 1; min-width: 300px; text-align: center; }
+        .maincontent-img img { max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+        
+        .content { padding: 80px 0; background: var(--white); }
+        .content-heading { text-align: center; font-size: 2.5rem; color: var(--deep-blue); margin-bottom: 50px; font-weight: 700; }
+        .container-con { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .content-con { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px; }
         .content-item {
-            background: var(--bg-light);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px var(--shadow-light);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column; /* จัดเรียงเนื้อหาเป็นแนวตั้ง */
+            background: var(--bg-light); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column;
         }
-
-        .content-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px var(--shadow-medium);
-        }
-
-        .content-item img {
-            width: 100%;
-            height: 200px; /* กำหนดความสูงรูปภาพให้เท่ากัน */
-            object-fit: cover; /* ครอบคลุมพื้นที่และตัดส่วนเกิน */
-            display: block;
-        }
-
-        .content-text {
-            padding: 20px; /* เพิ่ม padding ให้เนื้อหา */
-        }
-
-        .content-text h3 {
-            font-size: 1.3rem;
-            color: var(--deep-blue);
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .content-text p {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .content-btn-container {
-            text-align: center;
-        }
-
+        .content-item:hover { transform: translateY(-8px); box-shadow: 0 10px 25px var(--shadow-medium); }
+        .content-item img { width: 100%; height: 200px; object-fit: cover; display: block; }
+        .content-text { padding: 20px; }
+        .content-text h3 { font-size: 1.3rem; color: var(--deep-blue); margin-bottom: 10px; font-weight: 600; }
+        .content-text p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+        .content-btn-container { text-align: center; }
         .content-btn {
-            background: var(--deep-blue);
-            color: var(--white);
-            text-decoration: none;
-            padding: 15px 30px; /* เพิ่ม padding */
-            border-radius: 30px; /* ขอบมน */
-            font-size: 1.1rem; /* เพิ่มขนาดฟอนต์ */
-            font-weight: 500;
-            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
-            display: inline-block;
+            background: var(--deep-blue); color: var(--white); text-decoration: none; padding: 15px 30px;
+            border-radius: 30px; font-size: 1.1rem; font-weight: 500; transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3); display: inline-block;
         }
+        .content-btn:hover { background: #3a6b9a; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4); }
 
-        .content-btn:hover {
-            background: #3a6b9a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
-        }
-
-        /* ========== Consultant Section - ส่วนแสดงผู้ให้คำปรึกษา ========== */
-        .consultant {
-            padding: 80px 0; /* เพิ่ม padding */
-            background: var(--bg-light);
-            text-align: center;
-        }
-
-        .consultant-heading {
-            text-align: center;
-            font-size: 2.5rem;
-            color: var(--primary-pink);
-            margin-bottom: 50px;
-            font-weight: 700;
-        }
-
-        .consultant-con {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .consultant-img {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
+        .consultant { padding: 80px 0; background: var(--bg-light); text-align: center; }
+        .consultant-heading { text-align: center; font-size: 2.5rem; color: var(--primary-pink); margin-bottom: 50px; font-weight: 700; }
+        .consultant-con { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .consultant-img { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px; }
         .consultant-item {
-            background: var(--white);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px var(--shadow-light);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column; /* จัดเรียงเนื้อหาเป็นแนวตั้ง */
-            align-items: center; /* จัดกึ่งกลางรูปภาพและข้อความ */
-            padding-bottom: 20px; /* เพิ่ม padding ด้านล่าง */
+            background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column;
+            align-items: center; padding-bottom: 20px;
         }
+        .consultant-item:hover { transform: translateY(-8px); box-shadow: 0 10px 25px var(--shadow-medium); }
+        .consultant-item img { width: 100%; height: 300px; object-fit: cover; display: block; margin-bottom: 15px; }
+        .consultant-item h3 { font-size: 1.4rem; color: var(--deep-blue); margin-bottom: 5px; font-weight: 700; }
+        .consultant-item p { font-size: 1rem; color: var(--text-muted); }
+        .content-btn-consultant { text-align: center; }
 
-        .consultant-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px var(--shadow-medium);
+        /* ========== Modal Styles - สไตล์สำหรับแบบประเมินและผลลัพธ์ (คงเดิม) ========== */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); padding-top: 60px; animation: fadeIn 0.3s; }
+        .modal-content {
+            background-color: var(--white); margin: 5% auto; padding: 30px; border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-strong); width: 90%; max-width: 800px; 
+            position: relative; animation: slideIn 0.3s;
         }
-
-        .consultant-item img {
-            width: 100%;
-            height: 300px; /* กำหนดความสูงรูปภาพให้เท่ากัน */
-            object-fit: cover; /* ครอบคลุมพื้นที่และตัดส่วนเกิน */
-            display: block;
-            margin-bottom: 15px; /* ระยะห่างจากข้อความ */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-content h2 { text-align: center; color: var(--primary-pink); margin-bottom: 25px; font-weight: 700; font-size: 2rem; border-bottom: 3px solid var(--light-pink); padding-bottom: 10px; }
+        .modal-content p.instruction { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem; }
+        .close { color: var(--text-muted); float: right; font-size: 35px; font-weight: bold; position: absolute; top: 10px; right: 20px; transition: color 0.2s ease; }
+        .close:hover, .close:focus { color: var(--primary-pink); text-decoration: none; cursor: pointer; }
+        .question-group { margin-bottom: 25px; padding: 15px; border: 1px solid var(--border-light); border-radius: 10px; background: var(--bg-light); }
+        .question-group label { display: block; font-weight: 600; margin-bottom: 15px; color: var(--deep-blue); font-size: 1.1rem; }
+        .score-options { display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap; }
+        .score-options label {
+            cursor: pointer; padding: 10px 15px; border: 2px solid var(--light-pink); border-radius: 20px;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease; font-weight: 500;
+            flex: 1; text-align: center; min-width: 100px; margin: 5px 0;
         }
-
-        .consultant-item h3 {
-            font-size: 1.4rem;
-            color: var(--deep-blue);
-            margin-bottom: 5px;
-            font-weight: 700;
+        .score-options input[type="radio"] { display: none; }
+        .score-options input[type="radio"]:checked + label { background: var(--primary-pink); color: var(--white); border-color: var(--primary-pink); font-weight: 700; }
+        #submitAssessment, #nextStepBtn {
+            display: block; width: 100%; padding: 15px; background: var(--deep-blue); color: var(--white);
+            border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease; margin-top: 30px;
         }
-
-        .consultant-item p {
-            font-size: 1rem;
-            color: var(--text-muted);
-        }
-
-        .content-btn-consultant {
-            text-align: center;
-        }
-
-        /* ========== Responsive Adjustments - การปรับสไตล์สำหรับขนาดหน้าจอต่างๆ ========== */
+        #submitAssessment:hover, #nextStepBtn:hover { background: var(--primary-pink); transform: translateY(-2px); }
+        #errorMessage { color: var(--danger-red); text-align: center; margin-bottom: 20px; font-weight: 600; display: none; }
+        .result-content { text-align: center; padding: 20px; }
+        .result-content h3 { font-size: 2rem; color: var(--deep-blue); margin-bottom: 15px; }
+        .result-content p { font-size: 1.1rem; margin-bottom: 25px; color: var(--text-dark); }
+        .result-score-box { font-size: 3rem; font-weight: 800; color: var(--primary-pink); margin-bottom: 10px; }
+        .result-level { display: inline-block; padding: 8px 20px; border-radius: 25px; font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; color: var(--white); }
+        .level-low { background: var(--success-green); }
+        .level-medium { background: var(--warning-yellow); color: var(--text-dark); }
+        .level-high { background: var(--danger-red); }
+        #nextStepBtn { text-decoration: none; padding: 15px 30px; width: auto; display: inline-block; }
+        /* ... Responsive CSS (เหมือนเดิม) ... */
         @media (max-width: 992px) {
-            .nav-con {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .menu-con {
-                flex-direction: column;
-                gap: 15px;
-                width: 100%;
-                align-items: stretch; /* ทำให้ menu-con ขยายเต็มความกว้าง */
-            }
-            .menu {
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                text-align: center;
-            }
-            .menu li {
-                width: 100%;
-            }
-            .menu li a, .dropdown-toggle {
-                width: calc(100% - 30px); /* Full width minus padding (20px) and slight margin (10px) */
-                text-align: center;
-                margin: 0 15px; /* เพิ่ม margin ด้านข้าง */
-            }
-            .dropdown-menu {
-                position: static; /* Change to static so it flows with content */
-                width: 100%;
-                border-radius: 0;
-                box-shadow: none;
-                padding: 0;
-            }
-            .dropdown-menu li a {
-                padding: 10px 15px;
-            }
-            .logout {
-                width: 100%;
-                text-align: center;
-                padding: 0 15px; /* เพิ่ม padding ด้านข้าง */
-            }
-            .logout a {
-                display: block;
-                width: 100%; /* Adjust to full width */
-                margin: 0; /* Remove auto margin */
-            }
-
-            .maincontent-info, .maincontent-img {
-                max-width: 100%;
-                text-align: center;
-                padding-right: 0; /* ลบ padding-right ใน mobile */
-            }
-            .maincontent-info h1 {
-                font-size: 2.8rem; /* ปรับขนาดฟอนต์ให้เล็กลงสำหรับแท็บเล็ต */
-            }
-            .maincontent-info h2 {
-                font-size: 2rem;
-            }
+            .nav-con { flex-direction: column; gap: 15px; }
+            .menu-con { flex-direction: column; gap: 15px; width: 100%; align-items: stretch; }
+            .menu { flex-direction: column; gap: 10px; width: 100%; text-align: center; }
+            .menu li { width: 100%; }
+            .menu li a, .dropdown-toggle { width: calc(100% - 30px); text-align: center; margin: 0 15px; }
+            .dropdown-menu { position: static; width: 100%; border-radius: 0; box-shadow: none; padding: 0; }
+            .maincontent-info, .maincontent-img { max-width: 100%; text-align: center; padding-right: 0; }
         }
-
         @media (max-width: 768px) {
-            .maincontent {
-                padding: 60px 0;
-            }
-            .maincontent-info h1 {
-                font-size: 2.2rem;
-            }
-            .maincontent-info h2 {
-                font-size: 1.7rem;
-            }
-            .maincontent-info p {
-                font-size: 1rem;
-            }
-            .maincontent-btn {
-                padding: 12px 25px;
-                font-size: 1rem;
-            }
-            .content-heading, .consultant-heading {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .content-con, .consultant-img {
-                grid-template-columns: 1fr; /* Single column on small screens */
-            }
-            .maincontent-info {
-                padding: 0 15px;
-            }
-            .maincontent-info h1 {
-                font-size: 1.8rem;
-            }
-            .maincontent-info h2 {
-                font-size: 1.3rem;
-            }
+            .modal-content { width: 95%; margin: 20px auto; padding: 20px; }
+            .score-options label { padding: 8px 10px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
     <script>
-        // JavaScript สำหรับการทำงานของ Dropdown
+        // JavaScript สำหรับการทำงานของ Dropdown และ Modal
+
+        // ตัวแปรสำหรับเก็บ URL ของนักจิตวิทยาที่ถูกเลือก
+        let targetPsychologistURL = '';
+
+        // ฟังก์ชันสำหรับตีความผลลัพธ์คะแนน (ปรับเกณฑ์สำหรับคะแนนสูงสุด 45 คะแนน)
+        function getResultInterpretation(score) {
+            if (score >= 0 && score <= 15) { // ต่ำ (15/45 = 33%)
+                return { 
+                    level: "ความเสี่ยงต่ำ", 
+                    className: "level-low",
+                    message: "คุณมีสุขภาพจิตที่ดีมากในระดับหนึ่งและดูแลตัวเองได้ดี" 
+                };
+            } else if (score >= 16 && score <= 30) { // ปานกลาง (30/45 = 66%)
+                return { 
+                    level: "ความเสี่ยงปานกลาง", 
+                    className: "level-medium",
+                    message: "คุณอาจมีความเครียด ความกังวล หรือภาวะซึมเศร้าในระดับที่ควรสังเกตตัวเองอย่างจริงจัง การหาเวลาพักผ่อนและทำกิจกรรมที่ชอบเป็นสิ่งสำคัญ หากอาการยังคงอยู่ การปรึกษานักจิตวิทยาจะช่วยให้คุณรับมือได้ดีขึ้น" 
+                };
+            } else { // 31 คะแนนขึ้นไป
+                return { 
+                    level: "ความเสี่ยงสูง", 
+                    className: "level-high",
+                    message: "คุณมีระดับความเครียด/ความกังวลสูงที่อาจส่งผลกระทบต่อการใช้ชีวิตอย่างมาก **เราแนะนำให้คุณนัดหมายนักจิตวิทยาเพื่อรับคำปรึกษาโดยด่วนที่สุด** อย่าลังเลที่จะขอความช่วยเหลือ เราพร้อมอยู่เคียงข้างคุณ" 
+                };
+            }
+        }
+        
+        // ฟังก์ชันสำหรับแสดงผลลัพธ์ใน Modal (เหมือนเดิม)
+        function displayAssessmentResult(totalScore, targetURL) {
+            const interpretation = getResultInterpretation(totalScore);
+            
+            document.getElementById('resultScore').textContent = totalScore;
+            document.getElementById('resultLevel').textContent = interpretation.level;
+            document.getElementById('resultLevel').className = `result-level ${interpretation.className}`;
+            document.getElementById('resultDescription').textContent = interpretation.message;
+            
+            const nextStepBtn = document.getElementById('nextStepBtn');
+            
+            if (targetURL && targetURL.includes('appointment-booking.html')) {
+                nextStepBtn.href = `${targetURL}?score=${totalScore}`; // ส่งคะแนนไปด้วย
+                nextStepBtn.textContent = "ดำเนินการต่อเพื่อจองนัดหมาย";
+                nextStepBtn.style.background = 'var(--deep-blue)';
+            } else {
+                nextStepBtn.href = 'Psychologist.html'; 
+                nextStepBtn.textContent = "ดูรายชื่อนักจิตวิทยา";
+                nextStepBtn.style.background = 'var(--primary-pink)'; 
+            }
+
+            document.getElementById('assessmentModal').style.display = "none";
+            document.getElementById('resultModal').style.display = "block";
+        }
+
+
         document.addEventListener('DOMContentLoaded', function () {
+            // Dropdown Logic (เดิม)
             const dropdownToggle = document.querySelector('.dropdown-toggle');
             const dropdown = dropdownToggle.closest('.dropdown');
             const arrow = dropdownToggle.querySelector('.arrow');
-        
+            
             dropdownToggle.addEventListener('click', function () {
                 dropdown.classList.toggle('show');
                 arrow.textContent = dropdown.classList.contains('show') ? '▲' : '▼';
             });
-        
-            // ปิด dropdown เมื่อคลิกนอกพื้นที่
+            
             document.addEventListener('click', function (e) {
                 if (!dropdown.contains(e.target)) {
                     dropdown.classList.remove('show');
                     arrow.textContent = '▼';
                 }
+            });
+            
+            // --- Mental Health Assessment Modal Logic ---
+            const questionModal = document.getElementById("assessmentModal");
+            const resultModal = document.getElementById("resultModal");
+            const closeButtons = document.querySelectorAll(".close");
+            const assessmentForm = document.getElementById('assessmentForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const quickAssessmentBtn = document.getElementById('openQuickAssessment');
+            
+            // 1. เปิด Modal จากปุ่มใน Nav Bar
+            if (quickAssessmentBtn) {
+                quickAssessmentBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    targetPsychologistURL = ''; 
+                    assessmentForm.reset();
+                    errorMessage.style.display = 'none';
+                    questionModal.style.display = "block";
+                });
+            }
+
+            // 2. ปิด Modal (เดิม)
+            closeButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    questionModal.style.display = "none";
+                    resultModal.style.display = "none";
+                });
+            });
+
+            // 3. ปิด Modal เมื่อคลิกนอกพื้นที่ Modal (เดิม)
+            window.onclick = function(event) {
+                if (event.target == questionModal) {
+                    questionModal.style.display = "none";
+                }
+                if (event.target == resultModal) {
+                    resultModal.style.display = "none";
+                }
+            }
+
+            // 4. Handle Assessment Form Submission (อัปเดตสำหรับ 15 ข้อ)
+            assessmentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let totalScore = 0;
+                let isComplete = true;
+                const totalQuestions = 15; // *** จำนวนคำถามใหม่ ***
+
+                // วนลูปเพื่อเก็บคะแนนจาก Q1 ถึง Q15
+                for (let i = 1; i <= totalQuestions; i++) { 
+                    const questionName = `q${i}`;
+                    const selectedValue = document.querySelector(`input[name="${questionName}"]:checked`);
+                    
+                    if (selectedValue) {
+                        totalScore += parseInt(selectedValue.value);
+                    } else {
+                        isComplete = false;
+                        break; // หยุดถ้ามีคำถามที่ยังไม่ได้ตอบ
+                    }
+                }
+                
+                if (!isComplete) {
+                    errorMessage.textContent = "กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งแบบประเมิน";
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                errorMessage.style.display = 'none';
+                
+                // แสดงผลลัพธ์
+                displayAssessmentResult(totalScore, targetPsychologistURL);
             });
         });
     </script>
@@ -561,11 +341,12 @@
             <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
             <a href="#">LRU HeartCare</a>
           </div>
-    
+      
           <div class="menu-con">
             <ul class="menu">
               <li><a href="index.html">หน้าแรก</a></li>
               <li><a href="News.html">ข่าวสาร</a></li>
+              <li><a href="index.html" id="openQuickAssessment">แบบประเมินสุขภาพใจ</a></li> 
               <li><a href="Psychologist.html">เลือกนักจิตวิทยา</a></li>
               <li class="dropdown">
                 <div class="dropdown-toggle">ข้อมูลการนัดหมาย <span class="arrow">▼</span></div>
@@ -656,5 +437,193 @@
             </div>
         </div>
     </section>
+
+    <div id="assessmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>แบบประเมินสุขภาพใจเบื้องต้น (15 ข้อ)</h2>
+            <p class="instruction">โปรดระบุว่าใน **2 สัปดาห์ที่ผ่านมา** ท่านมีอาการดังต่อไปนี้บ่อยแค่ไหน? (0: ไม่เลย, 3: เกือบทุกวัน)</p>
+
+            <form id="assessmentForm">
+                <div class="score-options" style="justify-content: space-around; gap: 5px; margin-bottom: 20px;">
+                    <label style="flex: 1; text-align: left; padding-left: 0; border: none; font-weight: 700;">ระดับความถี่:</label>
+                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">ไม่เลย (0)</label>
+                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">บางวัน (1)</label>
+                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">ค่อนข้างบ่อย (2)</label>
+                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">เกือบทุกวัน (3)</label>
+                </div>
+                
+                <div class="question-group">
+                    <label>1. เบื่อ ไม่สนใจ หรือไม่เพลิดเพลินกับการทำกิจกรรมต่างๆ</label>
+                    <div class="score-options">
+                        <input type="radio" id="q1_0" name="q1" value="0"><label for="q1_0">0</label>
+                        <input type="radio" id="q1_1" name="q1" value="1"><label for="q1_1">1</label>
+                        <input type="radio" id="q1_2" name="q1" value="2"><label for="q1_2">2</label>
+                        <input type="radio" id="q1_3" name="q1" value="3"><label for="q1_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>2. รู้สึกท้อแท้ ซึมเศร้า หรือหมดหวัง</label>
+                    <div class="score-options">
+                        <input type="radio" id="q2_0" name="q2" value="0"><label for="q2_0">0</label>
+                        <input type="radio" id="q2_1" name="q2" value="1"><label for="q2_1">1</label>
+                        <input type="radio" id="q2_2" name="q2" value="2"><label for="q2_2">2</label>
+                        <input type="radio" id="q2_3" name="q2" value="3"><label for="q2_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>3. มีความคิดที่จะทำร้ายตัวเอง หรือคิดว่าถ้าตายๆ ไปเสียคงจะดี</label>
+                    <div class="score-options">
+                        <input type="radio" id="q3_0" name="q3" value="0"><label for="q3_0">0</label>
+                        <input type="radio" id="q3_1" name="q3" value="1"><label for="q3_1">1</label>
+                        <input type="radio" id="q3_2" name="q3" value="2"><label for="q3_2">2</label>
+                        <input type="radio" id="q3_3" name="q3" value="3"><label for="q3_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>4. มีปัญหาในการนอนหลับ: นอนไม่หลับ, นอนมากไป หรือรู้สึกอ่อนเพลียแม้จะได้นอน</label>
+                    <div class="score-options">
+                        <input type="radio" id="q4_0" name="q4" value="0"><label for="q4_0">0</label>
+                        <input type="radio" id="q4_1" name="q4" value="1"><label for="q4_1">1</label>
+                        <input type="radio" id="q4_2" name="q4" value="2"><label for="q4_2">2</label>
+                        <input type="radio" id="q4_3" name="q4" value="3"><label for="q4_3">3</label>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label>5. รู้สึกเหนื่อย หรือไม่มีเรี่ยวแรง</label>
+                    <div class="score-options">
+                        <input type="radio" id="q5_0" name="q5" value="0"><label for="q5_0">0</label>
+                        <input type="radio" id="q5_1" name="q5" value="1"><label for="q5_1">1</label>
+                        <input type="radio" id="q5_2" name="q5" value="2"><label for="q5_2">2</label>
+                        <input type="radio" id="q5_3" name="q5" value="3"><label for="q5_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>6. เบื่ออาหาร หรือกินจุบจิบมากเกินไป น้ำหนักลดหรือเพิ่มขึ้นอย่างเห็นได้ชัด</label>
+                    <div class="score-options">
+                        <input type="radio" id="q6_0" name="q6" value="0"><label for="q6_0">0</label>
+                        <input type="radio" id="q6_1" name="q6" value="1"><label for="q6_1">1</label>
+                        <input type="radio" id="q6_2" name="q6" value="2"><label for="q6_2">2</label>
+                        <input type="radio" id="q6_3" name="q6" value="3"><label for="q6_3">3</label>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label>7. รู้สึกไม่ดีกับตัวเอง คิดว่าตัวเองล้มเหลว หรือทำให้ครอบครัว/คนอื่นผิดหวัง</label>
+                    <div class="score-options">
+                        <input type="radio" id="q7_0" name="q7" value="0"><label for="q7_0">0</label>
+                        <input type="radio" id="q7_1" name="q7" value="1"><label for="q7_1">1</label>
+                        <input type="radio" id="q7_2" name="q7" value="2"><label for="q7_2">2</label>
+                        <input type="radio" id="q7_3" name="q7" value="3"><label for="q7_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>8. มีสมาธิน้อยลงในการทำกิจกรรมต่าง ๆ เช่น อ่านหนังสือ ดูทีวี หรือทำงาน</label>
+                    <div class="score-options">
+                        <input type="radio" id="q8_0" name="q8" value="0"><label for="q8_0">0</label>
+                        <input type="radio" id="q8_1" name="q8" value="1"><label for="q8_1">1</label>
+                        <input type="radio" id="q8_2" name="q8" value="2"><label for="q8_2">2</label>
+                        <input type="radio" id="q8_3" name="q8" value="3"><label for="q8_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>9. พูดหรือทำอะไรช้าลงมากจนคนอื่นสังเกตเห็น หรือกระสับกระส่ายอยู่ไม่สุข</label>
+                    <div class="score-options">
+                        <input type="radio" id="q9_0" name="q9" value="0"><label for="q9_0">0</label>
+                        <input type="radio" id="q9_1" name="q9" value="1"><label for="q9_1">1</label>
+                        <input type="radio" id="q9_2" name="q9" value="2"><label for="q9_2">2</label>
+                        <input type="radio" id="q9_3" name="q9" value="3"><label for="q9_3">3</label>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label>10. รู้สึกกระวนกระวายใจ หรืออยู่ไม่สุข</label>
+                    <div class="score-options">
+                        <input type="radio" id="q10_0" name="q10" value="0"><label for="q10_0">0</label>
+                        <input type="radio" id="q10_1" name="q10" value="1"><label for="q10_1">1</label>
+                        <input type="radio" id="q10_2" name="q10" value="2"><label for="q10_2">2</label>
+                        <input type="radio" id="q10_3" name="q10" value="3"><label for="q10_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>11. ไม่สามารถควบคุมความกังวล หรือหยุดคิดเรื่องกังวลไม่ได้</label>
+                    <div class="score-options">
+                        <input type="radio" id="q11_0" name="q11" value="0"><label for="q11_0">0</label>
+                        <input type="radio" id="q11_1" name="q11" value="1"><label for="q11_1">1</label>
+                        <input type="radio" id="q11_2" name="q11" value="2"><label for="q11_2">2</label>
+                        <input type="radio" id="q11_3" name="q11" value="3"><label for="q11_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>12. กังวลเกี่ยวกับเรื่องต่างๆ มากเกินไป</label>
+                    <div class="score-options">
+                        <input type="radio" id="q12_0" name="q12" value="0"><label for="q12_0">0</label>
+                        <input type="radio" id="q12_1" name="q12" value="1"><label for="q12_1">1</label>
+                        <input type="radio" id="q12_2" name="q12" value="2"><label for="q12_2">2</label>
+                        <input type="radio" id="q12_3" name="q12" value="3"><label for="q12_3">3</label>
+                    </div>
+                </div>
+                
+                <div class="question-group">
+                    <label>13. มีปัญหาในการผ่อนคลาย หรือนั่งนิ่งๆ ไม่ได้</label>
+                    <div class="score-options">
+                        <input type="radio" id="q13_0" name="q13" value="0"><label for="q13_0">0</label>
+                        <input type="radio" id="q13_1" name="q13" value="1"><label for="q13_1">1</label>
+                        <input type="radio" id="q13_2" name="q13" value="2"><label for="q13_2">2</label>
+                        <input type="radio" id="q13_3" name="q13" value="3"><label for="q13_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>14. รู้สึกกลัวว่าจะมีเรื่องแย่ๆ เกิดขึ้น หรือรู้สึกเหมือน "ขาดใจ"</label>
+                    <div class="score-options">
+                        <input type="radio" id="q14_0" name="q14" value="0"><label for="q14_0">0</label>
+                        <input type="radio" id="q14_1" name="q14" value="1"><label for="q14_1">1</label>
+                        <input type="radio" id="q14_2" name="q14" value="2"><label for="q14_2">2</label>
+                        <input type="radio" id="q14_3" name="q14" value="3"><label for="q14_3">3</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <label>15. มีอาการทางกายที่เกิดจากความเครียด เช่น หัวใจเต้นเร็ว เหงื่อออก มือสั่น หรือปวดหัวโดยไม่ทราบสาเหตุ</label>
+                    <div class="score-options">
+                        <input type="radio" id="q15_0" name="q15" value="0"><label for="q15_0">0</label>
+                        <input type="radio" id="q15_1" name="q15" value="1"><label for="q15_1">1</label>
+                        <input type="radio" id="q15_2" name="q15" value="2"><label for="q15_2">2</label>
+                        <input type="radio" id="q15_3" name="q15" value="3"><label for="q15_3">3</label>
+                    </div>
+                </div>
+
+                <div id="errorMessage">กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งแบบประเมิน</div>
+
+                <button type="submit" id="submitAssessment">ส่งแบบประเมิน</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="result-content">
+                <h2>ผลการประเมินสุขภาพใจเบื้องต้น</h2>
+                <p>คะแนนรวมที่ได้:</p>
+                <div class="result-score-box" id="resultScore">0</div>
+                <p>ระดับความเสี่ยง:</p>
+                <span id="resultLevel" class="result-level level-low">ความเสี่ยงต่ำ</span>
+                <p id="resultDescription">คุณมีสุขภาพจิตที่ดีมากในระดับหนึ่ง...</p>
+                
+                <a href="#" id="nextStepBtn" class="maincontent-btn">ดูรายชื่อนักจิตวิทยา</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
