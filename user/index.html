@@ -135,36 +135,106 @@
         .consultant-item p { font-size: 1rem; color: var(--text-muted); }
         .content-btn-consultant { text-align: center; }
 
-        /* ========== Modal Styles - สไตล์สำหรับแบบประเมินและผลลัพธ์ (คงเดิม) ========== */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); padding-top: 60px; animation: fadeIn 0.3s; }
+        /* ========== [ปรับปรุง] สไตล์สำหรับแบบประเมินและผลลัพธ์ ========== */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); animation: fadeIn 0.3s; }
         .modal-content {
-            background-color: var(--white); margin: 5% auto; padding: 30px; border-radius: 15px;
-            box-shadow: 0 10px 30px var(--shadow-strong); width: 90%; max-width: 800px; 
+            background: #fdfdff; /* เปลี่ยนเป็นสีขาวที่ดูสบายตาขึ้น */
+            margin: 5% auto; padding: 30px 40px; border-radius: 20px; /* เพิ่มความโค้งมน */
+            box-shadow: 0 15px 40px var(--shadow-strong); width: 90%; max-width: 800px; 
             position: relative; animation: slideIn 0.3s;
+            border-top: 5px solid var(--primary-pink); /* เพิ่มแถบสีด้านบน */
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-content h2 { text-align: center; color: var(--primary-pink); margin-bottom: 25px; font-weight: 700; font-size: 2rem; border-bottom: 3px solid var(--light-pink); padding-bottom: 10px; }
-        .modal-content p.instruction { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem; }
-        .close { color: var(--text-muted); float: right; font-size: 35px; font-weight: bold; position: absolute; top: 10px; right: 20px; transition: color 0.2s ease; }
+        .modal-content h2 { 
+            text-align: center; color: var(--deep-blue); margin-bottom: 15px; /* ลดระยะห่าง */
+            font-weight: 700; font-size: 2rem; border-bottom: none; /* เอาเส้นใต้ออก */
+        }
+        .modal-content p.instruction { text-align: center; color: var(--text-muted); margin-bottom: 25px; font-size: 1.1rem; }
+        .close { color: var(--text-muted); float: right; font-size: 35px; font-weight: bold; position: absolute; top: 15px; right: 25px; transition: color 0.2s ease; }
         .close:hover, .close:focus { color: var(--primary-pink); text-decoration: none; cursor: pointer; }
-        .question-group { margin-bottom: 25px; padding: 15px; border: 1px solid var(--border-light); border-radius: 10px; background: var(--bg-light); }
-        .question-group label { display: block; font-weight: 600; margin-bottom: 15px; color: var(--deep-blue); font-size: 1.1rem; }
-        .score-options { display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap; }
+        
+        /* [เพิ่ม] Progress Bar */
+        #progress-container {
+            width: 100%; background-color: var(--border-light); border-radius: 10px;
+            height: 12px; margin-bottom: 30px; overflow: hidden;
+        }
+        #progress-bar {
+            width: 0%; height: 100%; background: linear-gradient(90deg, var(--soft-blue), var(--primary-pink));
+            border-radius: 10px; transition: width 0.4s ease-in-out;
+        }
+
+        /* [ปรับปรุง] การ์ดคำถาม */
+        .question-group {
+            margin-bottom: 20px; padding: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            border-left: 5px solid var(--soft-blue);
+            box-shadow: 0 4px 15px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+        .question-group:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(70, 130, 180, 0.15);
+        }
+        .question-group label { display: block; font-weight: 600; margin-bottom: 15px; color: var(--deep-blue); font-size: 1.15rem; }
+        
+        /* [ปรับปรุง] ปุ่มตัวเลือก */
+        .score-options { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
         .score-options label {
-            cursor: pointer; padding: 10px 15px; border: 2px solid var(--light-pink); border-radius: 20px;
-            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease; font-weight: 500;
-            flex: 1; text-align: center; min-width: 100px; margin: 5px 0;
+            cursor: pointer; padding: 12px 10px;
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            transition: all 0.2s ease-out;
+            font-weight: 500; flex: 1; text-align: center; min-width: 120px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: var(--bg-light);
+        }
+        .score-options label:hover {
+            transform: scale(1.05);
+            border-color: var(--primary-pink);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
         }
         .score-options input[type="radio"] { display: none; }
-        .score-options input[type="radio"]:checked + label { background: var(--primary-pink); color: var(--white); border-color: var(--primary-pink); font-weight: 700; }
+        .score-options input[type="radio"]:checked + label {
+            background: var(--primary-pink);
+            color: var(--white);
+            border-color: var(--primary-pink);
+            font-weight: 700;
+            transform: scale(1.02); /* เอฟเฟกต์ตอนกดเล็กน้อย */
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+        
+        /* [เพิ่ม] สไตล์สำหรับตัวเลขและข้อความในปุ่ม */
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .score-text {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        .score-options input[type="radio"]:checked + label .score-text {
+            font-weight: 600;
+        }
+
         #submitAssessment, #nextStepBtn {
             display: block; width: 100%; padding: 15px; background: var(--deep-blue); color: var(--white);
-            border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease; margin-top: 30px;
+            border: none; border-radius: 30px; font-size: 1.2rem; font-weight: 600; cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 30px; letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(70, 130, 180, 0.3);
         }
-        #submitAssessment:hover, #nextStepBtn:hover { background: var(--primary-pink); transform: translateY(-2px); }
+        #submitAssessment:hover, #nextStepBtn:hover {
+            background: var(--primary-pink);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5);
+        }
         #errorMessage { color: var(--danger-red); text-align: center; margin-bottom: 20px; font-weight: 600; display: none; }
+        
+        /* สไตล์ผลลัพธ์ (คงเดิม) */
         .result-content { text-align: center; padding: 20px; }
         .result-content h3 { font-size: 2rem; color: var(--deep-blue); margin-bottom: 15px; }
         .result-content p { font-size: 1.1rem; margin-bottom: 25px; color: var(--text-dark); }
@@ -174,7 +244,8 @@
         .level-medium { background: var(--warning-yellow); color: var(--text-dark); }
         .level-high { background: var(--danger-red); }
         #nextStepBtn { text-decoration: none; padding: 15px 30px; width: auto; display: inline-block; }
-        /* ... Responsive CSS (เหมือนเดิม) ... */
+        
+        /* ... Responsive CSS (คงเดิม) ... */
         @media (max-width: 992px) {
             .nav-con { flex-direction: column; gap: 15px; }
             .menu-con { flex-direction: column; gap: 15px; width: 100%; align-items: stretch; }
@@ -186,7 +257,9 @@
         }
         @media (max-width: 768px) {
             .modal-content { width: 95%; margin: 20px auto; padding: 20px; }
-            .score-options label { padding: 8px 10px; font-size: 0.9rem; }
+            .score-options label { min-width: 60px; padding: 10px 5px; } /* ปรับปุ่มให้เล็กลงในมือถือ */
+            .score-value { font-size: 1.2rem; }
+            .score-text { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -199,13 +272,13 @@
 
         // ฟังก์ชันสำหรับตีความผลลัพธ์คะแนน (ปรับเกณฑ์สำหรับคะแนนสูงสุด 45 คะแนน)
         function getResultInterpretation(score) {
-            if (score >= 0 && score <= 15) { // ต่ำ (15/45 = 33%)
+            if (score >= 0 && score <= 15) { // ต่ำ
                 return { 
                     level: "ความเสี่ยงต่ำ", 
                     className: "level-low",
                     message: "คุณมีสุขภาพจิตที่ดีมากในระดับหนึ่งและดูแลตัวเองได้ดี" 
                 };
-            } else if (score >= 16 && score <= 30) { // ปานกลาง (30/45 = 66%)
+            } else if (score >= 16 && score <= 30) { // ปานกลาง
                 return { 
                     level: "ความเสี่ยงปานกลาง", 
                     className: "level-medium",
@@ -272,12 +345,26 @@
             const errorMessage = document.getElementById('errorMessage');
             const quickAssessmentBtn = document.getElementById('openQuickAssessment');
             
+            // [เพิ่ม] JavaScript สำหรับ Progress Bar
+            const progressBar = document.getElementById('progress-bar');
+            const totalQuestions = 15;
+            
+            if (assessmentForm) {
+                assessmentForm.addEventListener('change', function() {
+                    const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+                    const progress = (answeredQuestions / totalQuestions) * 100;
+                    progressBar.style.width = `${progress}%`;
+                });
+            }
+            // --- สิ้นสุดส่วน Progress Bar ---
+
             // 1. เปิด Modal จากปุ่มใน Nav Bar
             if (quickAssessmentBtn) {
                 quickAssessmentBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     targetPsychologistURL = ''; 
                     assessmentForm.reset();
+                    progressBar.style.width = '0%'; // [เพิ่ม] รีเซ็ต progress bar
                     errorMessage.style.display = 'none';
                     questionModal.style.display = "block";
                 });
@@ -306,9 +393,7 @@
                 e.preventDefault();
                 let totalScore = 0;
                 let isComplete = true;
-                const totalQuestions = 15; // *** จำนวนคำถามใหม่ ***
 
-                // วนลูปเพื่อเก็บคะแนนจาก Q1 ถึง Q15
                 for (let i = 1; i <= totalQuestions; i++) { 
                     const questionName = `q${i}`;
                     const selectedValue = document.querySelector(`input[name="${questionName}"]:checked`);
@@ -317,7 +402,7 @@
                         totalScore += parseInt(selectedValue.value);
                     } else {
                         isComplete = false;
-                        break; // หยุดถ้ามีคำถามที่ยังไม่ได้ตอบ
+                        break;
                     }
                 }
                 
@@ -329,7 +414,6 @@
 
                 errorMessage.style.display = 'none';
                 
-                // แสดงผลลัพธ์
                 displayAssessmentResult(totalScore, targetPsychologistURL);
             });
         });
@@ -341,7 +425,7 @@
             <img src="https://lru.ac.th/th/wp-content/uploads/2024/03/LRuQ.png" alt="โลโก้ LRU">
             <a href="#">LRU HeartCare</a>
           </div>
-      
+        
           <div class="menu-con">
             <ul class="menu">
               <li><a href="index.html">หน้าแรก</a></li>
@@ -361,7 +445,7 @@
             </div>
           </div>
         </div>
-      </nav>
+    </nav>
 
     <section class="maincontent">
         <div class="container">
@@ -387,22 +471,22 @@
               <div class="content-item">
                 <img src="https://thematter.co/wp-content/uploads/2021/08/Sport-Psychotherapist-fb.jpg" alt="รูปภาพกิจกรรมเวิร์คช็อปการจัดการความเครียด">
                 <div class="content-text">
-                    <h3>เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h3>
-                    <p>เรียนรู้เทคนิคและวิธีการรับมือกับความเครียดจากการเรียนและการใช้ชีวิตประจำวันในยุคที่เต็มไปด้วยสิ่งเร้า</p>
+                  <h3>เวิร์คช็อป: การจัดการความเครียดในยุคดิจิทัล</h3>
+                  <p>เรียนรู้เทคนิคและวิธีการรับมือกับความเครียดจากการเรียนและการใช้ชีวิตประจำวันในยุคที่เต็มไปด้วยสิ่งเร้า</p>
                 </div>
               </div>
               <div class="content-item">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIF7dYP_KFCs62OkCU9yPtkvVidZxBGno0pjWYme9w69ePg0jBel6wRcy1oOwadqj1A6M&usqp=CAU" alt="รูปภาพข่าวสารการสัมมนาจิตวิทยาเชิงบวก">
                 <div class="content-text">
-                    <h3>สัมมนา: พลังของจิตวิทยาเชิงบวก</h3>
-                    <p>ค้นพบวิธีการสร้างพลังบวกและพัฒนาความคิดเชิงบวกเพื่อชีวิตที่มีความสุขและประสบความสำเร็จ</p>
+                  <h3>สัมมนา: พลังของจิตวิทยาเชิงบวก</h3>
+                  <p>ค้นพบวิธีการสร้างพลังบวกและพัฒนาความคิดเชิงบวกเพื่อชีวิตที่มีความสุขและประสบความสำเร็จ</p>
                 </div>
               </div>
               <div class="content-item">
                 <img src="https://psy-tims-chula.sgp1.digitaloceanspaces.com/wp-content/uploads/2024/09/OIG3-e1726722486316.jpeg" alt="รูปภาพข่าวสารคลินิกสุขภาพใจเคลื่อนที่">
                 <div class="content-text">
-                    <h3>เปิดคลินิกสุขภาพใจเคลื่อนที่</h3>
-                    <p>พบกับนักจิตวิทยาของเราได้ที่จุดบริการพิเศษตามตารางที่ประกาศ เพื่อรับคำปรึกษาเบื้องต้นได้ทันที</p>
+                  <h3>เปิดคลินิกสุขภาพใจเคลื่อนที่</h3>
+                  <p>พบกับนักจิตวิทยาของเราได้ที่จุดบริการพิเศษตามตารางที่ประกาศ เพื่อรับคำปรึกษาเบื้องต้นได้ทันที</p>
                 </div>
               </div>
             </div>
@@ -441,169 +525,160 @@
     <div id="assessmentModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>แบบประเมินสุขภาพใจเบื้องต้น (15 ข้อ)</h2>
-            <p class="instruction">โปรดระบุว่าใน **2 สัปดาห์ที่ผ่านมา** ท่านมีอาการดังต่อไปนี้บ่อยแค่ไหน? (0: ไม่เลย, 3: เกือบทุกวัน)</p>
+            <h2>แบบประเมินสุขภาพใจเบื้องต้น</h2>
+            <p class="instruction">ในช่วง 2 สัปดาห์ที่ผ่านมา ท่านมีอาการเหล่านี้บ่อยแค่ไหน?</p>
+
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
 
             <form id="assessmentForm">
-                <div class="score-options" style="justify-content: space-around; gap: 5px; margin-bottom: 20px;">
-                    <label style="flex: 1; text-align: left; padding-left: 0; border: none; font-weight: 700;">ระดับความถี่:</label>
-                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">ไม่เลย (0)</label>
-                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">บางวัน (1)</label>
-                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">ค่อนข้างบ่อย (2)</label>
-                    <label style="min-width: 80px; text-align: center; border-color: transparent; background: none; color: var(--deep-blue);">เกือบทุกวัน (3)</label>
-                </div>
-                
+                <div id="errorMessage"></div>
+
                 <div class="question-group">
                     <label>1. เบื่อ ไม่สนใจ หรือไม่เพลิดเพลินกับการทำกิจกรรมต่างๆ</label>
                     <div class="score-options">
-                        <input type="radio" id="q1_0" name="q1" value="0"><label for="q1_0">0</label>
-                        <input type="radio" id="q1_1" name="q1" value="1"><label for="q1_1">1</label>
-                        <input type="radio" id="q1_2" name="q1" value="2"><label for="q1_2">2</label>
-                        <input type="radio" id="q1_3" name="q1" value="3"><label for="q1_3">3</label>
+                        <input type="radio" id="q1_0" name="q1" value="0"><label for="q1_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q1_1" name="q1" value="1"><label for="q1_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q1_2" name="q1" value="2"><label for="q1_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q1_3" name="q1" value="3"><label for="q1_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
 
                 <div class="question-group">
                     <label>2. รู้สึกท้อแท้ ซึมเศร้า หรือหมดหวัง</label>
                     <div class="score-options">
-                        <input type="radio" id="q2_0" name="q2" value="0"><label for="q2_0">0</label>
-                        <input type="radio" id="q2_1" name="q2" value="1"><label for="q2_1">1</label>
-                        <input type="radio" id="q2_2" name="q2" value="2"><label for="q2_2">2</label>
-                        <input type="radio" id="q2_3" name="q2" value="3"><label for="q2_3">3</label>
+                        <input type="radio" id="q2_0" name="q2" value="0"><label for="q2_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q2_1" name="q2" value="1"><label for="q2_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q2_2" name="q2" value="2"><label for="q2_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q2_3" name="q2" value="3"><label for="q2_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
 
                 <div class="question-group">
                     <label>3. มีความคิดที่จะทำร้ายตัวเอง หรือคิดว่าถ้าตายๆ ไปเสียคงจะดี</label>
                     <div class="score-options">
-                        <input type="radio" id="q3_0" name="q3" value="0"><label for="q3_0">0</label>
-                        <input type="radio" id="q3_1" name="q3" value="1"><label for="q3_1">1</label>
-                        <input type="radio" id="q3_2" name="q3" value="2"><label for="q3_2">2</label>
-                        <input type="radio" id="q3_3" name="q3" value="3"><label for="q3_3">3</label>
+                        <input type="radio" id="q3_0" name="q3" value="0"><label for="q3_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q3_1" name="q3" value="1"><label for="q3_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q3_2" name="q3" value="2"><label for="q3_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q3_3" name="q3" value="3"><label for="q3_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
-
+                
                 <div class="question-group">
-                    <label>4. มีปัญหาในการนอนหลับ: นอนไม่หลับ, นอนมากไป หรือรู้สึกอ่อนเพลียแม้จะได้นอน</label>
+                    <label>4. มีปัญหาในการนอนหลับ: นอนไม่หลับ, นอนมากไป หรืออ่อนเพลีย</label>
                     <div class="score-options">
-                        <input type="radio" id="q4_0" name="q4" value="0"><label for="q4_0">0</label>
-                        <input type="radio" id="q4_1" name="q4" value="1"><label for="q4_1">1</label>
-                        <input type="radio" id="q4_2" name="q4" value="2"><label for="q4_2">2</label>
-                        <input type="radio" id="q4_3" name="q4" value="3"><label for="q4_3">3</label>
+                        <input type="radio" id="q4_0" name="q4" value="0"><label for="q4_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q4_1" name="q4" value="1"><label for="q4_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q4_2" name="q4" value="2"><label for="q4_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q4_3" name="q4" value="3"><label for="q4_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
                 
                 <div class="question-group">
                     <label>5. รู้สึกเหนื่อย หรือไม่มีเรี่ยวแรง</label>
                     <div class="score-options">
-                        <input type="radio" id="q5_0" name="q5" value="0"><label for="q5_0">0</label>
-                        <input type="radio" id="q5_1" name="q5" value="1"><label for="q5_1">1</label>
-                        <input type="radio" id="q5_2" name="q5" value="2"><label for="q5_2">2</label>
-                        <input type="radio" id="q5_3" name="q5" value="3"><label for="q5_3">3</label>
+                        <input type="radio" id="q5_0" name="q5" value="0"><label for="q5_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q5_1" name="q5" value="1"><label for="q5_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q5_2" name="q5" value="2"><label for="q5_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q5_3" name="q5" value="3"><label for="q5_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>6. เบื่ออาหาร หรือกินจุบจิบมากเกินไป น้ำหนักลดหรือเพิ่มขึ้นอย่างเห็นได้ชัด</label>
+                    <label>6. เบื่ออาหาร หรือกินมากเกินไป</label>
                     <div class="score-options">
-                        <input type="radio" id="q6_0" name="q6" value="0"><label for="q6_0">0</label>
-                        <input type="radio" id="q6_1" name="q6" value="1"><label for="q6_1">1</label>
-                        <input type="radio" id="q6_2" name="q6" value="2"><label for="q6_2">2</label>
-                        <input type="radio" id="q6_3" name="q6" value="3"><label for="q6_3">3</label>
+                        <input type="radio" id="q6_0" name="q6" value="0"><label for="q6_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q6_1" name="q6" value="1"><label for="q6_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q6_2" name="q6" value="2"><label for="q6_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q6_3" name="q6" value="3"><label for="q6_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
                 
                 <div class="question-group">
-                    <label>7. รู้สึกไม่ดีกับตัวเอง คิดว่าตัวเองล้มเหลว หรือทำให้ครอบครัว/คนอื่นผิดหวัง</label>
+                    <label>7. รู้สึกไม่ดีกับตัวเอง คิดว่าตัวเองล้มเหลว หรือทำให้คนอื่นผิดหวัง</label>
                     <div class="score-options">
-                        <input type="radio" id="q7_0" name="q7" value="0"><label for="q7_0">0</label>
-                        <input type="radio" id="q7_1" name="q7" value="1"><label for="q7_1">1</label>
-                        <input type="radio" id="q7_2" name="q7" value="2"><label for="q7_2">2</label>
-                        <input type="radio" id="q7_3" name="q7" value="3"><label for="q7_3">3</label>
+                        <input type="radio" id="q7_0" name="q7" value="0"><label for="q7_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q7_1" name="q7" value="1"><label for="q7_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q7_2" name="q7" value="2"><label for="q7_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q7_3" name="q7" value="3"><label for="q7_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>8. มีสมาธิน้อยลงในการทำกิจกรรมต่าง ๆ เช่น อ่านหนังสือ ดูทีวี หรือทำงาน</label>
+                    <label>8. มีสมาธิน้อยลงในการทำสิ่งต่างๆ เช่น อ่านหนังสือ หรือดูโทรทัศน์</label>
                     <div class="score-options">
-                        <input type="radio" id="q8_0" name="q8" value="0"><label for="q8_0">0</label>
-                        <input type="radio" id="q8_1" name="q8" value="1"><label for="q8_1">1</label>
-                        <input type="radio" id="q8_2" name="q8" value="2"><label for="q8_2">2</label>
-                        <input type="radio" id="q8_3" name="q8" value="3"><label for="q8_3">3</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>9. พูดหรือทำอะไรช้าลงมากจนคนอื่นสังเกตเห็น หรือกระสับกระส่ายอยู่ไม่สุข</label>
-                    <div class="score-options">
-                        <input type="radio" id="q9_0" name="q9" value="0"><label for="q9_0">0</label>
-                        <input type="radio" id="q9_1" name="q9" value="1"><label for="q9_1">1</label>
-                        <input type="radio" id="q9_2" name="q9" value="2"><label for="q9_2">2</label>
-                        <input type="radio" id="q9_3" name="q9" value="3"><label for="q9_3">3</label>
+                        <input type="radio" id="q8_0" name="q8" value="0"><label for="q8_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q8_1" name="q8" value="1"><label for="q8_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q8_2" name="q8" value="2"><label for="q8_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q8_3" name="q8" value="3"><label for="q8_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
                 
                 <div class="question-group">
-                    <label>10. รู้สึกกระวนกระวายใจ หรืออยู่ไม่สุข</label>
+                    <label>9. กระสับกระส่าย หรืออยู่นิ่งไม่ได้</label>
                     <div class="score-options">
-                        <input type="radio" id="q10_0" name="q10" value="0"><label for="q10_0">0</label>
-                        <input type="radio" id="q10_1" name="q10" value="1"><label for="q10_1">1</label>
-                        <input type="radio" id="q10_2" name="q10" value="2"><label for="q10_2">2</label>
-                        <input type="radio" id="q10_3" name="q10" value="3"><label for="q10_3">3</label>
+                        <input type="radio" id="q9_0" name="q9" value="0"><label for="q9_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q9_1" name="q9" value="1"><label for="q9_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q9_2" name="q9" value="2"><label for="q9_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q9_3" name="q9" value="3"><label for="q9_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
+                    </div>
+                </div>
+                <div class="question-group">
+                    <label>10. รู้สึกกังวล หรือเครียดมากเกินไป</label>
+                    <div class="score-options">
+                        <input type="radio" id="q10_0" name="q10" value="0"><label for="q10_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q10_1" name="q10" value="1"><label for="q10_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q10_2" name="q10" value="2"><label for="q10_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q10_3" name="q10" value="3"><label for="q10_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
+                    </div>
+                </div>
+                <div class="question-group">
+                    <label>11. หงุดหงิด หรือฉุนเฉียวง่ายกว่าปกติ</label>
+                    <div class="score-options">
+                        <input type="radio" id="q11_0" name="q11" value="0"><label for="q11_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q11_1" name="q11" value="1"><label for="q11_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q11_2" name="q11" value="2"><label for="q11_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q11_3" name="q11" value="3"><label for="q11_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
+                    </div>
+                </div>
+                 <div class="question-group">
+                    <label>12. ไม่สามารถหยุด หรือควบคุมความกังวลได้</label>
+                    <div class="score-options">
+                        <input type="radio" id="q12_0" name="q12" value="0"><label for="q12_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q12_1" name="q12" value="1"><label for="q12_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q12_2" name="q12" value="2"><label for="q12_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q12_3" name="q12" value="3"><label for="q12_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
+                    </div>
+                </div>
+                 <div class="question-group">
+                    <label>13. รู้สึกกลัวเหมือนว่าจะมีสิ่งเลวร้ายเกิดขึ้น</label>
+                    <div class="score-options">
+                        <input type="radio" id="q13_0" name="q13" value="0"><label for="q13_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q13_1" name="q13" value="1"><label for="q13_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q13_2" name="q13" value="2"><label for="q13_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q13_3" name="q13" value="3"><label for="q13_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
+                    </div>
+                </div>
+                 <div class="question-group">
+                    <label>14. รู้สึกโดดเดี่ยว หรือแยกตัวออกจากผู้อื่น</label>
+                    <div class="score-options">
+                        <input type="radio" id="q14_0" name="q14" value="0"><label for="q14_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q14_1" name="q14" value="1"><label for="q14_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q14_2" name="q14" value="2"><label for="q14_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q14_3" name="q14" value="3"><label for="q14_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
+                    </div>
+                </div>
+                <div class="question-group">
+                    <label>15. รู้สึกว่าการทำสิ่งต่างๆ เป็นเรื่องยากลำบาก</label>
+                    <div class="score-options">
+                        <input type="radio" id="q15_0" name="q15" value="0"><label for="q15_0"><span class="score-value">0</span><span class="score-text">ไม่เลย</span></label>
+                        <input type="radio" id="q15_1" name="q15" value="1"><label for="q15_1"><span class="score-value">1</span><span class="score-text">บางวัน</span></label>
+                        <input type="radio" id="q15_2" name="q15" value="2"><label for="q15_2"><span class="score-value">2</span><span class="score-text">ค่อนข้างบ่อย</span></label>
+                        <input type="radio" id="q15_3" name="q15" value="3"><label for="q15_3"><span class="score-value">3</span><span class="score-text">เกือบทุกวัน</span></label>
                     </div>
                 </div>
 
-                <div class="question-group">
-                    <label>11. ไม่สามารถควบคุมความกังวล หรือหยุดคิดเรื่องกังวลไม่ได้</label>
-                    <div class="score-options">
-                        <input type="radio" id="q11_0" name="q11" value="0"><label for="q11_0">0</label>
-                        <input type="radio" id="q11_1" name="q11" value="1"><label for="q11_1">1</label>
-                        <input type="radio" id="q11_2" name="q11" value="2"><label for="q11_2">2</label>
-                        <input type="radio" id="q11_3" name="q11" value="3"><label for="q11_3">3</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>12. กังวลเกี่ยวกับเรื่องต่างๆ มากเกินไป</label>
-                    <div class="score-options">
-                        <input type="radio" id="q12_0" name="q12" value="0"><label for="q12_0">0</label>
-                        <input type="radio" id="q12_1" name="q12" value="1"><label for="q12_1">1</label>
-                        <input type="radio" id="q12_2" name="q12" value="2"><label for="q12_2">2</label>
-                        <input type="radio" id="q12_3" name="q12" value="3"><label for="q12_3">3</label>
-                    </div>
-                </div>
-                
-                <div class="question-group">
-                    <label>13. มีปัญหาในการผ่อนคลาย หรือนั่งนิ่งๆ ไม่ได้</label>
-                    <div class="score-options">
-                        <input type="radio" id="q13_0" name="q13" value="0"><label for="q13_0">0</label>
-                        <input type="radio" id="q13_1" name="q13" value="1"><label for="q13_1">1</label>
-                        <input type="radio" id="q13_2" name="q13" value="2"><label for="q13_2">2</label>
-                        <input type="radio" id="q13_3" name="q13" value="3"><label for="q13_3">3</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>14. รู้สึกกลัวว่าจะมีเรื่องแย่ๆ เกิดขึ้น หรือรู้สึกเหมือน "ขาดใจ"</label>
-                    <div class="score-options">
-                        <input type="radio" id="q14_0" name="q14" value="0"><label for="q14_0">0</label>
-                        <input type="radio" id="q14_1" name="q14" value="1"><label for="q14_1">1</label>
-                        <input type="radio" id="q14_2" name="q14" value="2"><label for="q14_2">2</label>
-                        <input type="radio" id="q14_3" name="q14" value="3"><label for="q14_3">3</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>15. มีอาการทางกายที่เกิดจากความเครียด เช่น หัวใจเต้นเร็ว เหงื่อออก มือสั่น หรือปวดหัวโดยไม่ทราบสาเหตุ</label>
-                    <div class="score-options">
-                        <input type="radio" id="q15_0" name="q15" value="0"><label for="q15_0">0</label>
-                        <input type="radio" id="q15_1" name="q15" value="1"><label for="q15_1">1</label>
-                        <input type="radio" id="q15_2" name="q15" value="2"><label for="q15_2">2</label>
-                        <input type="radio" id="q15_3" name="q15" value="3"><label for="q15_3">3</label>
-                    </div>
-                </div>
-
-                <div id="errorMessage">กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งแบบประเมิน</div>
 
                 <button type="submit" id="submitAssessment">ส่งแบบประเมิน</button>
             </form>
@@ -614,14 +689,12 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <div class="result-content">
-                <h2>ผลการประเมินสุขภาพใจเบื้องต้น</h2>
-                <p>คะแนนรวมที่ได้:</p>
-                <div class="result-score-box" id="resultScore">0</div>
-                <p>ระดับความเสี่ยง:</p>
-                <span id="resultLevel" class="result-level level-low">ความเสี่ยงต่ำ</span>
-                <p id="resultDescription">คุณมีสุขภาพจิตที่ดีมากในระดับหนึ่ง...</p>
-                
-                <a href="#" id="nextStepBtn" class="maincontent-btn">ดูรายชื่อนักจิตวิทยา</a>
+                <h3>ผลการประเมินสุขภาพใจเบื้องต้น</h3>
+                <p>คะแนนรวมของคุณคือ:</p>
+                <div id="resultScore" class="result-score-box">0</div>
+                <div id="resultLevel" class="result-level"></div>
+                <p id="resultDescription"></p>
+                <a href="#" id="nextStepBtn"></a>
             </div>
         </div>
     </div>
