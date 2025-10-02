@@ -11,9 +11,9 @@
         /* Color Palette */
         :root {
             --primary-pink: #FF69B4; /* Deep Pink */
-            --light-pink: #FFC0CB;    /* Light Pink */
-            --soft-blue: #87CEEB;     /* Sky Blue */
-            --deep-blue: #4682B4;     /* Steel Blue */
+            --light-pink: #FFC0CB;   /* Light Pink */
+            --soft-blue: #87CEEB;    /* Sky Blue */
+            --deep-blue: #4682B4;    /* Steel Blue */
             --text-dark: #343a40;
             --text-muted: #6c757d;
             --bg-light: #f8f9fa;
@@ -202,7 +202,6 @@
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            /* aspect-ratio: 16 / 6; Removed as items have their own sizing */
             padding: 15px; /* Padding for the carousel container itself */
             background-color: var(--white);
         }
@@ -210,7 +209,6 @@
         .carousel-inner {
             display: flex;
             width: 100%;
-            /* Removed fixed height, let content define it */
             transition: transform 0.5s ease-in-out;
         }
 
@@ -259,24 +257,31 @@
         }
 
        .carousel-card-title {
-    /* ... other properties ... */
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* WebKit browsers */
-    line-clamp: 2; /* Standard property for modern browsers */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            height: 48px; /* Approx 2 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2; 
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-.carousel-card-text {
-    /* ... other properties ... */
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* WebKit browsers */
-    line-clamp: 3; /* Standard property for modern browsers */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .carousel-card-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            flex-grow: 1;
+            height: 60px; /* Approx 3 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         .carousel-card-date {
             font-size: 0.8rem;
@@ -408,6 +413,7 @@
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
         }
 
         .data-table th {
@@ -426,7 +432,6 @@
         .data-table tbody tr:hover {
             background-color: var(--light-pink);
             color: var(--deep-blue);
-            cursor: pointer;
         }
 
         /* Status Badges */
@@ -536,6 +541,8 @@
         .modal-body {
             padding: 25px;
             line-height: 1.6;
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .modal-body .form-label {
@@ -775,7 +782,7 @@
             box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
             outline: none;
         }
-        /* Custom file input appearance (optional, more complex CSS needed for full control) */
+        /* Custom file input appearance */
         .form-control-file::-webkit-file-upload-button {
             visibility: hidden;
         }
@@ -789,11 +796,10 @@
             padding: 8px 12px;
             outline: none;
             white-space: nowrap;
-            -webkit-user-select: none; /* For WebKit browsers (Chrome, Safari, older Edge, Opera) */
-            -moz-user-select: none;    /* For Mozilla Firefox */
-            -ms-user-select: none;     /* For Microsoft Edge (legacy) and IE */
-            user-select: none;         /* Standard property for modern browsers */
-            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
@@ -819,7 +825,7 @@
             border-radius: 8px;
             min-height: 80px; /* Minimum height even if no images */
             align-items: center; /* Center items vertically */
-            justify-content: center; /* Center items horizontally */
+            justify-content: flex-start; /* Start from left */
             color: var(--text-muted);
             font-style: italic;
         }
@@ -854,7 +860,9 @@
             border-radius: 50%;
             width: 25px;
             height: 25px;
-            font-size: 0.8rem;
+            font-size: 1rem;
+            line-height: 25px;
+            text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1025,491 +1033,611 @@
             .modal-footer .btn-primary {
                 order: 1;
             }
-
-            .view-modal-content h5.modal-title-detail {
-                font-size: 1.3rem;
-            }
-            .view-modal-content p {
-                font-size: 0.9rem;
-            }
-            .view-modal-content p strong {
-                min-width: 100px;
-            }
-            .view-modal-content .info-section h6 {
-                font-size: 1.0rem;
-            }
-
-            .news-details-modal .news-header h4 {
-                font-size: 1.5rem;
-            }
-            .news-details-modal .news-meta {
-                font-size: 0.8rem;
-            }
-            .news-details-modal .news-image {
-                height: 180px; /* Adjust height for smaller screens */
-            }
-            .news-details-modal .news-content {
-                padding: 15px;
-                font-size: 0.95rem;
-            }
         }
+
     </style>
 </head>
 <body>
+
     <div class="dashboard-container">
         <div class="sidebar">
             <h5>LRU HeartCare</h5>
             <a href="index.html" ><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
-            <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
-            <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
-            <a href="Appointments.html" ><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
-            <a href="OnlineChat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
-            <a href="ManageNews.html" class="active" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
-            <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
+                <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+                <a href="manage_psychologists.html" ><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+                <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+                <a href="OnlineChat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+                <a href="ManageNews.html" class="active"><i class="bi bi-newspaper"></i> ข่าวสาร</a>
+                <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
         </div>
 
         <div class="main-content">
-            <nav class="navbar">
-                <div style="margin-left: auto; display: flex; align-items: center;">
-                    <input type="search" placeholder="ค้นหา..." aria-label="Search news">
-                    <div class="user-dropdown">
-                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
-                            <img src="https://via.placeholder.com/30" alt="Admin Avatar" />
-                            <strong>แอดมิน</strong>
-                        </a>
-                        <ul class="user-dropdown-menu">
-                            <li><a href="#">โปรไฟล์</a></li>
-                            <li><a href="#">ออกจากระบบ</a></li>
-                        </ul>
-                    </div>
+            <div class="navbar">
+                <input type="search" placeholder="ค้นหา...">
+                <div class="user-dropdown">
+                    <img src="https://via.placeholder.com/40" alt="Admin Avatar">
+                    <strong>Admin Name</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ตั้งค่า</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
                 </div>
-            </nav>
+            </div>
 
             <div class="content-area">
-                <h4>ข่าวสารล่าสุด</h4>
+                <h4>จัดการข่าวสารและกิจกรรม</h4>
+                
                 <div class="image-carousel">
-                    <div class="carousel-inner" id="newsCarouselInner">
+                    <div class="carousel-inner">
+                        <div class="carousel-slide-group">
+                            <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="News Image 1" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">เคล็ดลับการดูแลสุขภาพหัวใจสำหรับผู้สูงอายุ</h5>
+                                    <p class="carousel-card-text">แนะนำวิธีการออกกำลังกายที่เหมาะสมและอาหารที่ควรรับประทานเพื่อสุขภาพหัวใจที่แข็งแรง</p>
+                                    <small class="carousel-card-date">28 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                            <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1550831107-1553da8c8464?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" alt="News Image 2" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">กิจกรรมเดิน-วิ่งเพื่อสุขภาพหัวใจครั้งที่ 5</h5>
+                                    <p class="carousel-card-text">ขอเชิญชวนทุกท่านเข้าร่วมกิจกรรมการกุศลเพื่อระดมทุนช่วยเหลือผู้ป่วยโรคหัวใจ</p>
+                                    <small class="carousel-card-date">25 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                            <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1624953901718-e21e87505349?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="News Image 3" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">นวัตกรรมใหม่ในการตรวจคลื่นไฟฟ้าหัวใจ (EKG)</h5>
+                                    <p class="carousel-card-text">เทคโนโลยีล่าสุดที่ช่วยให้การวินิจฉัยแม่นยำและรวดเร็วยิ่งขึ้น พร้อมให้บริการแล้วที่นี่</p>
+                                    <small class="carousel-card-date">22 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                             <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="News Image 4" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">การสัมมนาออนไลน์: รู้ทันโรคหลอดเลือดหัวใจ</h5>
+                                    <p class="carousel-card-text">ร่วมรับฟังการบรรยายจากแพทย์ผู้เชี่ยวชาญเกี่ยวกับปัจจัยเสี่ยงและวิธีป้องกัน</p>
+                                    <small class="carousel-card-date">20 ก.ย. 2568</small>
+                                </div>
+                            </a>
                         </div>
-                    <div class="carousel-dots" id="newsCarouselDots">
+                        <div class="carousel-slide-group">
+                             <a href="#" class="carousel-card">
+                                <img src="https://plus.unsplash.com/premium_photo-1661769750500-143058b45a29?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="News Image 5" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">โครงการตรวจสุขภาพหัวใจฟรีสำหรับชุมชน</h5>
+                                    <p class="carousel-card-text">LRU HeartCare ร่วมกับหน่วยงานท้องถิ่นจัดโครงการตรวจสุขภาพเบื้องต้นฟรีไม่มีค่าใช้จ่าย</p>
+                                    <small class="carousel-card-date">18 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                             <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="News Image 6" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">ความสำคัญของการนอนหลับต่อสุขภาพหัวใจ</h5>
+                                    <p class="carousel-card-text">การพักผ่อนที่ไม่เพียงพอส่งผลเสียต่อหัวใจได้อย่างไร? ค้นหาคำตอบได้ในบทความนี้</p>
+                                    <small class="carousel-card-date">15 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                            <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80" alt="News Image 7" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">ทีมแพทย์ของเราได้รับการรับรองมาตรฐานสากล</h5>
+                                    <p class="carousel-card-text">ยืนยันคุณภาพการรักษาและความเชี่ยวชาญของทีมแพทย์โรคหัวใจด้วยใบรับรองระดับนานาชาติ</p>
+                                    <small class="carousel-card-date">12 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                            <a href="#" class="carousel-card">
+                                <img src="https://images.unsplash.com/photo-1542868726-03db3e6e9aa4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80" alt="News Image 8" class="carousel-card-img">
+                                <div class="carousel-card-body">
+                                    <h5 class="carousel-card-title">สูตรอาหารลดโซเดียม เพื่อหัวใจที่แข็งแรง</h5>
+                                    <p class="carousel-card-text">รวมเมนูอร่อย ดีต่อสุขภาพ ทำตามได้ง่ายๆ ที่บ้าน ช่วยลดความเสี่ยงโรคความดันโลหิตสูง</p>
+                                    <small class="carousel-card-date">10 ก.ย. 2568</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="carousel-dots">
                         </div>
                 </div>
-                <h4>จัดการข่าวสาร</h4>
 
                 <div class="content-container">
                     <div class="controls-row">
                         <div class="search-input-group">
-                            <input type="text" placeholder="ค้นหาข่าวสาร..." aria-label="Search news">
-                            <button type="button"><i class="bi bi-search"></i></button>
+                            <input type="text" placeholder="ค้นหาจากหัวข้อข่าว..." id="searchInput">
+                            <button><i class="bi bi-search"></i></button>
                         </div>
-                        <button class="add-button" onclick="openModal('addEditNewsModal')">
-                            <i class="bi bi-plus-circle-fill"></i> เพิ่มข่าวสารใหม่
-                        </button>
+                        <div class="filter-group">
+                            <select id="categoryFilter">
+                                <option value="">ทุกหมวดหมู่</option>
+                                <option value="สุขภาพ">สุขภาพ</option>
+                                <option value="กิจกรรม">กิจกรรม</option>
+                                <option value="วิชาการ">วิชาการ</option>
+                                <option value="ประกาศ">ประกาศ</option>
+                            </select>
+                            <select id="statusFilter">
+                                <option value="">ทุกสถานะ</option>
+                                <option value="Published">เผยแพร่แล้ว</option>
+                                <option value="Draft">ฉบับร่าง</option>
+                            </select>
+                        </div>
+                        <button class="add-button" id="addNewsBtn"><i class="bi bi-plus-circle-fill"></i> เพิ่มข่าวสาร</button>
                     </div>
 
-                    <table class="data-table news-table">
-                        <thead>
-                            <tr>
-                                <th>รหัสข่าวสาร</th>
-                                <th>หัวข้อข่าวสาร</th>
-                                <th>วันที่เผยแพร่</th>
-                                <th>สถานะ</th>
-                                <th>ผู้เขียน</th>
-                                <th>การดำเนินการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>NEWS001</td>
-                                <td>LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม.</td>
-                                <td>2024-05-25</td>
-                                <td><span class="status-badge status-published">เผยแพร่</span></td>
-                                <td>แอดมิน</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
-                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
-                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>NEWS002</td>
-                                <td>สัมมนาฟรี: จัดการความเครียดในยุคดิจิทัล</td>
-                                <td>2024-05-20</td>
-                                <td><span class="status-badge status-published">เผยแพร่</span></td>
-                                <td>นพ.สมชาย ใจดี</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
-                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
-                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>NEWS003</td>
-                                <td>แนวทางการรับมือกับภาวะซึมเศร้าจากการเรียน</td>
-                                <td>2024-05-18</td>
-                                <td><span class="status-badge status-draft">ฉบับร่าง</span></td>
-                                <td>พญ.ลลนา มีสุข</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
-                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
-                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>NEWS004</td>
-                                <td>กิจกรรม Mindful Walk ผ่อนคลายใจในธรรมชาติ</td>
-                                <td>2024-05-15</td>
-                                <td><span class="status-badge status-published">เผยแพร่</span></td>
-                                <td>แอดมิน</td>
-                                <td class="table-actions">
-                                    <button class="btn-view" onclick="openModal('viewNewsModal')"><i class="bi bi-eye"></i></button>
-                                    <button class="btn-edit" onclick="openModal('addEditNewsModal')"><i class="bi bi-pencil-square"></i></button>
-                                    <button class="btn-delete" onclick="openModal('deleteNewsModal')"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">ก่อนหน้า</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">ถัดไป</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div style="overflow-x:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>หัวข้อข่าว</th>
+                                    <th>หมวดหมู่</th>
+                                    <th>ผู้เขียน</th>
+                                    <th>วันที่เผยแพร่</th>
+                                    <th>สถานะ</th>
+                                    <th>การกระทำ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="newsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                    
+                    <ul class="pagination">
+                        <li class="page-item disabled"><a class="page-link" href="#">ก่อนหน้า</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">ถัดไป</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div id="addEditNewsModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">เพิ่ม/แก้ไขข่าวสาร</h5>
-                    <button type="button" class="btn-close" onclick="closeModal('addEditNewsModal')">&times;</button>
+                    <h5 class="modal-title" id="modalTitle">เพิ่มข่าวสารใหม่</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal">&times;</button>
                 </div>
-                <div class="modal-body">
-                    <form>
+                <form id="newsForm">
+                    <input type="hidden" id="newsId">
+                    <div class="modal-body">
                         <div class="mb-3">
-                            <label for="newsTitle" class="form-label">หัวข้อข่าวสาร</label>
-                            <input type="text" class="form-control" id="newsTitle" placeholder="กรอกหัวข้อข่าวสาร">
-                        </div>
-                        <div class="mb-3">
-                            <label for="newsImageUpload" class="form-label">รูปภาพประกอบข่าวสาร (เลือกได้หลายรูป)</label>
-                            <input type="file" class="form-control-file" id="newsImageUpload" accept="image/*" multiple>
-                            <div class="image-preview-container" id="newsImagePreview">
-                                <p>ยังไม่มีรูปภาพที่เลือก</p>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newsContent" class="form-label">เนื้อหาข่าวสาร</label>
-                            <textarea class="form-control" id="newsContent" rows="8" placeholder="กรอกเนื้อหาข่าวสาร..."></textarea>
+                            <label for="newsTitle" class="form-label">หัวข้อข่าว</label>
+                            <input type="text" class="form-control" id="newsTitle" required>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="newsStatus" class="form-label">สถานะ</label>
-                                <select class="form-select" id="newsStatus">
-                                    <option value="published">เผยแพร่</option>
-                                    <option value="draft">ฉบับร่าง</option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="newsCategory" class="form-label">หมวดหมู่</label>
+                                    <select class="form-select" id="newsCategory" required>
+                                        <option value="">เลือกหมวดหมู่...</option>
+                                        <option value="สุขภาพ">สุขภาพ</option>
+                                        <option value="กิจกรรม">กิจกรรม</option>
+                                        <option value="วิชาการ">วิชาการ</option>
+                                        <option value="ประกาศ">ประกาศ</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="newsAuthor" class="form-label">ผู้เขียน</label>
-                                <input type="text" class="form-control" id="newsAuthor" placeholder="ชื่อผู้เขียน">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="newsStatus" class="form-label">สถานะ</label>
+                                    <select class="form-select" id="newsStatus" required>
+                                        <option value="Published">เผยแพร่</option>
+                                        <option value="Draft">ฉบับร่าง</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="publishDate" class="form-label">วันที่เผยแพร่</label>
-                            <input type="date" class="form-control" id="publishDate">
+                            <label for="newsAuthor" class="form-label">ผู้เขียน</label>
+                            <input type="text" class="form-control" id="newsAuthor" required>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addEditNewsModal')">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary">บันทึก</button>
-                </div>
+                        <div class="mb-3">
+                            <label for="newsImages" class="form-label">รูปภาพประกอบ (เลือกได้หลายรูป)</label>
+                            <input type="file" class="form-control-file" id="newsImages" multiple accept="image/*">
+                            <div class="image-preview-container" id="imagePreviewContainer">
+                                <span>ไม่มีรูปภาพที่เลือก</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newsContent" class="form-label">เนื้อหาข่าว</label>
+                            <textarea class="form-control" id="newsContent" rows="8" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
+    
     <div id="viewNewsModal" class="modal news-details-modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">รายละเอียดข่าวสาร</h5>
-                    <button type="button" class="btn-close" onclick="closeModal('viewNewsModal')">&times;</button>
+                    <h5 class="modal-title">รายละเอียดข่าว</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="news-header">
-                        <h4>LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม.</h4>
-                        <p class="news-meta">เผยแพร่เมื่อ: 2024-05-25 | โดย: แอดมิน | สถานะ: <span class="status-badge status-published">เผยแพร่</span></p>
+                        <h4 id="viewNewsTitle"></h4>
+                        <div class="news-meta">
+                            <span id="viewNewsMeta"></span>
+                        </div>
                     </div>
-                    <img src="https://st3.depositphotos.com/24754644/34200/v/450/depositphotos_342000796-stock-illustration-woman-talking-to-her-psychologist.jpg" alt="News Image" class="news-image">
-                    <div class="news-content">
-                        <p>LRU HeartCare มีความยินดีที่จะประกาศว่าเราได้ขยายเวลาการให้บริการให้คำปรึกษาทางจิตวิทยาออนไลน์เป็น 24 ชั่วโมงต่อวัน เพื่อให้การดูแลสุขภาพใจเข้าถึงได้ง่ายและสะดวกสบายยิ่งขึ้นสำหรับทุกคน ไม่ว่าคุณจะอยู่ที่ไหนหรือต้องการความช่วยเหลือเมื่อไหร่ ทีมงานนักจิตวิทยาผู้เชี่ยวชาญของเราพร้อมที่จะให้คำปรึกษาและสนับสนุนคุณเสมอ</p>
-                        <p>บริการใหม่นี้ครอบคลุมทั้งการแชทออนไลน์และการนัดหมายวิดีโอคอล เพื่อตอบสนองความต้องการที่หลากหลายของผู้ใช้งาน เราเข้าใจดีว่าปัญหาทางใจอาจเกิดขึ้นได้ทุกเมื่อ ดังนั้นการเข้าถึงบริการที่รวดเร็วและต่อเนื่องจึงเป็นสิ่งสำคัญสูงสุดสำหรับเรา</p>
-                        <p>เพื่อความสะดวกสบายยิ่งขึ้น ผู้ใช้งานสามารถจองคิวปรึกษาหรือเริ่มต้นการแชทได้ทันทีผ่านเว็บไซต์หรือแอปพลิเคชันของเรา ระบบของเราได้รับการออกแบบมาให้ใช้งานง่ายและปลอดภัย เพื่อให้คุณสามารถพูดคุยได้อย่างสบายใจ</p>
-                        <p>เราหวังเป็นอย่างยิ่งว่าบริการ 24 ชั่วโมงนี้จะช่วยให้ทุกคนสามารถดูแลสุขภาพใจของตนเองได้ดียิ่งขึ้น และเป็นส่วนหนึ่งในการสร้างสังคมที่มีสุขภาพใจที่แข็งแรง</p>
+                    <img src="" id="viewNewsImage" class="news-image" alt="News Image">
+                    <div class="news-content" id="viewNewsContent">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('viewNewsModal')">ปิด</button>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="deleteNewsModal" class="modal">
-        <div class="modal-dialog">
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-dialog" style="max-width: 450px;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">ยืนยันการลบข่าวสาร</h5>
-                    <button type="button" class="btn-close" onclick="closeModal('deleteNewsModal')">&times;</button>
+                    <h5 class="modal-title">ยืนยันการลบ</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>คุณแน่ใจหรือไม่ว่าต้องการลบข่าวสาร **"LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม."** ข่าวสารที่ถูกลบจะไม่สามารถกู้คืนได้</p>
+                    <p>คุณแน่ใจหรือไม่ว่าต้องการลบข่าวนี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('deleteNewsModal')">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary btn-delete-confirm">ลบ</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-primary" style="background-color: var(--red-cancel);">ยืนยันการลบ</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('show');
-            if (modalId === 'addEditNewsModal') {
-                // Clear previous previews when opening the Add/Edit modal
-                const previewContainer = document.getElementById('newsImagePreview');
-                previewContainer.innerHTML = '<p>ยังไม่มีรูปภาพที่เลือก</p>';
-            }
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- DUMMY DATA ---
+    let newsData = [
+        {
+            id: 1,
+            title: 'เคล็ดลับการดูแลสุขภาพหัวใจสำหรับผู้สูงอายุ',
+            category: 'สุขภาพ',
+            author: 'นพ. สมชาย ใจดี',
+            publishDate: '2025-09-28',
+            status: 'Published',
+            imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+            content: 'การดูแลสุขภาพหัวใจในผู้สูงอายุเป็นสิ่งสำคัญอย่างยิ่ง ควรเริ่มจากการรับประทานอาหารที่มีประโยชน์ ลดไขมันและโซเดียม ควบคู่ไปกับการออกกำลังกายเบาๆ อย่างสม่ำเสมอ เช่น การเดิน การรำไทเก็ก ซึ่งจะช่วยให้หัวใจแข็งแรงและลดความเสี่ยงของโรคต่างๆ ได้'
+        },
+        {
+            id: 2,
+            title: 'กิจกรรมเดิน-วิ่งเพื่อสุขภาพหัวใจครั้งที่ 5',
+            category: 'กิจกรรม',
+            author: 'ฝ่ายประชาสัมพันธ์',
+            publishDate: '2025-09-25',
+            status: 'Published',
+            imageUrl: 'https://images.unsplash.com/photo-1550831107-1553da8c8464?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80',
+            content: 'โรงพยาบาลขอเชิญชวนประชาชนทั่วไปเข้าร่วมกิจกรรมเดิน-วิ่งการกุศล เพื่อระดมทุนจัดซื้ออุปกรณ์ทางการแพทย์สำหรับผู้ป่วยโรคหัวใจที่ขาดแคลน งานจะจัดขึ้นในวันที่ 15 ตุลาคม 2568 ณ สวนสาธารณะกลางเมือง'
+        },
+        {
+            id: 3,
+            title: 'นวัตกรรมใหม่ในการตรวจคลื่นไฟฟ้าหัวใจ (EKG)',
+            category: 'วิชาการ',
+            author: 'นพ. วิทยา ก้าวไกล',
+            publishDate: '2025-09-22',
+            status: 'Published',
+            imageUrl: 'https://images.unsplash.com/photo-1624953901718-e21e87505349?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+            content: 'ด้วยเทคโนโลยี AI เข้ามาช่วยวิเคราะห์ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) ทำให้การวินิจฉัยความผิดปกติของหัวใจมีความแม่นยำและรวดเร็วยิ่งขึ้น สามารถตรวจจับสัญญาณเริ่มต้นของโรคได้อย่างมีประสิทธิภาพ'
+        },
+        {
+            id: 4,
+            title: 'ประกาศปิดปรับปรุงระบบนัดหมายออนไลน์',
+            category: 'ประกาศ',
+            author: 'ฝ่าย IT',
+            publishDate: '2025-09-20',
+            status: 'Draft',
+            imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+            content: 'ทางโรงพยาบาลจะทำการปิดปรับปรุงระบบนัดหมายแพทย์ออนไลน์ในวันที่ 30 กันยายน 2568 เวลา 00:00 - 04:00 น. เพื่อเพิ่มประสิทธิภาพการให้บริการ ขออภัยในความไม่สะดวก'
+        }
+    ];
+
+    // --- DOM ELEMENTS ---
+    const newsTableBody = document.getElementById('newsTableBody');
+    const addNewsBtn = document.getElementById('addNewsBtn');
+    const addEditNewsModal = document.getElementById('addEditNewsModal');
+    const viewNewsModal = document.getElementById('viewNewsModal');
+    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+    const newsForm = document.getElementById('newsForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const statusFilter = document.getElementById('statusFilter');
+
+    let newsIdToDelete = null;
+
+    // --- FUNCTIONS ---
+    const getStatusBadge = (status) => {
+        if (status === 'Published') {
+            return `<span class="status-badge status-published">เผยแพร่แล้ว</span>`;
+        } else if (status === 'Draft') {
+            return `<span class="status-badge status-draft">ฉบับร่าง</span>`;
+        }
+        return `<span class="status-badge">${status}</span>`;
+    };
+
+    const renderTable = (data) => {
+        newsTableBody.innerHTML = '';
+        if (data.length === 0) {
+            newsTableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">ไม่พบข้อมูล</td></tr>';
+            return;
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-        }
-
-        // Optional: Close dropdown if clicked outside
-        document.addEventListener('click', function(event) {
-            const userDropdown = document.querySelector('.user-dropdown');
-            const userDropdownMenu = document.querySelector('.user-dropdown-menu');
-            if (userDropdown && !userDropdown.contains(event.target) && userDropdown.classList.contains('active')) {
-                userDropdown.classList.remove('active');
-            }
+        data.forEach(news => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${news.id}</td>
+                <td>${news.title}</td>
+                <td>${news.category}</td>
+                <td>${news.author}</td>
+                <td>${news.publishDate}</td>
+                <td>${getStatusBadge(news.status)}</td>
+                <td class="table-actions">
+                    <button class="btn-view" data-id="${news.id}" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                    <button class="btn-edit" data-id="${news.id}" title="แก้ไข"><i class="bi bi-pencil-square"></i></button>
+                    <button class="btn-delete" data-id="${news.id}" title="ลบ"><i class="bi bi-trash-fill"></i></button>
+                </td>
+            `;
+            newsTableBody.appendChild(row);
         });
+    };
 
-        // Toggle user dropdown
-        document.querySelector('.user-dropdown > a').addEventListener('click', function(event) {
-            event.preventDefault();
-            this.parentElement.classList.toggle('active');
-        });
+    const openModal = (modal) => modal.classList.add('show');
+    const closeModal = (modal) => modal.classList.remove('show');
+    
+    const clearForm = () => {
+        newsForm.reset();
+        document.getElementById('newsId').value = '';
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        previewContainer.innerHTML = '<span>ไม่มีรูปภาพที่เลือก</span>';
+    };
 
-        // --- Carousel Logic for News Cards ---
-        const newsData = [
-            // Added multiple images for NEWS001 for demonstration
-            { id: 'NEWS001', title: 'LRU HeartCare เปิดบริการให้คำปรึกษาออนไลน์ 24 ชม.', date: '2024-05-25', status: 'published', author: 'แอดมิน', images: ['https://static.wixstatic.com/media/22c2c6_57e7338d85c846dd982ce0a93ff3cd46~mv2.jpg/v1/fill/w_568,h_454,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/22c2c6_57e7338d85c846dd982ce0a93ff3cd46~mv2.jpg', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1WRQUXcWYj4DeOJM3ndMGauDZzrESCzBruIZHO0amg8zJXCqeNTyk270l-CKkuhMe8Ps&usqp=CAU', 'https://via.placeholder.com/400x180/87CEEB/FFFFFF?text=Online+Chat'], content: 'LRU HeartCare มีความยินดีที่จะประกาศว่าเราได้ขยายเวลาการให้บริการให้คำปรึกษาทางจิตวิทยาออนไลน์เป็น 24 ชั่วโมงต่อวัน เพื่อให้การดูแลสุขภาพใจเข้าถึงได้ง่ายและสะดวกสบายยิ่งขึ้นสำหรับทุกคน ไม่ว่าคุณจะอยู่ที่ไหนหรือต้องการความช่วยเหลือเมื่อไหร่ ทีมงานนักจิตวิทยาผู้เชี่ยวชาญของเราพร้อมที่จะให้คำปรึกษาและสนับสนุนคุณเสมอ' },
-            { id: 'NEWS002', title: 'สัมมนาฟรี: จัดการความเครียดในยุคดิจิทัล', date: '2024-05-20', status: 'published', author: 'นพ.สมชาย ใจดี', images: ['https://story.motherhood.co.th/wp-content/uploads/2022/08/therapist2-1024x683.jpg'], content: 'พบกับนักจิตวิทยาผู้เชี่ยวชาญ พร้อมเคล็ดลับการใช้ชีวิตและการจัดการความเครียดในยุคดิจิทัลที่เปลี่ยนแปลงไปอย่างรวดเร็ว สมัครเลยวันนี้เพื่อรับสิทธิ์เข้าร่วมฟรี!' },
-            { id: 'NEWS003', title: 'แนวทางการรับมือกับภาวะซึมเศร้าจากการเรียน', date: '2024-05-18', status: 'published', author: 'พญ.ลลนา มีสุข', images: ['https://wallofsharing.com/wp-content/uploads/2025/01/vdo_call_with_doctor-1024x770.png'], content: 'บทความนี้ให้ข้อมูลและแนวทางปฏิบัติเบื้องต้นสำหรับนักเรียนนักศึกษาที่กำลังเผชิญกับภาวะซึมเศร้าที่เกิดจากการเรียน การดูแลตัวเองเป็นสิ่งสำคัญ' },
-            { id: 'NEWS004', title: 'กิจกรรม Mindful Walk ผ่อนคลายใจในธรรมชาติ', date: '2024-05-15', status: 'published', author: 'แอดมิน', images: ['https://synzofficial.com/wp-content/uploads/2024/04/%E0%B8%AA%E0%B8%B7%E0%B9%88%E0%B8%AD-%E0%B9%83%E0%B8%AB%E0%B9%89%E0%B8%81%E0%B8%B3%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B9%83%E0%B8%88-768x362.png'], content: 'ขอเชิญชวนทุกท่านเข้าร่วมกิจกรรมเดินในธรรมชาติพร้อมฝึกสติ เพื่อผ่อนคลายจิตใจและเพิ่มพลังบวกให้กับชีวิต กิจกรรมนี้เหมาะสำหรับทุกคน' },
-            { id: 'NEWS005', title: 'เปิดตัวแอปพลิเคชัน LRU HeartCare เวอร์ชันใหม่', date: '2024-05-10', status: 'published', author: 'แอดมิน', images: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMBMQeQRlTt46WTGBB31RbJKVG-Pchy6iDIQ&s'], content: 'เราได้เปิดตัวแอปพลิเคชันเวอร์ชันใหม่ที่มีฟังก์ชันการใช้งานที่ง่ายขึ้นและประสิทธิภาพที่ดีกว่าเดิม ดาวน์โหลดได้แล้ววันนี้ทั้ง iOS และ Android' },
-            { id: 'NEWS006', title: 'เคล็ดลับการนอนหลับให้มีคุณภาพสำหรับวัยทำงาน', date: '2024-05-08', status: 'published', author: 'นพ.สุขใจ ยิ้มเสมอ', images: ['https://psicologiaanagarciarey.com/wp-content/uploads/2023/06/a8b9f156406125c6a399aacff5240fd2.jpg'], content: 'การนอนหลับที่มีคุณภาพส่งผลโดยตรงต่อสุขภาพกายและใจ มาดูเคล็ดลับง่ายๆ ที่จะช่วยให้คุณนอนหลับได้สนิทและตื่นมาอย่างสดชื่นกัน' },
-            { id: 'NEWS007', title: 'ข้อควรปฏิบัติเมื่อรู้สึกเครียดจากการทำงาน', date: '2024-05-05', status: 'published', author: 'แอดมิน', images: ['https://img.lovepik.com/free-png/20210928/lovepik-counselling-png-image_401692973_wh1200.png'], content: 'ความเครียดจากการทำงานเป็นเรื่องปกติ แต่การจัดการเป็นสิ่งสำคัญ บทความนี้จะแนะนำข้อควรปฏิบัติเบื้องต้นเมื่อคุณรู้สึกเครียด' },
-            { id: 'NEWS008', title: 'ความสำคัญของการปรึกษานักจิตวิทยาเบื้องต้น', date: '2024-05-01', status: 'published', author: 'พญ.ใจใส เบิกบาน', images: ['https://cozybara.com/wp-content/uploads/2023/03/AW6-e1680280935609.png'], content: 'หลายคนอาจลังเลที่จะปรึกษานักจิตวิทยา แต่การปรึกษาเบื้องต้นสามารถช่วยให้คุณเข้าใจตัวเองและรับมือกับปัญหาได้ดีขึ้น' },
-            { id: 'NEWS009', title: 'เตรียมตัวให้พร้อมสำหรับสอบปลายภาค', date: '2024-04-28', status: 'published', author: 'แอดมิน', images: ['https://thaipublica.org/wp-content/uploads/2025/04/Thaipublica_%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%AA%E0%B8%AD%E0%B8%9A-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99-03.jpg'], content: 'คำแนะนำสำหรับการเตรียมตัวสอบปลายภาค ทั้งการจัดตารางเวลา การพักผ่อน และการจัดการความเครียด' },
-            { id: 'NEWS010', title: 'การดูแลสุขภาพใจในสถานการณ์วิกฤต', date: '2024-04-25', status: 'published', author: 'ทีม LRU HeartCare', images: ['https://adaymagazine.com/wp-content/uploads/2021/09/TypeB_MeetYourMonster.jpg'], content: 'บทความนี้ให้คำแนะนำในการดูแลสุขภาพใจเมื่อต้องเผชิญกับสถานการณ์ที่ไม่คาดฝันหรือวิกฤตต่างๆ' },
-        ];
+    const handleAddClick = () => {
+        clearForm();
+        modalTitle.textContent = 'เพิ่มข่าวสารใหม่';
+        openModal(addEditNewsModal);
+    };
 
-        const newsCarouselInner = document.getElementById('newsCarouselInner');
-        const newsCarouselDots = document.getElementById('newsCarouselDots');
-        const CARDS_PER_SLIDE = 4; // Define how many cards per slide
+    const handleEditClick = (id) => {
+        const news = newsData.find(n => n.id === id);
+        if (news) {
+            clearForm();
+            modalTitle.textContent = 'แก้ไขข่าวสาร';
+            document.getElementById('newsId').value = news.id;
+            document.getElementById('newsTitle').value = news.title;
+            document.getElementById('newsCategory').value = news.category;
+            document.getElementById('newsStatus').value = news.status;
+            document.getElementById('newsAuthor').value = news.author;
+            document.getElementById('newsContent').value = news.content;
 
-        let newsCurrentSlide = 0;
-        let newsSlideInterval;
-
-        function createNewsCarousel() {
-            // Clear existing content
-            newsCarouselInner.innerHTML = '';
-            newsCarouselDots.innerHTML = '';
-
-            // Filter out news items that don't have images for the carousel display if needed
-            // For now, we'll assume all news has at least one image in its 'images' array
-            const publishedNews = newsData.filter(news => news.status === 'published' && news.images && news.images.length > 0);
-
-            // Group news data into slides
-            const numSlides = Math.ceil(publishedNews.length / CARDS_PER_SLIDE);
-
-            if (publishedNews.length === 0) {
-                newsCarouselInner.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 50px;">ไม่มีข่าวสารล่าสุดที่เผยแพร่</p>';
-                return;
-            }
-
-
-            for (let i = 0; i < numSlides; i++) {
-                const slideGroup = document.createElement('div');
-                slideGroup.classList.add('carousel-slide-group');
-
-                const startIndex = i * CARDS_PER_SLIDE;
-                const endIndex = Math.min(startIndex + CARDS_PER_SLIDE, publishedNews.length);
-                const slideNews = publishedNews.slice(startIndex, endIndex);
-
-                slideNews.forEach(news => {
-                    const newsCard = document.createElement('a'); // Use 'a' for clickable card
-                    newsCard.href = "#"; // You can set a dynamic link here to view the news
-                    newsCard.classList.add('carousel-card');
-                    // Use the first image from the 'images' array for the carousel card
-                    const displayImageUrl = news.images && news.images.length > 0 ? news.images[0] : 'https://via.placeholder.com/400x180/CCCCCC/666666?text=No+Image';
-                    
-                    newsCard.innerHTML = `
-                        <img src="${displayImageUrl}" alt="${news.title}" class="carousel-card-img">
-                        <div class="carousel-card-body">
-                            <h5 class="carousel-card-title">${news.title}</h5>
-                            <p class="carousel-card-text">${news.content}</p>
-                            <span class="carousel-card-date">${news.date}</span>
-                        </div>
-                    `;
-                    newsCard.onclick = (event) => { // Example: open view modal on click
-                        event.preventDefault(); // Prevent default link behavior
-                        openModal('viewNewsModal');
-                        populateViewNewsModal(news); // Populate modal with specific news data
-                    };
-                    slideGroup.appendChild(newsCard);
-                });
-                newsCarouselInner.appendChild(slideGroup);
-
-                // Create dots
-                const dot = document.createElement('span');
-                dot.classList.add('dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => {
-                    clearInterval(newsSlideInterval);
-                    goToNewsSlide(i);
-                    startNewsAutoSlide();
-                });
-                newsCarouselDots.appendChild(dot);
-            }
-
-            // Ensure the first slide is visible initially
-            goToNewsSlide(0);
-        }
-
-        function goToNewsSlide(index) {
-            const publishedNews = newsData.filter(news => news.status === 'published' && news.images && news.images.length > 0);
-            const numSlides = Math.ceil(publishedNews.length / CARDS_PER_SLIDE);
-            if (index < 0) {
-                index = numSlides - 1;
-            } else if (index >= numSlides) {
-                index = 0;
-            }
-            newsCarouselInner.style.transform = `translateX(-${index * 100}%)`;
-            updateNewsDots(index);
-            newsCurrentSlide = index;
-        }
-
-        function updateNewsDots(activeIndex) {
-            document.querySelectorAll('#newsCarouselDots .dot').forEach((dot, index) => {
-                dot.classList.toggle('active', index === activeIndex);
-            });
-        }
-
-        function nextNewsSlide() {
-            const publishedNews = newsData.filter(news => news.status === 'published' && news.images && news.images.length > 0);
-            const numSlides = Math.ceil(publishedNews.length / CARDS_PER_SLIDE);
-            newsCurrentSlide = (newsCurrentSlide + 1) % numSlides;
-            goToNewsSlide(newsCurrentSlide);
-        }
-
-        function startNewsAutoSlide() {
-            clearInterval(newsSlideInterval); // Clear any existing interval
-            newsSlideInterval = setInterval(nextNewsSlide, 5000); // Change slide every 5 seconds
-        }
-
-        // --- JavaScript for Multiple Image Upload Preview ---
-        const newsImageUpload = document.getElementById('newsImageUpload');
-        const newsImagePreview = document.getElementById('newsImagePreview');
-
-        newsImageUpload.addEventListener('change', function(event) {
-            newsImagePreview.innerHTML = ''; // Clear existing previews
-
-            if (this.files.length === 0) {
-                newsImagePreview.innerHTML = '<p>ยังไม่มีรูปภาพที่เลือก</p>';
-                return;
-            }
-
-            Array.from(this.files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        const previewItem = document.createElement('div');
-                        previewItem.classList.add('image-preview-item');
-
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = file.name;
-
-                        const removeBtn = document.createElement('button');
-                        removeBtn.classList.add('remove-image-btn');
-                        removeBtn.innerHTML = '&times;';
-                        removeBtn.title = 'ลบรูปภาพนี้';
-                        removeBtn.onclick = (event) => {
-                            event.stopPropagation(); // Prevent modal from closing or other actions
-                            previewItem.remove(); // Remove the preview item from DOM
-                            // In a real application, you'd also need to manage the actual files
-                            // For now, selecting new files will clear and re-add.
-                            // To properly "remove" a file, you'd need to rebuild the FileList
-                            // This is complex for a frontend-only solution and usually handled by backend.
-                            if (newsImagePreview.children.length === 0) {
-                                newsImagePreview.innerHTML = '<p>ยังไม่มีรูปภาพที่เลือก</p>';
-                            }
-                        };
-
-                        previewItem.appendChild(img);
-                        previewItem.appendChild(removeBtn);
-                        newsImagePreview.appendChild(previewItem);
-                    };
-                    reader.readAsDataURL(file); // Read the file as a data URL for preview
-                }
-            });
-        });
-
-        // Function to populate View News Modal with dynamic content
-        function populateViewNewsModal(newsItem) {
-            document.querySelector('#viewNewsModal .news-header h4').textContent = newsItem.title;
-            document.querySelector('#viewNewsModal .news-meta').innerHTML = `เผยแพร่เมื่อ: ${newsItem.date} | โดย: ${newsItem.author} | สถานะ: <span class="status-badge status-${newsItem.status}">${newsItem.status === 'published' ? 'เผยแพร่' : 'ฉบับร่าง'}</span>`;
-            document.querySelector('#viewNewsModal .news-content p').textContent = newsItem.content;
-
-            // Handle multiple images for the view modal
-            const viewModalImageContainer = document.querySelector('#viewNewsModal .news-image'); // This is currently an <img> tag.
-            // We need to replace this with a div that can hold multiple images
-            // For simplicity, I'll temporarily put only the first image in the existing <img> tag
-            // A more robust solution would be to create a mini-carousel or gallery in the view modal
-
-            if (newsItem.images && newsItem.images.length > 0) {
-                // If you want to show ALL images in the view modal, you'd modify the HTML
-                // For now, we'll just show the first one in the existing `news-image` element.
-                // If you need a proper gallery/carousel within the view modal, that's another feature.
-                viewModalImageContainer.src = newsItem.images[0];
-                viewModalImageContainer.style.display = 'block'; // Ensure it's visible
+            // Display existing image as a preview
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            if(news.imageUrl) {
+                previewContainer.innerHTML = `
+                    <div class="image-preview-item">
+                        <img src="${news.imageUrl}" alt="Preview">
+                        <button type="button" class="remove-image-btn">&times;</button>
+                    </div>
+                `;
             } else {
-                viewModalImageContainer.src = 'https://via.placeholder.com/750x250/CCCCCC/666666?text=No+Image'; // Placeholder if no images
-                viewModalImageContainer.style.display = 'block';
+                 previewContainer.innerHTML = '<span>ไม่มีรูปภาพที่เลือก</span>';
             }
+
+            openModal(addEditNewsModal);
+        }
+    };
+    
+    const handleViewClick = (id) => {
+        const news = newsData.find(n => n.id === id);
+        if (news) {
+            document.getElementById('viewNewsTitle').textContent = news.title;
+            document.getElementById('viewNewsMeta').innerHTML = `
+                โดย <strong>${news.author}</strong> | หมวดหมู่: <strong>${news.category}</strong> | เผยแพร่เมื่อ: <strong>${news.publishDate}</strong>
+            `;
+            document.getElementById('viewNewsImage').src = news.imageUrl || 'https://via.placeholder.com/800x250?text=No+Image';
+            document.getElementById('viewNewsContent').innerHTML = `<p>${news.content.replace(/\n/g, '</p><p>')}</p>`; // Replace newlines with paragraphs for better display
+            openModal(viewNewsModal);
+        }
+    };
+    
+    const handleDeleteClick = (id) => {
+        newsIdToDelete = id;
+        openModal(deleteConfirmModal);
+    };
+
+    const handleConfirmDelete = () => {
+        newsData = newsData.filter(n => n.id !== newsIdToDelete);
+        renderTable(newsData);
+        closeModal(deleteConfirmModal);
+        newsIdToDelete = null;
+    };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        const id = document.getElementById('newsId').value;
+        const formData = {
+            title: document.getElementById('newsTitle').value,
+            category: document.getElementById('newsCategory').value,
+            status: document.getElementById('newsStatus').value,
+            author: document.getElementById('newsAuthor').value,
+            content: document.getElementById('newsContent').value,
+            publishDate: new Date().toISOString().split('T')[0], // Use current date for simplicity
+            imageUrl: 'https://via.placeholder.com/400x300?text=New+Image' // Placeholder for new image
+        };
+
+        if (id) { // Editing existing news
+            const index = newsData.findIndex(n => n.id === parseInt(id));
+            if (index !== -1) {
+                newsData[index] = { ...newsData[index], ...formData };
+            }
+        } else { // Adding new news
+            formData.id = newsData.length > 0 ? Math.max(...newsData.map(n => n.id)) + 1 : 1;
+            newsData.unshift(formData); // Add to the beginning of the array
+        }
+        
+        renderTable(newsData);
+        closeModal(addEditNewsModal);
+    };
+    
+    const handleFilterAndSearch = () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const category = categoryFilter.value;
+        const status = statusFilter.value;
+        
+        let filteredData = newsData.filter(news => {
+            const matchesSearch = news.title.toLowerCase().includes(searchTerm);
+            const matchesCategory = category ? news.category === category : true;
+            const matchesStatus = status ? news.status === status : true;
+            return matchesSearch && matchesCategory && matchesStatus;
+        });
+        
+        renderTable(filteredData);
+    };
+
+    // --- IMAGE PREVIEW HANDLER ---
+    const imageInput = document.getElementById('newsImages');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+
+    imageInput.addEventListener('change', () => {
+        previewContainer.innerHTML = '';
+        const files = imageInput.files;
+        if (files.length === 0) {
+            previewContainer.innerHTML = '<span>ไม่มีรูปภาพที่เลือก</span>';
+            return;
         }
 
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.classList.add('image-preview-item');
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="${file.name}">
+                    <button type="button" class="remove-image-btn" title="Remove image">&times;</button>
+                `;
+                previewContainer.appendChild(previewItem);
+                
+                // Add event listener to the remove button
+                previewItem.querySelector('.remove-image-btn').addEventListener('click', () => {
+                    previewItem.remove();
+                    // Note: This only removes the preview. A more complex implementation
+                    // would be needed to remove the file from the FileList.
+                     if (previewContainer.children.length === 0) {
+                         previewContainer.innerHTML = '<span>ไม่มีรูปภาพที่เลือก</span>';
+                     }
+                });
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 
-        // Initialize news carousel when the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            createNewsCarousel();
-            startNewsAutoSlide();
+    // --- EVENT LISTENERS ---
+    addNewsBtn.addEventListener('click', handleAddClick);
+    newsForm.addEventListener('submit', handleFormSubmit);
+    confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
+    
+    searchInput.addEventListener('input', handleFilterAndSearch);
+    categoryFilter.addEventListener('change', handleFilterAndSearch);
+    statusFilter.addEventListener('change', handleFilterAndSearch);
+
+    // Event delegation for table action buttons
+    newsTableBody.addEventListener('click', (event) => {
+        const button = event.target.closest('button');
+        if (!button) return;
+        
+        const id = parseInt(button.dataset.id);
+        if (button.classList.contains('btn-edit')) {
+            handleEditClick(id);
+        } else if (button.classList.contains('btn-view')) {
+            handleViewClick(id);
+        } else if (button.classList.contains('btn-delete')) {
+            handleDeleteClick(id);
+        }
+    });
+
+    // Event listeners for closing modals
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+        button.addEventListener('click', () => {
+            closeModal(button.closest('.modal'));
         });
-    </script>
+    });
+
+    // Close modal when clicking on the background
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal(modal);
+            }
+        });
+    });
+
+    // User Dropdown Toggle
+    const userDropdown = document.querySelector('.user-dropdown');
+    userDropdown.addEventListener('click', () => {
+        userDropdown.classList.toggle('active');
+    });
+    
+    // --- CAROUSEL LOGIC ---
+    const carouselInner = document.querySelector('.carousel-inner');
+    const slideGroups = document.querySelectorAll('.carousel-slide-group');
+    const dotsContainer = document.querySelector('.carousel-dots');
+    const totalSlides = slideGroups.length;
+    let currentSlide = 0;
+
+    // Create dots
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dot.dataset.slide = i;
+        dotsContainer.appendChild(dot);
+    }
+    const dots = document.querySelectorAll('.dot');
+    
+    const goToSlide = (slideIndex) => {
+        carouselInner.style.transform = `translateX(-${slideIndex * 100}%)`;
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[slideIndex].classList.add('active');
+        currentSlide = slideIndex;
+    };
+    
+    dotsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dot')) {
+            const slideIndex = parseInt(e.target.dataset.slide);
+            goToSlide(slideIndex);
+        }
+    });
+    
+    // Auto-slide functionality
+    setInterval(() => {
+        let nextSlide = (currentSlide + 1) % totalSlides;
+        goToSlide(nextSlide);
+    }, 5000); // Change slide every 5 seconds
+
+
+    // --- INITIAL RENDER ---
+    renderTable(newsData);
+    goToSlide(0); // Initialize carousel
+});
+</script>
+
 </body>
 </html>
