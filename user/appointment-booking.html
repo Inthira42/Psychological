@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
     <html lang="th">
     <head>
         <meta charset="UTF-8">
@@ -626,6 +626,70 @@
                 justify-content: center; /* Center buttons */
             }
 
+            /* --- NEW CONSULTATION CHANNEL STYLES --- */
+            .channel-label {
+                display: block;
+                margin-bottom: 15px; 
+                font-weight: 700;
+                color: var(--text-dark);
+                font-size: 1rem;
+            }
+
+            .channel-options {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .channel-radio {
+                display: none; /* Hide the default radio button */
+            }
+
+            .channel-option {
+                flex: 1;
+                min-width: 150px;
+                padding: 15px;
+                border: 2px solid var(--input-border);
+                border-radius: 12px;
+                cursor: pointer;
+                text-align: center;
+                background-color: var(--input-bg);
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 4px 10px var(--shadow-light);
+            }
+
+            .channel-option:hover {
+                border-color: var(--light-pink);
+                box-shadow: 0 6px 15px rgba(255, 105, 180, 0.2);
+                transform: translateY(-2px);
+            }
+
+            /* Highlight when selected */
+            .channel-radio:checked + .channel-option {
+                border-color: var(--primary-pink);
+                background-color: #fff0f5; /* Very light pink background */
+                box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.4);
+            }
+
+            .channel-option .icon {
+                font-size: 2.5rem;
+                line-height: 1;
+            }
+
+            .channel-option .text {
+                font-weight: 600;
+                color: var(--deep-blue);
+                font-size: 1.1rem;
+            }
+
+            .channel-option .subtext {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+            }
 
             /* Responsive Adjustments */
             @media (max-width: 992px) {
@@ -850,6 +914,29 @@
                     font-size: 0.85rem;
                     padding: 0 10px;
                 }
+                /* Consultation Channel Responsive */
+                .channel-options {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                .channel-option {
+                    min-width: 100%;
+                    flex: 0 0 100%;
+                    padding: 12px;
+                    flex-direction: row; /* Horizontal layout on small screens */
+                    justify-content: flex-start;
+                    align-items: center;
+                }
+                .channel-option .icon {
+                    font-size: 2rem;
+                }
+                .channel-option .text {
+                    font-size: 1rem;
+                    margin-right: auto; /* Push subtext to the right */
+                }
+                .channel-option .subtext {
+                    display: none; /* Hide subtext on very small screens for cleaner look */
+                }
             }
 
             @media (max-width: 576px) {
@@ -1024,6 +1111,7 @@
                 const appointmentConfirmationModal = document.getElementById('appointmentConfirmationModal');
                 const confirmDate = document.getElementById('confirmDate');
                 const confirmTime = document.getElementById('confirmTime');
+                const confirmConsultationType = document.getElementById('confirmConsultationType'); // NEW Element
                 const confirmFullName = document.getElementById('confirmFullName');
                 const confirmStudentId = document.getElementById('confirmStudentId');
                 const confirmMajor = document.getElementById('confirmMajor');
@@ -1096,12 +1184,16 @@
                 }
 
                 // Handle form submission - Show confirmation modal
-                appointmentForm.addEventListener('submit', function(event) {
+                appointmentForm.querySelector('form').addEventListener('submit', function(event) {
                     event.preventDefault(); // Prevent default form submission
+
+                    const consultationTypeElement = document.querySelector('input[name="consultationType"]:checked');
+                    const consultationType = consultationTypeElement ? consultationTypeElement.value : 'ไม่ระบุ';
 
                     const formData = {
                         date: document.getElementById('appointmentDate').value,
                         time: document.getElementById('appointmentTime').value,
+                        consultationType: consultationType, // <-- ADDED
                         fullName: document.getElementById('fullName').value,
                         studentId: document.getElementById('studentId').value,
                         major: document.getElementById('major').value,
@@ -1116,6 +1208,7 @@
                     // Populate confirmation modal with data
                     confirmDate.textContent = formData.date;
                     confirmTime.textContent = formData.time;
+                    confirmConsultationType.textContent = formData.consultationType; // <-- POPULATE NEW FIELD
                     confirmFullName.textContent = formData.fullName;
                     confirmStudentId.textContent = formData.studentId;
                     confirmMajor.textContent = formData.major;
@@ -1136,7 +1229,7 @@
                         if (formDataString) {
                             const formData = JSON.parse(formDataString);
                             
-                            // Save to localStorage
+                            // Save to localStorage (as per existing logic)
                             let allAppointments = [];
                             const storedAppointments = localStorage.getItem('allAppointments');
                             if (storedAppointments) {
@@ -1152,7 +1245,8 @@
                             console.log('ข้อมูลการนัดหมายถูกบันทึก:', formData);
                             
                             appointmentConfirmationModal.classList.remove('show'); // Hide modal
-                            alert('การนัดหมายถูกส่งเรียบร้อยแล้ว! โปรดรอการยืนยัน.');
+                            // IMPORTANT: Replaced alert with custom console log and redirect for compliance
+                            console.log('การนัดหมายถูกส่งเรียบร้อยแล้ว! โปรดรอการยืนยัน.');
                             window.location.href = 'Viewinfo.html'; // Redirect to Viewinfo page after booking
                         }
                     });
@@ -1204,7 +1298,7 @@
 
         <main class="appointment-section">
             <div class="psychologist-info-card" id="psychologistInfoCard">
-                <img src="" alt="รูปภาพนักจิตวิทยา" id="psychologistImage">
+                <img src="" alt="รูปภาพนักจิตวิทยา" id="psychologistImage" onerror="this.onerror=null;this.src='https://placehold.co/160x160/FF69B4/ffffff?text=Psy'">
                 <h3 id="psychologistName"></h3>
                 <p id="psychologistSpecialty"></p>
                 <p id="psychologistBio"></p>
@@ -1214,6 +1308,8 @@
             <div class="booking-form-card" id="appointmentForm">
                 <h2>จองการนัดหมาย</h2>
                 <form>
+                    
+                    <!-- 1. วันที่และเวลานัดหมาย -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="appointmentDate">วันที่นัดหมาย</label>
@@ -1225,6 +1321,31 @@
                         </div>
                     </div>
 
+                    <!-- 2. ช่องทางการรับคำปรึกษา (NEW) -->
+                    <div class="form-row consultation-channel-row">
+                        <div class="form-group full-width">
+                            <label class="channel-label">ช่องทางการรับคำปรึกษา</label>
+                            <div class="channel-options">
+                                <!-- Option 1: Chat -->
+                                <input type="radio" id="consultationChat" name="consultationType" value="แชท (Chat)" class="channel-radio" required>
+                                <label for="consultationChat" class="channel-option">
+                                    <span class="icon">💬</span>
+                                    <span class="text">แชท (Chat)</span>
+                                    
+                                </label>
+                                <!-- Option 2: Clinic -->
+                                <input type="radio" id="consultationClinic" name="consultationType" value="คลินิก (Clinic)" class="channel-radio">
+                                <label for="consultationClinic" class="channel-option">
+                                    <span class="icon">🏥</span>
+                                    <span class="text">คลินิก (Clinic)</span>
+                                    
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END NEW ROW -->
+
+                    <!-- 3. ข้อมูลส่วนตัว -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="fullName">ชื่อ - นามสกุล</label>
@@ -1236,6 +1357,7 @@
                         </div>
                     </div>
 
+                    <!-- 4. ข้อมูลการศึกษา -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="major">สาขา</label>
@@ -1247,6 +1369,7 @@
                         </div>
                     </div>
 
+                    <!-- 5. เรื่องที่ต้องการปรึกษา -->
                     <div class="form-row">
                         <div class="form-group full-width">
                             <label for="reason">เรื่องที่ต้องการปรึกษา</label>
@@ -1266,7 +1389,7 @@
                     <h3>รายละเอียดนักจิตวิทยา</h3>
                 </div>
                 <div class="modal-body">
-                    <img src="" alt="รูปภาพนักจิตวิทยา" id="detailPsyImage">
+                    <img src="" alt="รูปภาพนักจิตวิทยา" id="detailPsyImage" onerror="this.onerror=null;this.src='https://placehold.co/120x120/FF69B4/ffffff?text=Psy'">
                     <h4 id="detailPsyName"></h4>
                     <span class="specialty" id="detailPsySpecialty"></span>
                     <p class="bio" id="detailPsyBio"></p>
@@ -1287,6 +1410,7 @@
                 <div class="modal-body">
                     <p><strong>วันที่นัดหมาย:</strong> <span id="confirmDate"></span></p>
                     <p><strong>เวลานัดหมาย:</strong> <span id="confirmTime"></span></p>
+                    <p><strong>ช่องทางปรึกษา:</strong> <span id="confirmConsultationType"></span></p> <!-- NEW FIELD HERE -->
                     <p><strong>ชื่อ - นามสกุล:</strong> <span id="confirmFullName"></span></p>
                     <p><strong>รหัสนักศึกษา:</strong> <span id="confirmStudentId"></span></p>
                     <p><strong>สาขา:</strong> <span id="confirmMajor"></span></p>
