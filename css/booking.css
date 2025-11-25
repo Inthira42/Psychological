@@ -1,0 +1,935 @@
+ /* ========== Variables - ตัวแปรสีและเงา ========== */
+            :root {
+                --primary-pink: #FF69B4; /* ชมพูหลัก */
+                --light-pink: #FFC0CB; /* ชมพูอ่อน */
+                --soft-blue: #87CEEB; /* ฟ้าอ่อน */
+                --deep-blue: #4682B4; /* ฟ้าน้ำทะเล */
+                --text-dark: #343a40; /* สีข้อความเข้ม */
+                --text-muted: #6c757d; /* สีข้อความรอง */
+                --bg-light: #f8f9fa; /* สีพื้นหลังอ่อน */
+                --white: #ffffff; /* สีขาว */
+                --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
+                --shadow-light: rgba(0, 0, 0, 0.08); /* เงาอ่อน */
+                --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+                --shadow-strong: rgba(0, 0, 0, 0.25); /* เงาเข้ม */
+                --input-bg: #fff; /* สีพื้นหลังของ input */
+                --input-border: #ced4da; /* สีขอบ input */
+                --form-card-bg: #fff; /* สีพื้นหลังของการ์ดฟอร์ม */
+            }
+
+            /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+            body {
+                font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(135deg, #e0f7fa 0%, #ffebee 100%);
+                color: var(--text-dark); /* สีข้อความเริ่มต้น */
+                line-height: 1.6; /* ระยะห่างบรรทัด */
+                box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+            }
+
+            /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
+            /* ========== Container - สำหรับจำกัดความกว้างของเนื้อหา ========== */
+            .container {
+                max-width: 1200px; /* ความกว้างสูงสุด */
+                margin: 0 auto; /* จัดกึ่งกลาง */
+                padding: 0 20px; /* ระยะห่างด้านข้าง */
+            }
+
+            /* ========== Navigation Bar - แถบนำทางด้านบน (จากหน้าหลัก) ========== */
+            .nav {
+                background: linear-gradient(90deg, var(--deep-blue) 0%, #30658a 100%); /* ไล่โทนสีน้ำเงินเข้ม */
+                padding: 15px 0; /* ลด padding ลงเล็กน้อย */
+                box-shadow: 0 4px 15px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+                color: var(--white); /* สีข้อความ */
+                position: sticky; /* ทำให้ nav bar ติดอยู่ด้านบนเมื่อเลื่อนหน้าจอ */
+                top: 0;
+                z-index: 1000; /* ทำให้ nav bar อยู่บนสุด */
+                transition: all 0.3s ease; /* เพิ่ม transition สำหรับการเปลี่ยนแปลงเมื่อ scroll */
+            }
+
+            .nav-con {
+                display: flex;
+                justify-content: space-between; /* กระจายเนื้อหา */
+                align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .logo {
+                display: flex;
+                align-items: center;
+                gap: 12px; /* เพิ่มระยะห่างระหว่างโลโก้กับข้อความ */
+            }
+
+            .logo img {
+                height: 45px; /* เพิ่มความสูงโลโก้ */
+                border-radius: 10px; /* เพิ่มขอบมน */
+                box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* เพิ่มเงาให้โลโก้ */
+            }
+
+            .logo a {
+                color: var(--white); /* สีลิงก์ */
+                text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+                font-size: 1.6rem; /* เพิ่มขนาดฟอนต์ */
+                font-weight: 700; /* น้ำหนักฟอนต์ */
+                letter-spacing: -0.5px; /* ปรับระยะห่างตัวอักษร */
+            }
+
+            .menu-con {
+                display: flex;
+                align-items: center;
+                gap: 20px; /* ลดระยะห่างระหว่างเมนูและปุ่มออกจากระบบเล็กน้อย */
+            }
+
+            .menu {
+                list-style: none; /* ไม่มีสไตล์ลิสต์ */
+                padding: 0;
+                margin: 0;
+                display: flex;
+                gap: 20px; /* ลดระยะห่างระหว่างเมนู */
+            }
+
+            .menu li a {
+                color: var(--white);
+                text-decoration: none;
+                padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ dropdown และ logout */
+                border-radius: 10px; /* เพิ่มขอบมน */
+                transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease; /* เพิ่ม transition สำหรับ transform */
+                font-weight: 500;
+                display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+                line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            }
+
+            .menu li a:hover {
+                background: var(--primary-pink);
+                color: var(--white); /* ทำให้ข้อความเป็นสีขาวเมื่อ hover */
+                transform: translateY(-3px); /* เลื่อนขึ้นเล็กน้อยเมื่อ hover */
+            }
+
+            /* Dropdown specific styles */
+            .dropdown {
+                position: relative;
+            }
+
+            .dropdown-toggle {
+                display: flex;
+                align-items: center;
+                gap: 8px; /* เพิ่มระยะห่างระหว่างข้อความกับลูกศร */
+                cursor: pointer; /* เปลี่ยน cursor เป็น pointer */
+                color: var(--white);
+                padding: 10px 18px; /* เพิ่ม padding ให้เท่ากับ menu item และ logout */
+                border-radius: 10px; /* เพิ่มขอบมน */
+                transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+                font-weight: 500;
+                line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+            }
+
+            .dropdown-toggle:hover {
+                background: var(--primary-pink);
+                color: var(--white);
+                transform: translateY(-3px);
+            }
+
+            .dropdown-menu {
+                display: none; /* ซ่อน dropdown menu เริ่มต้น */
+                position: absolute;
+                top: 110%; /* ขยับลงมาเล็กน้อย */
+                left: 0;
+                background: var(--deep-blue);
+                min-width: 200px; /* เพิ่มความกว้างขั้นต่ำ */
+                box-shadow: 0 8px 20px var(--shadow-medium); /* เพิ่มเงาให้ดูมีมิติมากขึ้น */
+                border-radius: 10px; /* ขอบมนมากขึ้น */
+                overflow: hidden;
+                z-index: 1000;
+                padding: 10px 0;
+                opacity: 0; /* ซ่อนด้วย opacity */
+                transform: translateY(15px); /* เลื่อนลงเล็กน้อย */
+                transition: opacity 0.3s ease, transform 0.3s ease; /* Transition สำหรับการแสดงผล */
+            }
+
+            .dropdown.show .dropdown-menu {
+                display: block; /* แสดง dropdown menu */
+                opacity: 1; /* แสดงด้วย opacity */
+                transform: translateY(0); /* กลับสู่ตำแหน่งปกติ */
+            }
+
+            .dropdown-menu li a {
+                color: var(--white);
+                padding: 12px 25px; /* เพิ่ม padding */
+                display: block;
+                text-decoration: none;
+                transition: background 0.2s ease, color 0.2s ease;
+            }
+
+            .dropdown-menu li a:hover {
+                background: var(--primary-pink);
+                color: var(--white);
+            }
+
+            .logout a {
+                background: var(--primary-pink);
+                color: var(--white);
+                text-decoration: none;
+                padding: 10px 18px; /* ปรับ padding ให้เท่ากับ menu item และ dropdown */
+                border-radius: 30px; /* ขอบมนมากขึ้น */
+                transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* เพิ่ม transition สำหรับ box-shadow */
+                font-weight: 600; /* เพิ่มน้ำหนักฟอนต์ */
+                box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+                letter-spacing: 0.5px; /* เพิ่มระยะห่างตัวอักษรเล็กน้อย */
+                border: 2px solid var(--primary-pink); /* เพิ่มขอบสีชมพู */
+                line-height: 1; /* กำหนด line-height เพื่อให้มีความสูงเท่ากัน */
+                display: block; /* ทำให้ลิงก์ครอบคลุมพื้นที่ padding */
+            }
+
+            .logout a:hover {
+                background: var(--white); /* สีพื้นหลังขาวเมื่อ hover */
+                color: var(--primary-pink); /* สีข้อความชมพูเมื่อ hover */
+                transform: translateY(-4px); /* เลื่อนขึ้นเล็กน้อย */
+                box-shadow: 0 8px 20px rgba(255, 105, 180, 0.6); /* เงาเข้มขึ้น */
+                border-color: var(--primary-pink); /* ขอบสีชมพูคงเดิม */
+            }
+
+            /* ========== Appointment Booking Section ========== */
+            .appointment-section {
+                padding: 60px 0;
+                background-color: var(--bg-light);
+                display: flex;
+                justify-content: center;
+                align-items: flex-start; /* จัดให้อยู่ด้านบน */
+                min-height: calc(100vh - 80px); /* Adjust based on nav height */
+                gap: 40px; /* ระยะห่างระหว่างข้อมูลนักจิตวิทยากับฟอร์ม */
+                flex-wrap: wrap; /* ให้เนื้อหาและฟอร์มขึ้นบรรทัดใหม่เมื่อหน้าจอเล็ก */
+            }
+
+            .psychologist-info-card {
+                background-color: var(--white);
+                border-radius: 18px; /* เพิ่มความโค้งมน */
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* เงาที่ดูมีมิติมากขึ้น */
+                padding: 35px; /* เพิ่ม padding */
+                text-align: center;
+                max-width: 380px; /* เพิ่มความกว้างของการ์ดข้อมูลนักจิตวิทยา */
+                width: 100%; /* ให้ยืดเต็มความกว้างที่มี */
+                flex-shrink: 0; /* ไม่ให้หดตัว */
+                position: sticky; /* ทำให้การ์ดข้อมูลนักจิตวิทยาอยู่ติดด้านบนเมื่อ scroll */
+                top: 100px; /* ปรับตามความสูงของ Navbar */
+                border: 1px solid var(--border-light); /* เพิ่มขอบเบาๆ */
+            }
+
+            .psychologist-info-card img {
+                width: 160px; /* เพิ่มขนาดรูป */
+                height: 160px; /* เพิ่มขนาดรูป */
+                border-radius: 50%;
+                object-fit: cover;
+                border: 6px solid var(--primary-pink); /* เพิ่มความหนาของขอบรูป */
+                margin-bottom: 25px; /* เพิ่มระยะห่างด้านล่างรูป */
+                box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5); /* เงาเข้มขึ้นและกว้างขึ้น */
+            }
+
+            .psychologist-info-card h3 {
+                font-size: 2.2rem; /* เพิ่มขนาดชื่อ */
+                color: var(--deep-blue);
+                margin-bottom: 12px; /* ปรับระยะห่าง */
+                font-weight: 800; /* เพิ่มความหนาของฟอนต์ */
+            }
+
+            .psychologist-info-card p {
+                font-size: 1.15rem; /* เพิ่มขนาดข้อความ */
+                color: var(--text-muted);
+                margin-bottom: 20px; /* ปรับระยะห่าง */
+                line-height: 1.6; /* ปรับระยะห่างบรรทัด */
+            }
+
+            .psychologist-info-card .specialty-tag {
+                background-color: var(--soft-blue);
+                color: var(--white);
+                padding: 10px 20px; /* เพิ่ม padding */
+                border-radius: 25px; /* เพิ่มความโค้งมน */
+                font-size: 1rem; /* เพิ่มขนาดฟอนต์ */
+                font-weight: 600;
+                display: inline-block;
+                margin-top: 15px; /* เพิ่มระยะห่างด้านบน */
+                box-shadow: 0 3px 10px rgba(135, 206, 235, 0.3); /* เพิ่มเงา */
+                cursor: pointer; /* เพิ่ม cursor pointer เพื่อแสดงว่าคลิกได้ */
+                transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            }
+            .psychologist-info-card .specialty-tag:hover {
+                background-color: var(--deep-blue);
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(135, 206, 235, 0.5);
+            }
+
+            .booking-form-card {
+                background-color: var(--form-card-bg);
+                border-radius: 18px; /* เพิ่มความโค้งมน */
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); /* เงาที่ดูมีมิติมากขึ้น */
+                padding: 45px; /* เพิ่ม padding */
+                max-width: 700px; /* เพิ่มความกว้างของฟอร์ม */
+                width: 100%;
+                flex-grow: 1; /* ให้ฟอร์มขยายตามพื้นที่ที่เหลือ */
+                border: 1px solid var(--border-light); /* เพิ่มขอบเบาๆ */
+            }
+
+            .booking-form-card h2 {
+                font-size: 2.5rem; /* เพิ่มขนาดหัวข้อฟอร์ม */
+                color: var(--deep-blue);
+                margin-bottom: 35px; /* เพิ่มระยะห่างด้านล่าง */
+                text-align: center;
+                font-weight: 800; /* เพิ่มความหนาของฟอนต์ */
+                position: relative;
+                padding-bottom: 18px; /* เพิ่ม padding */
+            }
+            .booking-form-card h2::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90px; /* เพิ่มความยาวเส้นใต้ */
+                height: 4px; /* เพิ่มความหนาเส้นใต้ */
+                background-color: var(--primary-pink);
+                border-radius: 2px;
+            }
+
+            .form-row {
+                display: flex;
+                gap: 25px; /* เพิ่มระยะห่างระหว่าง input ในแถวเดียวกัน */
+                margin-bottom: 25px; /* เพิ่มระยะห่างด้านล่างของแถว */
+                flex-wrap: wrap; /* ให้ wrap ลงบรรทัดใหม่ใน mobile */
+            }
+
+            .form-group {
+                flex: 1; /* ให้แต่ละ group ขยายเต็มพื้นที่ */
+                min-width: calc(50% - 12.5px); /* 2 คอลัมน์บนจอใหญ่ (25px gap / 2) */
+                position: relative; /* สำหรับ icon */
+            }
+            
+            .form-group.full-width {
+                flex: 0 0 100%; /* สำหรับ input ที่ต้องการเต็มความกว้าง */
+                min-width: 100%;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 10px; /* เพิ่มระยะห่าง */
+                font-weight: 700; /* เพิ่มความหนาของฟอนต์ */
+                color: var(--text-dark);
+                font-size: 1rem; /* ปรับขนาดฟอนต์ */
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 14px 18px; /* เพิ่ม padding */
+                border: 1px solid var(--input-border);
+                border-radius: 12px; /* เพิ่มความโค้งมน */
+                font-size: 1.05rem; /* เพิ่มขนาดฟอนต์ */
+                color: var(--text-dark);
+                background-color: var(--input-bg);
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                -webkit-appearance: none; /* สำหรับ date/time input */
+                -moz-appearance: none;
+                appearance: none;
+            }
+
+            .form-control:focus {
+                border-color: var(--soft-blue);
+                box-shadow: 0 0 0 4px rgba(135, 206, 235, 0.4); /* เงา focus ที่ชัดเจนขึ้น */
+                outline: none;
+            }
+
+            /* Custom icons for date/time inputs */
+            .form-control[type="date"] {
+                padding-right: 45px; /* Space for icon */
+            }
+            .form-control[type="date"]::after {
+                position: absolute;
+                right: 15px;
+                top: 60%; /* Adjust vertical alignment */
+                transform: translateY(-50%);
+                font-size: 1.4rem; /* Larger icon */
+                color: var(--text-muted);
+                pointer-events: none;
+            }
+
+            .form-control[type="time"] {
+                padding-right: 45px; /* Space for icon */
+            }
+            .form-control[type="time"]::after {
+                position: absolute;
+                right: 15px;
+                top: 60%; /* Adjust vertical alignment */
+                transform: translateY(-50%);
+                font-size: 1.4rem; /* Larger icon */
+                color: var(--text-muted);
+                pointer-events: none;
+            }
+
+            textarea.form-control {
+                min-height: 150px; /* ความสูงเริ่มต้นของ textarea */
+                resize: vertical; /* ให้ปรับขนาดแนวตั้งได้ */
+            }
+
+            .submit-btn {
+                display: block;
+                width: 100%;
+                padding: 18px 25px; /* เพิ่ม padding */
+                background-color: var(--primary-pink);
+                color: var(--white);
+                border: none;
+                border-radius: 35px; /* เพิ่มความโค้งมน */
+                font-size: 1.2rem; /* เพิ่มขนาดฟอนต์ */
+                font-weight: 700; /* เพิ่มความหนาของฟอนต์ */
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+                box-shadow: 0 8px 20px rgba(255, 105, 180, 0.5); /* เงาที่ชัดเจนขึ้น */
+                margin-top: 40px; /* เพิ่มระยะห่างด้านบน */
+            }
+
+            .submit-btn:hover {
+                background-color: #e05e9b;
+                transform: translateY(-5px); /* ยกตัวขึ้นมากขึ้น */
+                box-shadow: 0 12px 30px rgba(255, 105, 180, 0.7); /* เงาเข้มขึ้นและกว้างขึ้น */
+            }
+
+            /* Error/Info message for Psychologist Not Found */
+            .psychologist-not-found {
+                background-color: var(--white);
+                border-radius: 18px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+                padding: 40px;
+                text-align: center;
+                max-width: 600px;
+                width: 100%;
+                margin: 50px auto;
+                border: 1px solid var(--border-light);
+            }
+
+            .psychologist-not-found p {
+                font-size: 1.2rem;
+                color: var(--text-dark);
+                margin-bottom: 25px;
+            }
+
+            .psychologist-not-found .go-back-btn {
+                background-color: var(--deep-blue);
+                color: var(--white);
+                text-decoration: none;
+                padding: 12px 25px;
+                border-radius: 30px;
+                font-size: 1rem;
+                font-weight: 600;
+                transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+                box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
+                display: inline-block;
+            }
+
+            .psychologist-not-found .go-back-btn:hover {
+                background-color: #3a6b9a;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
+            }
+
+            /* Modal Styles - Reused and adapted for psychologist details */
+            .general-modal {
+                display: none; /* Hidden by default */
+                position: fixed;
+                z-index: 1001; /* Higher than nav bar */
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.7); /* Dim background */
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            .general-modal.show {
+                display: flex;
+            }
+
+            .modal-content {
+                background-color: var(--white);
+                margin: auto;
+                padding: 30px;
+                border-radius: 18px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+                max-width: 500px; /* Default width for modals */
+                width: 100%;
+                animation: fadeInScale 0.3s ease-out;
+                position: relative;
+                text-align: center; /* Center content by default */
+            }
+
+            /* Keyframes for modal animation */
+            @keyframes fadeInScale {
+                from { opacity: 0; transform: scale(0.9); }
+                to { opacity: 1; transform: scale(1); }
+            }
+
+            .modal-header {
+                padding-bottom: 15px;
+                margin-bottom: 25px;
+                text-align: center;
+                border-bottom: 2px solid var(--border-light);
+            }
+            .modal-header h3 {
+                margin: 0;
+                font-size: 2rem;
+                color: var(--deep-blue);
+                font-weight: 700;
+            }
+
+            .modal-body {
+                font-size: 1.1rem;
+                color: var(--text-dark);
+                line-height: 1.7;
+                margin-bottom: 25px;
+                text-align: left; /* Default left align for body content */
+            }
+            .modal-body p {
+                margin-bottom: 10px;
+            }
+
+            .modal-footer {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                padding-top: 20px;
+                border-top: 1px solid var(--border-light);
+            }
+
+            .modal-footer button {
+                padding: 12px 25px;
+                border-radius: 30px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+                border: none;
+            }
+            .modal-footer .btn-primary {
+                background-color: var(--primary-pink);
+                color: var(--white);
+                box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+            }
+            .modal-footer .btn-primary:hover {
+                background-color: #e05e9b;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
+            }
+            .modal-footer .btn-secondary {
+                background-color: var(--text-muted);
+                color: var(--white);
+                box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+            }
+            .modal-footer .btn-secondary:hover {
+                background-color: #5a6268;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+            }
+
+            /* Specific styles for Psychologist Details Modal */
+            #psychologistDetailModal .modal-content {
+                max-width: 600px;
+            }
+            #psychologistDetailModal .modal-body {
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Center items in modal body */
+                gap: 15px;
+                padding: 10px 0;
+            }
+            #psychologistDetailModal .modal-body img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid var(--primary-pink);
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                margin-bottom: 10px;
+            }
+            #psychologistDetailModal .modal-body h4 {
+                font-size: 1.8rem;
+                color: var(--deep-blue);
+                margin: 0;
+                font-weight: 700;
+            }
+            #psychologistDetailModal .modal-body .specialty {
+                font-size: 1.1rem;
+                color: var(--text-muted);
+                margin-bottom: 10px;
+                display: block; /* Ensure it's on its own line */
+            }
+            #psychologistDetailModal .modal-body .bio {
+                font-size: 1rem;
+                color: var(--text-dark);
+                text-align: center; /* Center bio text */
+                padding: 0 20px;
+            }
+            #psychologistDetailModal .modal-footer {
+                margin-top: 30px;
+            }
+            #psychologistDetailModal .modal-footer .btn-book-now {
+                background-color: var(--deep-blue);
+                color: var(--white);
+                box-shadow: 0 4px 10px rgba(70, 130, 180, 0.3);
+            }
+            #psychologistDetailModal .modal-footer .btn-book-now:hover {
+                background-color: #3a6b9a;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
+            }
+
+            /* Styles for the new Appointment Confirmation Modal */
+            #appointmentConfirmationModal .modal-content {
+                max-width: 600px; /* Adjust width to fit content */
+                text-align: left; /* Align text within this modal's body */
+            }
+
+            #appointmentConfirmationModal .modal-body p {
+                display: flex;
+                align-items: flex-start; /* Align label and content at start */
+                gap: 10px;
+                margin-bottom: 15px; /* Space between rows */
+            }
+
+            #appointmentConfirmationModal .modal-body p strong {
+                color: var(--deep-blue);
+                font-weight: 600;
+                min-width: 150px; /* Fixed width for labels */
+                flex-shrink: 0; /* Prevent label from shrinking */
+            }
+
+            #appointmentConfirmationModal .modal-body p span {
+                flex-grow: 1; /* Allow content to take remaining space */
+                word-break: break-word; /* Ensure long content wraps */
+            }
+
+            #appointmentConfirmationModal .modal-footer {
+                justify-content: center; /* Center buttons */
+            }
+
+
+            /* Responsive Adjustments */
+            @media (max-width: 992px) {
+                .nav-con {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                .menu-con {
+                    flex-direction: column;
+                    gap: 15px;
+                    width: 100%;
+                    align-items: stretch; /* ทำให้ menu-con ขยายเต็มความกว้าง */
+                }
+                .menu {
+                    flex-direction: column;
+                    gap: 10px;
+                    width: 100%;
+                    text-align: center;
+                }
+                .menu li {
+                    width: 100%;
+                }
+                .menu li a, .dropdown-toggle {
+                    width: calc(100% - 30px); /* Full width minus padding (20px) and slight margin (10px) */
+                    text-align: center;
+                    margin: 0 15px; /* เพิ่ม margin ด้านข้าง */
+                }
+                .dropdown-menu {
+                    position: static; /* Change to static so it flows with content */
+                    width: 100%;
+                    border-radius: 0;
+                    box-shadow: none;
+                    padding: 0;
+                }
+                .dropdown-menu li a {
+                    padding: 10px 15px;
+                }
+                .logout {
+                    width: 100%;
+                    text-align: center;
+                    padding: 0 15px; /* เพิ่ม padding ด้านข้าง */
+                }
+                .logout a {
+                    display: block;
+                    width: 100%; /* Adjust to full width */
+                    margin: 0; /* Remove auto margin */
+                }
+
+                .appointment-section {
+                    flex-direction: column; /* จัดเรียงเป็นคอลัมน์ใน mobile */
+                    align-items: center; /* จัดกึ่งกลางใน mobile */
+                    padding: 40px 0;
+                    gap: 30px; /* ลดระยะห่าง */
+                }
+
+                .psychologist-info-card {
+                    position: static; /* ไม่ sticky ใน mobile */
+                    max-width: 90%; /* ขยายความกว้าง */
+                    margin-bottom: 0; /* ลบ margin bottom */
+                    padding: 30px;
+                }
+                .psychologist-info-card img {
+                    width: 140px;
+                    height: 140px;
+                    margin-bottom: 20px;
+                }
+                .psychologist-info-card h3 {
+                    font-size: 2rem;
+                }
+                .psychologist-info-card p {
+                    font-size: 1.05rem;
+                }
+                .psychologist-info-card .specialty-tag {
+                    padding: 9px 18px;
+                    font-size: 0.95rem;
+                }
+
+
+                .booking-form-card {
+                    max-width: 90%; /* ขยายความกว้าง */
+                    padding: 35px;
+                }
+
+                .booking-form-card h2 {
+                    font-size: 2.2rem;
+                    margin-bottom: 30px;
+                }
+                .psychologist-not-found {
+                    max-width: 90%;
+                    padding: 30px;
+                }
+                .psychologist-not-found p {
+                    font-size: 1.1rem;
+                }
+                /* Modal Responsive */
+                .modal-content {
+                    max-width: 90%;
+                    padding: 25px;
+                }
+                .modal-header h3 {
+                    font-size: 1.6rem;
+                }
+                .modal-body {
+                    font-size: 1rem;
+                }
+                .modal-footer {
+                    flex-direction: column; /* Stack buttons vertically */
+                    gap: 10px;
+                }
+                .modal-footer button {
+                    width: 100%; /* Full width */
+                }
+                #psychologistDetailModal .modal-body img {
+                    width: 100px;
+                    height: 100px;
+                }
+                #psychologistDetailModal .modal-body h4 {
+                    font-size: 1.5rem;
+                }
+                #psychologistDetailModal .modal-body .specialty {
+                    font-size: 1rem;
+                }
+                #psychologistDetailModal .modal-body .bio {
+                    font-size: 0.95rem;
+                    padding: 0 15px;
+                }
+
+                #appointmentConfirmationModal .modal-body p {
+                    flex-direction: column; /* Stack label and content for confirmation modal on smaller screens */
+                    align-items: flex-start;
+                    gap: 5px;
+                }
+                #appointmentConfirmationModal .modal-body p strong {
+                    min-width: auto; /* Reset min-width for stacked labels */
+                }
+            }
+
+            @media (max-width: 768px) {
+                .psychologist-info-card {
+                    padding: 25px;
+                }
+                .psychologist-info-card img {
+                    width: 120px;
+                    height: 120px;
+                }
+                .psychologist-info-card h3 {
+                    font-size: 1.8rem;
+                }
+                .psychologist-info-card p {
+                    font-size: 1rem;
+                }
+                .psychologist-info-card .specialty-tag {
+                    padding: 8px 15px;
+                    font-size: 0.9rem;
+                }
+
+                .booking-form-card {
+                    padding: 25px;
+                }
+                .booking-form-card h2 {
+                    font-size: 1.8rem;
+                    margin-bottom: 20px;
+                }
+                .form-row {
+                    flex-direction: column; /* Stack inputs vertically */
+                    gap: 15px;
+                }
+                .form-group {
+                    min-width: 100%; /* Full width for all inputs */
+                }
+                .form-control {
+                    padding: 10px 12px;
+                    font-size: 0.95rem;
+                }
+                .form-control[type="date"]::after,
+                .form-control[type="time"]::after {
+                    font-size: 1.1rem; /* Smaller icons */
+                }
+                textarea.form-control {
+                    min-height: 100px; /* Reduce textarea height */
+                }
+                .submit-btn {
+                    padding: 14px 20px;
+                    font-size: 1.1rem;
+                    margin-top: 30px;
+                }
+                .psychologist-not-found {
+                    padding: 25px;
+                }
+                .psychologist-not-found p {
+                    font-size: 1rem;
+                }
+                .psychologist-not-found .go-back-btn {
+                    padding: 10px 20px;
+                    font-size: 0.9rem;
+                }
+                /* Modal Responsive */
+                .modal-content {
+                    padding: 20px;
+                }
+                .modal-header h3 {
+                    font-size: 1.4rem;
+                }
+                .modal-body {
+                    font-size: 0.9rem;
+                }
+                .modal-footer button {
+                    padding: 10px 18px;
+                    font-size: 0.9rem;
+                }
+                #psychologistDetailModal .modal-body img {
+                    width: 80px;
+                    height: 80px;
+                }
+                #psychologistDetailModal .modal-body h4 {
+                    font-size: 1.3rem;
+                }
+                #psychologistDetailModal .modal-body .specialty {
+                    font-size: 0.9rem;
+                }
+                #psychologistDetailModal .modal-body .bio {
+                    font-size: 0.85rem;
+                    padding: 0 10px;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .appointment-section {
+                    padding: 20px 0;
+                    gap: 15px;
+                }
+                .psychologist-info-card {
+                    padding: 20px;
+                    max-width: 95%;
+                }
+                .psychologist-info-card img {
+                    width: 100px;
+                    height: 100px;
+                    margin-bottom: 15px;
+                }
+                .psychologist-info-card h3 {
+                    font-size: 1.6rem;
+                }
+                .psychologist-info-card p {
+                    font-size: 0.95rem;
+                }
+                .booking-form-card {
+                    padding: 20px;
+                    max-width: 95%;
+                }
+                .booking-form-card h2 {
+                    font-size: 1.6rem;
+                    margin-bottom: 15px;
+                    padding-bottom: 10px;
+                }
+                .booking-form-card h2::after {
+                    width: 70px;
+                    height: 3px;
+                }
+                .form-row {
+                    gap: 10px;
+                    margin-bottom: 15px;
+                }
+                .form-group label {
+                    margin-bottom: 5px;
+                    font-size: 0.9rem;
+                }
+                .form-control {
+                    padding: 10px;
+                    font-size: 0.9rem;
+                }
+                textarea.form-control {
+                    min-height: 80px;
+                }
+                .submit-btn {
+                    padding: 12px 18px;
+                    font-size: 1rem;
+                    margin-top: 25px;
+                }
+                .psychologist-not-found {
+                    padding: 20px;
+                }
+                .psychologist-not-found p {
+                    font-size: 0.95rem;
+                }
+                /* Modal Responsive */
+                .modal-content {
+                    padding: 15px;
+                }
+                .modal-header h3 {
+                    font-size: 1.2rem;
+                }
+                .modal-body {
+                    font-size: 0.85rem;
+                }
+                .modal-footer button {
+                    padding: 8px 15px;
+                    font-size: 0.85rem;
+                }
+                #psychologistDetailModal .modal-body img {
+                    width: 70px;
+                    height: 70px;
+                }
+                #psychologistDetailModal .modal-body h4 {
+                    font-size: 1.2rem;
+                }
+                #psychologistDetailModal .modal-body .specialty {
+                    font-size: 0.85rem;
+                }
+                #psychologistDetailModal .modal-body .bio {
+                    font-size: 0.8rem;
+                }
+
+                
+
+            }
