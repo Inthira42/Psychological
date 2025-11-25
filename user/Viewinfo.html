@@ -311,9 +311,9 @@
         }
         /* Specific bottom border for cells within a card for visual separation if needed */
         .appointment-card:not(.mobile-stacked) .appointment-cell:not(:last-child) {
-            /* border-bottom: 1px solid var(--border-light); */ /* Re-add if you want internal cell borders */
+            border-right: 1px solid var(--border-light);
+            padding-right: 10px; /* ปรับช่องว่างฝั่งขวา */
         }
-
 
         .status-badge {
             display: inline-block;
@@ -829,10 +829,12 @@
             .appointment-cell:nth-child(3)::before { content: 'เวลา: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
             .appointment-cell:nth-child(4)::before { content: 'สถานะ: '; font-weight: 600; color: var(--primary-pink); display: block; margin-bottom: 2px;}
 
+            /* บนอุปกรณ์จอเล็ก ให้ซ่อนคอลัมน์ที่ไม่ต้องการ */
             .appointment-cell:nth-child(2), 
             .appointment-cell:nth-child(3), 
             .appointment-cell:nth-child(4), 
-            .appointment-cell:nth-child(5) { 
+            .appointment-cell:nth-child(5) {
+                display: none;
             }
 
             .appointment-card .detail-button {
@@ -894,6 +896,7 @@
             const detailFaculty = document.getElementById('detailFaculty');
             const detailReason = document.getElementById('detailReason');
             const detailPsychologist = document.getElementById('detailPsychologist');
+            const detailType = document.getElementById('detailType');
             const detailStatus = document.getElementById('detailStatus');
             const btnCloseDetailModal = document.getElementById('btnCloseDetailModal');
             const btnStartConsultation = document.getElementById('btnStartConsultation'); // ปุ่มเริ่มเข้าการปรึกษา
@@ -911,7 +914,7 @@
 
             // Function to show appointment details in modal
             window.showAppointmentDetails = function(
-                date, time, fullName, studentId, major, faculty, reason, psychologist, psychologistId, status, appId
+                date, time, fullName, studentId, major, faculty, reason, psychologist, psychologistId, status, type, appId
             ) {
                 detailDate.textContent = date || '-';
                 detailTime.textContent = time || '-';
@@ -921,6 +924,11 @@
                 detailFaculty.textContent = faculty || '-';
                 detailReason.textContent = reason || '-';
                 detailPsychologist.textContent = psychologist || '-';
+                // แสดงรูปแบบการนัดหมาย
+                if (detailType) {
+                    const typeLabel = type === 'online' ? 'แชท (ออนไลน์)' : (type === 'clinic' ? 'คลินิก' : (type || '-'));
+                    detailType.textContent = typeLabel;
+                }
                 detailStatus.textContent = status || '-';
 
                 // Show/Hide "เริ่มเข้าการปรึกษา" button based on status
@@ -1011,7 +1019,7 @@
                                 'นายสมชาย ใจดี', 
                                 'somchai', 
                                 'รอยืนยัน',
-                                '1'
+                                'แชท'
                             )">ข้อมูลเพิ่มเติม</button>
                         </div>
                     </div>
@@ -1033,7 +1041,7 @@
                                 'แพทย์หญิงอรอนงค์ รักษาใจ', 
                                 'oranong', 
                                 'เริ่มเข้าปรึกษา!',
-                                '2'
+                                'แชต'
                             )">ข้อมูลเพิ่มเติม</button>
                         </div>
                     </div>
@@ -1055,7 +1063,7 @@
                                 'นางสาวมณีรัตน์ สุขใจ', 
                                 'maneerat', 
                                 'ปฎิเสธ',
-                                '3'
+                                'คลินิก'
                             )">ข้อมูลเพิ่มเติม</button>
                         </div>
                     </div>
@@ -1088,6 +1096,7 @@
                 <p><strong>คณะ:</strong> <span id="detailFaculty"></span></p>
                 <p><strong>เรื่องที่ต้องการปรึกษา:</strong> <span id="detailReason"></span></p>
                 <p><strong>นักจิตวิทยา:</strong> <span id="detailPsychologist"></span></p>
+                <p><strong>รูปแบบการนัดหมาย:</strong> <span id="detailType"></span></p>
                 <p><strong>สถานะ:</strong> <span id="detailStatus"></span></p>
             </div>
             <div class="modal-footer">
