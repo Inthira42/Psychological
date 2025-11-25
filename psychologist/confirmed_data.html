@@ -29,7 +29,7 @@
         *, *::before, *::after { box-sizing: border-box; }
 
         .dashboard-container { display: flex; min-height: 100vh; }
-         .sidebar { width: 250px; background: var(--deep-blue); color: var(--white); padding: 20px; box-shadow: 2px 0 10px var(--shadow-light); flex-shrink: 0; }
+        .sidebar { width: 250px; background: var(--deep-blue); color: var(--white); padding: 20px; box-shadow: 2px 0 10px var(--shadow-light); flex-shrink: 0; }
         .main-content { flex: 1; display: flex; flex-direction: column; }
         
         /* Sidebar */
@@ -54,6 +54,10 @@
         .user-dropdown-menu li { list-style: none; }
         .user-dropdown-menu a { display: block; padding: 10px 18px; color: var(--text-dark); text-decoration: none; transition: 0.2s; }
         .user-dropdown-menu a:hover { background: var(--light-pink); color: var(--white); }
+        .page-header { background: linear-gradient(135deg, var(--soft-blue), var(--light-pink)); padding: 40px 0; color: var(--white); text-align: center; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .page-header h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--deep-blue); }
+        .page-header p { font-size: 1.1rem; color: var(--text-dark); max-width: 700px; margin: 0 auto; }
+        .container, .container-con { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
         /* Content Area */
         .content-area { padding: 30px; }
@@ -87,20 +91,117 @@
         /* Action Buttons Styling */
         .btn-details { background-color: #f1f1f1; border: 1px solid var(--border-light); color: var(--text-dark); padding: 6px 15px; border-radius: 8px; font-family: 'Sukhumvit Set', 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; }
         .btn-details:hover { background-color: #e7e7e7; }
-        .btn-dynamic-action {
-            padding: 6px 15px; 
-            border: none; 
-            border-radius: 8px; 
-            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; 
-            cursor: pointer; 
+        /* Action Button Group */
+        .actions-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        
+        .btn-action-primary {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif;
+            cursor: pointer;
             font-weight: 500;
-            transition: opacity 0.2s, background-color 0.2s;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             white-space: nowrap;
         }
-        .btn-dynamic-action.online { background-color: var(--soft-blue); color: var(--white); }
-        .btn-dynamic-action.online:hover { background-color: #5bbff7; }
-        .btn-dynamic-action.clinic { background-color: var(--primary-pink); color: var(--white); }
-        .btn-dynamic-action.clinic:hover { background-color: #e65a9e; }
+        
+        .btn-view-details {
+            background-color: #e8e8e8;
+            color: var(--text-dark);
+            border: 1px solid #d0d0d0;
+        }
+        
+        .btn-view-details:hover {
+            background-color: #d8d8d8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-action-chat {
+            background: linear-gradient(135deg, var(--soft-blue), #5dade2);
+            color: var(--white);
+            box-shadow: 0 3px 10px rgba(135, 206, 235, 0.3);
+        }
+        
+        .btn-action-chat:hover {
+            background: linear-gradient(135deg, #5dade2, #3498db);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+        }
+        
+        .btn-action-summary {
+            background: linear-gradient(135deg, var(--primary-pink), #e6529c);
+            color: var(--white);
+            box-shadow: 0 3px 10px rgba(255, 105, 180, 0.3);
+        }
+        
+        .btn-action-summary:hover {
+            background: linear-gradient(135deg, #e6529c, #d4367d);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+        
+        .btn-action-hidden {
+            display: none;
+        }
+
+        /* Request Actions */
+        .request-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--deep-blue);
+            cursor: pointer;
+            margin-right: 5px;
+            transition: color 0.2s ease;
+            padding: 5px 10px;
+        }
+
+        .btn-action:hover {
+            color: var(--primary-pink);
+        }
+
+        .btn-action.btn-view-details {
+            background-color: transparent;
+            color: var(--deep-blue);
+            border: none;
+            padding: 5px 10px;
+            font-size: 1rem;
+        }
+
+        .btn-action.btn-action-chat {
+            background: linear-gradient(135deg, var(--soft-blue), #5dade2);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-action.btn-action-chat:hover {
+            background: linear-gradient(135deg, #5dade2, #3498db);
+        }
+
+        .btn-action.btn-action-summary {
+            background: linear-gradient(135deg, var(--primary-pink), #e6529c);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-action.btn-action-summary:hover {
+            background: linear-gradient(135deg, #e6529c, #d4367d);
+        }
 
 
         /* Modal */
@@ -126,7 +227,7 @@
                 <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
                 <li><a href="eiei.html"><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
                 <li><a href="confirmed_data.html" class="active"><i class="bi bi-card-list"></i> การนัดหมายทั้งหมด</a></li>
-                <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+                <li><a href="/user/Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
             </ul>
         </div>
         <div class="main-content">
@@ -142,6 +243,9 @@
                 </div>
             </nav>
             <div class="content-area">
+                <section class="page-header">
+                    <div class="container"><h1>ข้อมูลการนัดหมายทั้งหมด</h1><p>จัดการคำขอและติดตามสถานะการนัดหมายของนักศึกษาที่ส่งเข้ามาปรึกษา</p></div>
+                </section>
                 <h4>นัดหมายที่กำลังจะมาถึง</h4>
 
                 <div class="filter-controls">
@@ -166,81 +270,67 @@
                     <button id="clearBtn" class="btn-clear">ล้างค่า</button>
                 </div>
 
-                <!-- แสดงเวลาจำลองปัจจุบันเพื่อความเข้าใจในการทำงานของปุ่ม -->
-                <p class="text-muted text-sm mb-4">
-                    <i class="bi bi-clock"></i> เวลาจำลองปัจจุบัน: <strong>2025-10-02 10:00</strong>
-                    (ปุ่มดำเนินการจะปรากฏขึ้นสำหรับนัดหมายที่ถึงเวลาแล้ว)
-                </p>
-
                 <div class="table-container">
                     <div class="table-responsive">
-                        <table id="appointmentsTable">
+                        <table class="appointment-table">
                             <thead>
                                 <tr>
-                                    <th>วันที่</th>
-                                    <th>เวลา</th>
-                                    <th>ชื่อ-นามสกุล</th>
-                                    <!-- คอลัมน์ใหม่: ช่องทางการเข้าปรึกษา (ประเภท) -->
-                                    <th>ประเภท</th> 
-                                    <th>สถานะ</th>
+                                    <th>รหัสนักศึกษา</th>
+                                    <th>ชื่อนักศึกษา</th>
+                                    <th>วันที่ยื่นคำขอ</th>
+                                    <th>วัน/เวลานัดหมายที่ขอ</th>
+                                    <th>สถานะคำขอ</th>
                                     <th>การดำเนินการ</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- นัดหมาย N001: 09:00 (Online) - ถึงเวลาแล้ว -> แสดงปุ่มแชท -->
-                                <tr data-date="2025-10-02" data-time="09:00" data-type="online" data-status="confirmed" data-details='{"id":"N001","name":"นายสมศักดิ์ จริงใจ","topic":"ความเครียดจากการทำงาน","status":"ยืนยันแล้ว"}'>
-                                    <td>2025-10-02</td>
-                                    <td>09:00</td>
-                                    <td>นายสมศักดิ์ จริงใจ</td>
-                                    <!-- แสดงประเภท: ออนไลน์ -->
-                                    <td><span class="type-online">ออนไลน์</span></td> 
-                                    <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td>
-                                        <div class="actions-group flex space-x-2">
-                                            <button class="btn-details">ดูรายละเอียด</button>
-                                        </div>
+                                <!-- นัดหมาย N001 -->
+                                <tr data-student-id="S001" data-date="2025-10-02" data-time="09:00" data-type="online" data-status="confirmed">
+                                    <td data-label="รหัสนักศึกษา">S001</td>
+                                    <td data-label="ชื่อนักศึกษา">นายสมศักดิ์ จริงใจ</td>
+                                    <td data-label="วันที่ยื่นคำขอ">2024-06-18</td>
+                                    <td data-label="วัน/เวลานัดหมายที่ขอ">2025-10-02, 09:00 น.</td>
+                                    <td data-label="สถานะคำขอ"><span class="request-status status-approved">อนุมัติแล้ว</span></td>
+                                    <td data-label="การดำเนินการ" class="request-actions">
+                                        <button class="btn-action btn-view-details" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                                        <button class="btn-action btn-action-chat btn-action-hidden" data-action="chat" title="แชท"><i class="bi bi-chat-dots-fill"></i></button>
                                     </td>
                                 </tr>
-                                <!-- นัดหมาย N002: 09:45 (Clinic) - ถึงเวลาแล้ว -> แสดงปุ่มสรุปผล -->
-                                <tr data-date="2025-10-02" data-time="09:45" data-type="clinic" data-status="confirmed" data-details='{"id":"N002","name":"นางสาวมานี มีสุข","topic":"ปัญหาความสัมพันธ์","status":"ยืนยันแล้ว"}'>
-                                    <td>2025-10-02</td>
-                                    <td>09:45</td>
-                                    <td>นางสาวมานี มีสุข</td>
-                                    <!-- แสดงประเภท: คลินิก -->
-                                    <td><span class="type-clinic">คลินิก</span></td>
-                                    <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td>
-                                        <div class="actions-group flex space-x-2">
-                                            <button class="btn-details">ดูรายละเอียด</button>
-                                        </div>
+                                <!-- นัดหมาย N002 -->
+                                <tr data-student-id="S002" data-date="2025-10-02" data-time="09:45" data-type="clinic" data-status="confirmed">
+                                    <td data-label="รหัสนักศึกษา">S002</td>
+                                    <td data-label="ชื่อนักศึกษา">นางสาวมานี มีสุข</td>
+                                    <td data-label="วันที่ยื่นคำขอ">2024-06-15</td>
+                                    <td data-label="วัน/เวลานัดหมายที่ขอ">2025-10-02, 09:45 น.</td>
+                                    <td data-label="สถานะคำขอ"><span class="request-status status-approved">อนุมัติแล้ว</span></td>
+                                    <td data-label="การดำเนินการ" class="request-actions">
+                                        <button class="btn-action btn-view-details" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                                        <button class="btn-action btn-action-summary btn-action-hidden" data-action="summary" title="สรุปผล"><i class="bi bi-file-text-fill"></i></button>
                                     </td>
                                 </tr>
-                                 <!-- นัดหมาย N003: 2025-10-03 (Online) - ยังไม่ถึงเวลา -> ไม่แสดงปุ่ม -->
-                                 <tr data-date="2025-10-03" data-time="11:00" data-type="online" data-status="confirmed" data-details='{"id":"N003","name":"นายปิติ ยินดี","topic":"ความวิตกกังวล","status":"ยืนยันแล้ว"}'>
-                                    <td>2025-10-03</td>
-                                    <td>11:00</td>
-                                    <td>นายปิติ ยินดี</td>
-                                    <!-- แสดงประเภท: ออนไลน์ -->
-                                    <td><span class="type-online">ออนไลน์</span></td>
-                                    <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td>
-                                        <div class="actions-group flex space-x-2">
-                                            <button class="btn-details">ดูรายละเอียด</button>
-                                        </div>
+                                <!-- นัดหมาย N003 -->
+                                <tr data-student-id="S003" data-date="2025-10-03" data-time="11:00" data-type="online" data-status="confirmed">
+                                    <td data-label="รหัสนักศึกษา">S003</td>
+                                    <td data-label="ชื่อนักศึกษา">นายปิติ ยินดี</td>
+                                    <td data-label="วันที่ยื่นคำขอ">2024-06-12</td>
+                                    <td data-label="วัน/เวลานัดหมายที่ขอ">2025-10-03, 11:00 น.</td>
+                                    <td data-label="สถานะคำขอ"><span class="request-status status-pending">รอดำเนินการ</span></td>
+                                    <td data-label="การดำเนินการ" class="request-actions">
+                                        <button class="btn-action btn-view-details" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                                        <button class="btn-action btn-action-chat btn-action-hidden" data-action="chat" title="แชท"><i class="bi bi-chat-dots-fill"></i></button>
                                     </td>
                                 </tr>
-                                <!-- นัดหมาย N004: 2025-09-28 (Clinic) - ถึงเวลาแล้ว (ในอดีต) -> แสดงปุ่มสรุปผล -->
-                                <tr data-date="2025-09-28" data-time="14:00" data-type="clinic" data-status="completed" data-details='{"id":"N004","name":"นางสาวสุดา แจ่มใส","topic":"ภาวะซึมเศร้า","status":"เสร็จสิ้น"}'>
-                                    <td>2025-09-28</td>
-                                    <td>14:00</td>
-                                    <td>นางสาวสุดา แจ่มใส</td>
-                                    <!-- แสดงประเภท: คลินิก -->
-                                    <td><span class="type-clinic">คลินิก</span></td>
-                                    <td class="status completed">เสร็จสิ้น</td>
-                                    <td>
-                                        <div class="actions-group flex space-x-2">
-                                            <button class="btn-details">ดูรายละเอียด</button>
-                                        </div>
+                                <!-- นัดหมาย N004 -->
+                                <tr data-student-id="S004" data-date="2025-09-28" data-time="14:00" data-type="clinic" data-status="completed">
+                                    <td data-label="รหัสนักศึกษา">S004</td>
+                                    <td data-label="ชื่อนักศึกษา">นางสาวสุดา แจ่มใส</td>
+                                    <td data-label="วันที่ยื่นคำขอ">2024-06-10</td>
+                                    <td data-label="วัน/เวลานัดหมายที่ขอ">2025-09-28, 14:00 น.</td>
+                                    <td data-label="สถานะคำขอ"><span class="request-status status-completed">เสร็จสิ้น</span></td>
+                                    <td data-label="การดำเนินการ" class="request-actions">
+                                        <button class="btn-action btn-view-details" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                                        <button class="btn-action btn-action-summary" data-action="summary" title="สรุปผล"><i class="bi bi-file-text-fill"></i></button>
+                                    </td>
                                     </td>
                                 </tr>
                             </tbody>
@@ -255,15 +345,14 @@
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>รายละเอียดนัดหมาย</h3>
+                <h3>รายละเอียดการนัดหมาย</h3>
             </div>
             <div class="modal-body">
-                <p><strong>รหัสนัดหมาย:</strong> <span id="modal-id"></span></p>
-                <p><strong>ชื่อ-นามสกุล:</strong> <span id="modal-name"></span></p>
-                <p><strong>วันที่:</strong> <span id="modal-date"></span></p>
-                <p><strong>เวลา:</strong> <span id="modal-time"></span></p>
-                <p><strong>หัวข้อ:</strong> <span id="modal-topic"></span></p>
-                <p><strong>สถานะ:</strong> <span id="modal-status"></span></p>
+                <p><strong>รหัสนักศึกษา:</strong> <span id="modal-id"></span></p>
+                <p><strong>ชื่อนักศึกษา:</strong> <span id="modal-name"></span></p>
+                <p><strong>วันที่ยื่นคำขอ:</strong> <span id="modal-request-date"></span></p>
+                <p><strong>วัน/เวลานัดหมาย:</strong> <span id="modal-appointment-date"></span></p>
+                <p><strong>สถานะคำขอ:</strong> <span id="modal-status"></span></p>
             </div>
             <div class="modal-footer">
                 <button class="btn-details" data-close-modal>ปิด</button>
@@ -319,64 +408,73 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateStr = row.dataset.date;
             const timeStr = row.dataset.time;
             const type = row.dataset.type;
-            // *** ปรับดัชนีคอลัมน์การดำเนินการจาก 4 เป็น 5 (เนื่องจากมีการเพิ่มคอลัมน์ประเภทที่ index 3) ***
-            const actionCell = row.cells[5]; 
-            const actionsGroup = actionCell.querySelector('.actions-group');
             
-            // 1. คำนวณเวลานัดหมาย
+            // สร้าง datetime ของนัดหมาย
             const appointmentDateTime = new Date(`${dateStr}T${timeStr}:00`);
             
-            // 2. ตรวจสอบเงื่อนไข: ปุ่มดำเนินการจะแสดงเมื่อถึงเวลานัดหมายแล้ว (เวลาปัจจุบัน >= เวลานัดหมาย)
-            const isReady = now >= appointmentDateTime;
-
-            // ตรวจสอบว่าปุ่มดำเนินการยังไม่ได้ถูกเพิ่มเข้าไป
-            const dynamicButtonExists = actionsGroup.querySelector('.btn-dynamic-action');
-
-
-            if (isReady && !dynamicButtonExists) {
-                const newButton = document.createElement('button');
-                newButton.classList.add('btn-details', 'btn-dynamic-action');
+            // ตรวจสอบว่าถึงเวลานัดหมายแล้วหรือไม่
+            const isTimeReached = now >= appointmentDateTime;
+            
+            // หาปุ่ม action ที่เหมาะสม
+            const actionButtons = row.querySelectorAll('[data-action]');
+            
+            actionButtons.forEach(btn => {
+                const action = btn.dataset.action;
                 
-                if (type === 'online') {
-                    // เงื่อนไข: นัดหมายออนไลน์ -> ปุ่มแชท
-                    newButton.textContent = 'ช่องทางแชท';
-                    newButton.classList.add('online');
-                    newButton.onclick = () => {
-                        // row.cells[2] คือคอลัมน์ "ชื่อ-นามสกุล"
-                        console.log(`เปิดช่องทางแชทสำหรับนัดหมาย ${row.cells[2].textContent}`); 
-                        showCustomMessage('เปิดช่องทางแชท', `กำลังเปิดหน้าต่างแชทสำหรับนัดหมาย ${row.cells[2].textContent} (ประเภท: ออนไลน์)`);
-                    };
-                } else if (type === 'clinic') {
-                    // เงื่อนไข: นัดหมายที่คลินิก -> ปุ่มสรุปผล
-                    newButton.textContent = 'สรุปผลการให้คำปรึกษา';
-                    newButton.classList.add('clinic');
-                    newButton.onclick = () => {
-                        // row.cells[2] คือคอลัมน์ "ชื่อ-นามสกุล"
-                        console.log(`เปิดฟอร์มสรุปผลการให้คำปรึกษาสำหรับ ${row.cells[2].textContent}`);
-                        showCustomMessage('สรุปผลการให้คำปรึกษา', `กำลังเปิดฟอร์มเพื่อบันทึกผลการให้คำปรึกษาของ ${row.cells[2].textContent} (ประเภท: คลินิก)`);
-                    };
-                }
+                // ตรวจสอบประเภทนัดหมายและ action ที่ต้องการแสดง (Chat สำหรับ Online, Summary สำหรับ Clinic)
+                const shouldDisplayChat = (action === 'chat' && type === 'online');
+                const shouldDisplaySummary = (action === 'summary' && type === 'clinic');
 
-                // เพิ่มปุ่มใหม่ไว้หน้าปุ่ม "ดูรายละเอียด"
-                actionsGroup.prepend(newButton);
-            }
+                if (isTimeReached && (shouldDisplayChat || shouldDisplaySummary)) {
+                    // แสดงปุ่มเมื่อถึงเวลาและตรงตามประเภท
+                    btn.classList.remove('btn-action-hidden');
+                    
+                    // เพิ่ม event listener (เฉพาะครั้งแรก)
+                    // ตรวจสอบเพื่อป้องกันการเพิ่ม event ซ้ำ
+                    if (!btn.dataset.listenerAdded) {
+                        btn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const studentName = row.cells[1].textContent; // ชื่อนักศึกษาอยู่ที่คอลัมน์ 1
+                            
+                            if (action === 'chat') {
+                                showCustomMessage(
+                                    '💬 ช่องทางแชทออนไลน์',
+                                    `เปิดช่องทางแชทสำหรับ ${studentName}\n\nกำลังเชื่อมต่อไปยังส่วนแชทออนไลน์...`
+                                );
+                            } else if (action === 'summary') {
+                                showCustomMessage(
+                                    '📝 สรุปผลการให้คำปรึกษา',
+                                    `เปิดฟอร์มสรุปผลสำหรับ ${studentName}\n\nกำลังเตรียมฟอร์มบันทึกผลการให้คำปรึกษา...`
+                                );
+                            }
+                        });
+                        btn.dataset.listenerAdded = 'true'; // ทำเครื่องหมายว่าเพิ่ม listener แล้ว
+                    }
+                } else {
+                    // ซ่อนปุ่มเมื่อยังไม่ถึงเวลาหรือไม่ตรงประเภท
+                    btn.classList.add('btn-action-hidden');
+                }
+            });
         });
     };
 
+    // Call initialize on page load
+    // *** ลบโค้ดที่ไม่สมบูรณ์และเกินมาที่นี่ออกไปแล้ว ***
+
+    initializeActionButtons(); // เรียกใช้ฟังก์ชันเพื่อจัดการปุ่มเมื่อโหลดหน้าเว็บ
+
     // --- Modal Logic ---
     tableBody.addEventListener('click', (event) => {
-        // ตรวจสอบให้แน่ใจว่าเป็นปุ่ม "ดูรายละเอียด" เดิมเท่านั้น ไม่ใช่ปุ่ม dynamic ใหม่
-        if (event.target.classList.contains('btn-details') && !event.target.classList.contains('btn-dynamic-action')) {
+        // ตรวจสอบให้แน่ใจว่าเป็นปุ่ม "ดูรายละเอียด" เดิมเท่านั้น
+        if (event.target.closest('.btn-view-details')) {
             const row = event.target.closest('tr');
-            const details = JSON.parse(row.dataset.details);
             
-            // การดึงข้อมูล: ดึง Date/Time จาก cells[0/1] และ Topic/Status จาก dataset (ถูกต้อง)
-            document.getElementById('modal-id').textContent = details.id;
-            document.getElementById('modal-name').textContent = details.name;
-            document.getElementById('modal-date').textContent = row.cells[0].textContent;
-            document.getElementById('modal-time').textContent = row.cells[1].textContent;
-            document.getElementById('modal-topic').textContent = details.topic; // ดึงจาก dataset
-            document.getElementById('modal-status').textContent = details.status;
+            // การดึงข้อมูล: ดึงจากเซลล์ต่างๆ
+            document.getElementById('modal-id').textContent = row.cells[0].textContent;
+            document.getElementById('modal-name').textContent = row.cells[1].textContent;
+            document.getElementById('modal-request-date').textContent = row.cells[2].textContent;
+            document.getElementById('modal-appointment-date').textContent = row.cells[3].textContent;
+            document.getElementById('modal-status').innerHTML = row.cells[4].innerHTML;
 
             detailModal.classList.add('show');
         }
@@ -392,7 +490,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const applyFilters = () => {
         const dateFilter = document.getElementById('dateFilter').value;
         const statusFilter = document.getElementById('statusFilter').value;
-        // ใช้เวลาจำลองเดียวกันกับการตรวจสอบปุ่ม
         const fixedNow = new Date('2025-10-02T10:00:00'); 
 
         allRows.forEach(row => {
@@ -439,10 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
         userDropdown.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('active'); });
     }
     document.addEventListener('click', () => { if (userDropdown) userDropdown.classList.remove('active'); });
-
-    // เริ่มการทำงานของปุ่มดำเนินการเมื่อโหลดหน้า
-    initializeActionButtons();
 });
+
 </script>
 </body>
 </html>
