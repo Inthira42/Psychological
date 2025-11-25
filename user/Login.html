@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LRU HeartCare | เข้าสู่ระบบ</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sukhumvit+Set:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
@@ -21,6 +20,7 @@
             --white: #ffffff; /* สีขาว */
             --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
             --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --role-button-shadow: rgba(0, 0, 0, 0.1); /* เงาสำหรับปุ่มบทบาท */
         }
 
         /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
@@ -53,6 +53,7 @@
             overflow: hidden;
             max-width: 900px;
             width: 95%; /* Responsive width */
+            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่างสำหรับปุ่มใหม่ */
         }
 
         /* ========== Login Form Side ========== */
@@ -244,72 +245,41 @@
             opacity: 0.9;
         }
 
-        /* ========== New Role Selection Buttons Styles ========== */
-        .role-buttons-container {
-            margin-top: 20px;
-            width: 95%; /* Match container width responsiveness */
+        /* ========== NEW: Role Links - ปุ่มสำหรับบทบาทอื่น ๆ ========== */
+        .login-role-links {
+            width: 95%;
             max-width: 900px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 20px;
-            padding: 15px 25px;
-            background-color: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .role-buttons-container .role-prompt {
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin: 0;
-            white-space: nowrap;
+            gap: 15px; /* ระยะห่างระหว่างปุ่ม */
+            padding: 0 10px;
         }
 
         .btn-role {
-            padding: 12px 25px;
-            border: none;
+            flex: 1; /* ทำให้ปุ่มขยายเต็มพื้นที่และมีขนาดเท่ากัน */
+            max-width: 250px; /* จำกัดความกว้างสูงสุด */
+            padding: 12px 20px;
+            border: 2px solid var(--deep-blue);
             border-radius: 30px;
+            color: var(--deep-blue);
+            background-color: var(--white);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap; /* Prevent text wrap */
+            text-align: center;
+            text-decoration: none; /* เพื่อใช้กับ <a> */
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px var(--role-button-shadow);
         }
 
-        /* Style for Psychologist Button */
-        .btn-psychologist {
-            background-color: var(--soft-blue); /* ฟ้าอ่อน */
-            color: var(--deep-blue);
-            box-shadow: 0 4px 10px rgba(135, 206, 235, 0.4);
-        }
-
-        .btn-psychologist:hover {
+        .btn-role:hover {
             background-color: var(--deep-blue);
             color: var(--white);
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(70, 130, 180, 0.6);
+            box-shadow: 0 6px 12px var(--shadow-medium);
         }
 
-        /* Style for Admin Button */
-        .btn-admin {
-            background-color: var(--deep-blue); /* ฟ้าน้ำทะเล */
-            color: var(--white);
-            box-shadow: 0 4px 10px rgba(70, 130, 180, 0.4);
-        }
-
-        .btn-admin:hover {
-            background-color: var(--soft-blue);
-            color: var(--deep-blue);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(135, 206, 235, 0.6);
-        }
-
-        /* ========== Responsive Adjustments (Updated for new buttons) ========== */
+        /* ========== Responsive Adjustments ========== */
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column; /* Stack login and explanation vertically */
@@ -329,20 +299,27 @@
                 font-size: 2rem;
                 margin-bottom: 25px;
             }
+
+            .explanation-side h2 {
+                font-size: 1.8rem;
+            }
+
+            .explanation-side h3 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+
+            .explanation-side p {
+                font-size: 0.9rem;
+            }
             
-            /* Responsive for new buttons */
-            .role-buttons-container {
-                flex-direction: column; /* Stack buttons vertically on mobile */
+            .login-role-links {
+                flex-direction: column; /* ให้ปุ่มเรียงกันในแนวตั้งบนมือถือ */
                 gap: 10px;
-                max-width: 450px;
             }
-            .role-buttons-container .role-prompt {
-                margin-right: 0;
-                margin-bottom: 5px;
-            }
+            
             .btn-role {
-                width: 100%;
-                justify-content: center;
+                max-width: 100%; /* ให้ปุ่มเต็มความกว้าง */
             }
         }
 
@@ -376,12 +353,8 @@
                 padding: 12px 0;
                 font-size: 1rem;
             }
-            .role-buttons-container {
-                padding: 10px;
-                gap: 8px;
-            }
             .btn-role {
-                padding: 10px 20px;
+                padding: 10px 15px;
                 font-size: 0.9rem;
             }
         }
@@ -422,38 +395,36 @@
         </div>
     </div>
     
-    <!-- New Role Selection Buttons Added Here -->
-    <div class="role-buttons-container">
-        <p class="role-prompt"></p>
-        <button type="button" class="btn-role btn-psychologist" onclick="window.location.href='/psychologist/Homepage.html'">
+    <div class="login-role-links">
+        <a href="psychologist.html" class="btn-role">
             <i class="fa-solid fa-user-doctor"></i> นักจิตวิทยา
-        </button>
-        <button type="button" class="btn-role btn-admin" onclick="window.location.href='/admin/index.html'">
+        </a>
+        <a href="admin.html" class="btn-role">
             <i class="fa-solid fa-user-gear"></i> แอดมิน
-        </button>
+        </a>
     </div>
     
     <script>
-      function togglePassword() {
-        const pw = document.getElementById("password");
-        pw.type = pw.type === "password" ? "text" : "password";
-      }
+        function togglePassword() {
+            const pw = document.getElementById("password");
+            pw.type = pw.type === "password" ? "text" : "password";
+        }
 
-      // Add listener to keep the floating label working even when input is pre-filled
-      document.addEventListener('DOMContentLoaded', () => {
-          document.querySelectorAll('.input-box input').forEach(input => {
-              if (input.value.length > 0) {
-                  input.classList.add('has-content');
-              }
-              input.addEventListener('input', () => {
-                  if (input.value.length > 0) {
-                      input.classList.add('has-content');
-                  } else {
-                      input.classList.remove('has-content');
-                  }
-              });
-          });
-      });
+        // เพิ่มฟังก์ชันเพื่อตรวจสอบว่ามีเนื้อหาใน Input แล้วหรือไม่ (เพื่อให้ Label ลอยขึ้นเมื่อมีเนื้อหา)
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.input-box input').forEach(input => {
+                if (input.value) {
+                    input.classList.add('has-content');
+                }
+                input.addEventListener('input', () => {
+                    if (input.value) {
+                        input.classList.add('has-content');
+                    } else {
+                        input.classList.remove('has-content');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
