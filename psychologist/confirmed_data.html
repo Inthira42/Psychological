@@ -64,10 +64,31 @@
         
         .status { font-weight: 500; }
         .status.confirmed { color: #28a745; }
-        .status.pending { color: #ffc107; }
+        .status.completed { color: #4682B4; /* ใช้สี deep-blue สำหรับ Completed */ }
+        
+        /* New Type Indicators */
+        .type-online { color: var(--soft-blue); font-weight: 600; }
+        .type-clinic { color: var(--primary-pink); font-weight: 600; }
 
-        .btn-details { background-color: var(--button-gray); border: 1px solid #ccc; padding: 6px 15px; border-radius: 6px; font-family: 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; }
+
+        /* Action Buttons Styling */
+        .btn-details { background-color: var(--button-gray); border: 1px solid #ccc; padding: 6px 15px; border-radius: 6px; font-family: 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; }
         .btn-details:hover { background-color: var(--button-gray-hover); }
+        .btn-dynamic-action {
+            padding: 6px 15px; 
+            border: none; 
+            border-radius: 6px; 
+            font-family: 'Kanit', sans-serif; 
+            cursor: pointer; 
+            font-weight: 500;
+            transition: opacity 0.2s, background-color 0.2s;
+            white-space: nowrap;
+        }
+        .btn-dynamic-action.online { background-color: var(--soft-blue); color: var(--white); }
+        .btn-dynamic-action.online:hover { background-color: #5bbff7; }
+        .btn-dynamic-action.clinic { background-color: var(--primary-pink); color: var(--white); }
+        .btn-dynamic-action.clinic:hover { background-color: #e65a9e; }
+
 
         /* Modal */
         .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; }
@@ -79,6 +100,9 @@
         .modal-body p { margin: 0 0 12px 0; display: flex; }
         .modal-body p strong { color: var(--text-dark); width: 120px; flex-shrink: 0; font-weight: 500; }
         .modal-footer { text-align: right; margin-top: 25px; }
+
+        /* General Message Modal */
+        #messageModal .modal-header h3 { color: var(--primary-pink); }
     </style>
 </head>
 <body>
@@ -91,6 +115,7 @@
                 <li><a href="confirmed_data.html" class="active" ><i class="bi bi-bell"></i> การนัดหมายทั้งหมด</a></li>
                 <li><a href="chat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
                 <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+            </ul>
         </div>
         <div class="main-content">
             <nav class="navbar">
@@ -125,6 +150,12 @@
                     <button id="clearBtn" class="btn-clear">ล้างค่า</button>
                 </div>
 
+                <!-- แสดงเวลาจำลองปัจจุบันเพื่อความเข้าใจในการทำงานของปุ่ม -->
+                <p class="text-muted text-sm mb-4">
+                    <i class="bi bi-clock"></i> เวลาจำลองปัจจุบัน: <strong>2025-10-02 10:00</strong>
+                    (ปุ่มดำเนินการจะปรากฏขึ้นสำหรับนัดหมายที่ถึงเวลาแล้ว)
+                </p>
+
                 <div class="table-container">
                     <div class="table-responsive">
                         <table id="appointmentsTable">
@@ -133,43 +164,68 @@
                                     <th>วันที่</th>
                                     <th>เวลา</th>
                                     <th>ชื่อ-นามสกุล</th>
-                                    <th>หัวข้อ</th>
+                                    <!-- คอลัมน์ใหม่: ช่องทางการเข้าปรึกษา (ประเภท) -->
+                                    <th>ประเภท</th> 
                                     <th>สถานะ</th>
                                     <th>การดำเนินการ</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-date="2025-10-02" data-status="confirmed" data-details='{"id":"N001","name":"นายสมศักดิ์ จริงใจ","topic":"ความเครียดจากการทำงาน","status":"ยืนยันแล้ว"}'>
+                                <!-- นัดหมาย N001: 09:00 (Online) - ถึงเวลาแล้ว -> แสดงปุ่มแชท -->
+                                <tr data-date="2025-10-02" data-time="09:00" data-type="online" data-status="confirmed" data-details='{"id":"N001","name":"นายสมศักดิ์ จริงใจ","topic":"ความเครียดจากการทำงาน","status":"ยืนยันแล้ว"}'>
                                     <td>2025-10-02</td>
                                     <td>09:00</td>
                                     <td>นายสมศักดิ์ จริงใจ</td>
-                                    <td>ความเครียดจากการทำงาน</td>
+                                    <!-- แสดงประเภท: ออนไลน์ -->
+                                    <td><span class="type-online">ออนไลน์</span></td> 
                                     <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                    <td>
+                                        <div class="actions-group flex space-x-2">
+                                            <button class="btn-details">ดูรายละเอียด</button>
+                                        </div>
+                                    </td>
                                 </tr>
-                                <tr data-date="2025-10-02" data-status="confirmed" data-details='{"id":"N002","name":"นางสาวมานี มีสุข","topic":"ปัญหาความสัมพันธ์","status":"ยืนยันแล้ว"}'>
+                                <!-- นัดหมาย N002: 09:45 (Clinic) - ถึงเวลาแล้ว -> แสดงปุ่มสรุปผล -->
+                                <tr data-date="2025-10-02" data-time="09:45" data-type="clinic" data-status="confirmed" data-details='{"id":"N002","name":"นางสาวมานี มีสุข","topic":"ปัญหาความสัมพันธ์","status":"ยืนยันแล้ว"}'>
                                     <td>2025-10-02</td>
-                                    <td>10:30</td>
+                                    <td>09:45</td>
                                     <td>นางสาวมานี มีสุข</td>
-                                    <td>ปัญหาความสัมพันธ์</td>
+                                    <!-- แสดงประเภท: คลินิก -->
+                                    <td><span class="type-clinic">คลินิก</span></td>
                                     <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                    <td>
+                                        <div class="actions-group flex space-x-2">
+                                            <button class="btn-details">ดูรายละเอียด</button>
+                                        </div>
+                                    </td>
                                 </tr>
-                                 <tr data-date="2025-10-03" data-status="confirmed" data-details='{"id":"N003","name":"นายปิติ ยินดี","topic":"ความวิตกกังวล","status":"ยืนยันแล้ว"}'>
+                                 <!-- นัดหมาย N003: 2025-10-03 (Online) - ยังไม่ถึงเวลา -> ไม่แสดงปุ่ม -->
+                                 <tr data-date="2025-10-03" data-time="11:00" data-type="online" data-status="confirmed" data-details='{"id":"N003","name":"นายปิติ ยินดี","topic":"ความวิตกกังวล","status":"ยืนยันแล้ว"}'>
                                     <td>2025-10-03</td>
                                     <td>11:00</td>
                                     <td>นายปิติ ยินดี</td>
-                                    <td>ความวิตกกังวล</td>
+                                    <!-- แสดงประเภท: ออนไลน์ -->
+                                    <td><span class="type-online">ออนไลน์</span></td>
                                     <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                    <td>
+                                        <div class="actions-group flex space-x-2">
+                                            <button class="btn-details">ดูรายละเอียด</button>
+                                        </div>
+                                    </td>
                                 </tr>
-                                <tr data-date="2025-09-28" data-status="completed" data-details='{"id":"N004","name":"นางสาวสุดา แจ่มใส","topic":"ภาวะซึมเศร้า","status":"เสร็จสิ้น"}'>
+                                <!-- นัดหมาย N004: 2025-09-28 (Clinic) - ถึงเวลาแล้ว (ในอดีต) -> แสดงปุ่มสรุปผล -->
+                                <tr data-date="2025-09-28" data-time="14:00" data-type="clinic" data-status="completed" data-details='{"id":"N004","name":"นางสาวสุดา แจ่มใส","topic":"ภาวะซึมเศร้า","status":"เสร็จสิ้น"}'>
                                     <td>2025-09-28</td>
                                     <td>14:00</td>
                                     <td>นางสาวสุดา แจ่มใส</td>
-                                    <td>ภาวะซึมเศร้า</td>
-                                    <td class="status">เสร็จสิ้น</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
+                                    <!-- แสดงประเภท: คลินิก -->
+                                    <td><span class="type-clinic">คลินิก</span></td>
+                                    <td class="status completed">เสร็จสิ้น</td>
+                                    <td>
+                                        <div class="actions-group flex space-x-2">
+                                            <button class="btn-details">ดูรายละเอียด</button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -179,6 +235,7 @@
         </div>
     </div>
 
+    <!-- Modal for Details -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -197,26 +254,112 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for Dynamic Action Message (Replaces alert()) -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="msg-modal-title">ข้อความแจ้งเตือน</h3>
+            </div>
+            <div class="modal-body">
+                <p id="msg-modal-message" style="width: auto; margin-bottom: 0;"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-details" data-close-message-modal>ตกลง</button>
+            </div>
+        </div>
+    </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.querySelector('#appointmentsTable tbody');
     const detailModal = document.getElementById('detailModal');
+    const messageModal = document.getElementById('messageModal');
     const filterBtn = document.getElementById('filterBtn');
     const clearBtn = document.getElementById('clearBtn');
     const allRows = Array.from(tableBody.querySelectorAll('tr'));
+    
+    // เวลาจำลองปัจจุบันสำหรับแสดงผลลัพธ์การเปรียบเทียบเวลา
+    const now = new Date('2025-10-02T10:00:00'); 
+    console.log(`เวลาจำลองปัจจุบัน: ${now.toLocaleString()}`);
+
+    // --- Custom Message Modal Logic (แทนที่ alert()) ---
+    const showCustomMessage = (title, message) => {
+        document.getElementById('msg-modal-title').textContent = title;
+        document.getElementById('msg-modal-message').textContent = message;
+        messageModal.classList.add('show');
+    }
+
+    messageModal.addEventListener('click', (event) => {
+        if (event.target === messageModal || event.target.hasAttribute('data-close-message-modal')) {
+            messageModal.classList.remove('show');
+        }
+    });
+
+
+    // --- Dynamic Action Button Logic ---
+    const initializeActionButtons = () => {
+        allRows.forEach(row => {
+            const dateStr = row.dataset.date;
+            const timeStr = row.dataset.time;
+            const type = row.dataset.type;
+            // *** ปรับดัชนีคอลัมน์การดำเนินการจาก 4 เป็น 5 (เนื่องจากมีการเพิ่มคอลัมน์ประเภทที่ index 3) ***
+            const actionCell = row.cells[5]; 
+            const actionsGroup = actionCell.querySelector('.actions-group');
+            
+            // 1. คำนวณเวลานัดหมาย
+            const appointmentDateTime = new Date(`${dateStr}T${timeStr}:00`);
+            
+            // 2. ตรวจสอบเงื่อนไข: ปุ่มดำเนินการจะแสดงเมื่อถึงเวลานัดหมายแล้ว (เวลาปัจจุบัน >= เวลานัดหมาย)
+            const isReady = now >= appointmentDateTime;
+
+            // ตรวจสอบว่าปุ่มดำเนินการยังไม่ได้ถูกเพิ่มเข้าไป
+            const dynamicButtonExists = actionsGroup.querySelector('.btn-dynamic-action');
+
+
+            if (isReady && !dynamicButtonExists) {
+                const newButton = document.createElement('button');
+                newButton.classList.add('btn-details', 'btn-dynamic-action');
+                
+                if (type === 'online') {
+                    // เงื่อนไข: นัดหมายออนไลน์ -> ปุ่มแชท
+                    newButton.textContent = 'ช่องทางแชท';
+                    newButton.classList.add('online');
+                    newButton.onclick = () => {
+                        // row.cells[2] คือคอลัมน์ "ชื่อ-นามสกุล"
+                        console.log(`เปิดช่องทางแชทสำหรับนัดหมาย ${row.cells[2].textContent}`); 
+                        showCustomMessage('เปิดช่องทางแชท', `กำลังเปิดหน้าต่างแชทสำหรับนัดหมาย ${row.cells[2].textContent} (ประเภท: ออนไลน์)`);
+                    };
+                } else if (type === 'clinic') {
+                    // เงื่อนไข: นัดหมายที่คลินิก -> ปุ่มสรุปผล
+                    newButton.textContent = 'สรุปผลการให้คำปรึกษา';
+                    newButton.classList.add('clinic');
+                    newButton.onclick = () => {
+                        // row.cells[2] คือคอลัมน์ "ชื่อ-นามสกุล"
+                        console.log(`เปิดฟอร์มสรุปผลการให้คำปรึกษาสำหรับ ${row.cells[2].textContent}`);
+                        showCustomMessage('สรุปผลการให้คำปรึกษา', `กำลังเปิดฟอร์มเพื่อบันทึกผลการให้คำปรึกษาของ ${row.cells[2].textContent} (ประเภท: คลินิก)`);
+                    };
+                }
+
+                // เพิ่มปุ่มใหม่ไว้หน้าปุ่ม "ดูรายละเอียด"
+                actionsGroup.prepend(newButton);
+            }
+        });
+    };
 
     // --- Modal Logic ---
     tableBody.addEventListener('click', (event) => {
-        if (event.target.classList.contains('btn-details')) {
+        // ตรวจสอบให้แน่ใจว่าเป็นปุ่ม "ดูรายละเอียด" เดิมเท่านั้น ไม่ใช่ปุ่ม dynamic ใหม่
+        if (event.target.classList.contains('btn-details') && !event.target.classList.contains('btn-dynamic-action')) {
             const row = event.target.closest('tr');
             const details = JSON.parse(row.dataset.details);
             
+            // การดึงข้อมูล: ดึง Date/Time จาก cells[0/1] และ Topic/Status จาก dataset (ถูกต้อง)
             document.getElementById('modal-id').textContent = details.id;
             document.getElementById('modal-name').textContent = details.name;
             document.getElementById('modal-date').textContent = row.cells[0].textContent;
             document.getElementById('modal-time').textContent = row.cells[1].textContent;
-            document.getElementById('modal-topic').textContent = details.topic;
+            document.getElementById('modal-topic').textContent = details.topic; // ดึงจาก dataset
             document.getElementById('modal-status').textContent = details.status;
 
             detailModal.classList.add('show');
@@ -233,7 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const applyFilters = () => {
         const dateFilter = document.getElementById('dateFilter').value;
         const statusFilter = document.getElementById('statusFilter').value;
-        const now = new Date('2025-10-02T10:00:00'); // Using a fixed date for consistent demo
+        // ใช้เวลาจำลองเดียวกันกับการตรวจสอบปุ่ม
+        const fixedNow = new Date('2025-10-02T10:00:00'); 
 
         allRows.forEach(row => {
             let dateMatch = true;
@@ -243,15 +387,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dateFilter !== 'all') {
                 const rowDate = new Date(row.dataset.date);
                 if (dateFilter === 'today') {
-                    dateMatch = rowDate.toDateString() === now.toDateString();
+                    dateMatch = rowDate.toDateString() === fixedNow.toDateString();
                 } else if (dateFilter === 'this_week') {
-                    const weekStart = new Date(now);
-                    weekStart.setDate(now.getDate() - now.getDay());
+                    const weekStart = new Date(fixedNow);
+                    weekStart.setDate(fixedNow.getDate() - fixedNow.getDay());
                     const weekEnd = new Date(weekStart);
                     weekEnd.setDate(weekStart.getDate() + 6);
                     dateMatch = rowDate >= weekStart && rowDate <= weekEnd;
                 } else if (dateFilter === 'this_month') {
-                    dateMatch = rowDate.getMonth() === now.getMonth() && rowDate.getFullYear() === now.getFullYear();
+                    dateMatch = rowDate.getMonth() === fixedNow.getMonth() && rowDate.getFullYear() === fixedNow.getFullYear();
                 }
             }
 
@@ -272,6 +416,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('statusFilter').value = 'all';
         allRows.forEach(row => row.style.display = '');
     });
+    
+    // เริ่มการทำงานของปุ่มดำเนินการเมื่อโหลดหน้า
+    initializeActionButtons();
 });
 </script>
 </body>
