@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LRU HeartCare - รายละเอียดการนัดหมาย</title>
+    <!-- Google Fonts: Kanit for Thai text -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons for a wide range of icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* ========== Variables ========== */
+        :root {
+            --primary-pink: #FF69B4;
+            --light-pink: #FFC0CB;
+            --soft-blue: #87CEEB;
+            --deep-blue: #4682B4;
+            --text-dark: #343a40;
+            --text-muted: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-light: #e9ecef;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --input-border: #ced4da;
+            --input-focus: #80bdff;
+        }
+
+        /* ========== Body ========== */
+        body {
+            font-family: 'Kanit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ========== Layout ========== */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--deep-blue);
+            color: var(--white);
+            padding: 20px;
+            box-shadow: 2px 0 10px var(--shadow-light);
+            flex-shrink: 0;
+            transition: width 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar h5 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--light-pink);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            padding: 0;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: var(--primary-pink);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar a i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* ========== Navbar ========== */
+        .navbar {
+            background: var(--white);
+            padding: 15px 25px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-input {
+            border: 1px solid var(--border-light);
+            padding: 10px 15px;
+            border-radius: 25px;
+            max-width: 280px;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3);
+        }
+
+        .user-dropdown {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-dropdown img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid var(--light-pink);
+        }
+
+        .user-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--white);
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            border-radius: 8px;
+            min-width: 160px;
+            padding: 8px 0;
+            z-index: 10;
+        }
+
+        .user-dropdown.active .user-dropdown-menu,
+        .user-dropdown:hover .user-dropdown-menu {
+            display: block;
+        }
+
+        .user-dropdown-menu a {
+            display: block;
+            padding: 10px 18px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .user-dropdown-menu a:hover {
+            background: var(--light-pink);
+            color: var(--white);
+        }
+
+        /* ========== Content Area ========== */
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            background: var(--bg-light);
+            box-sizing: border-box;
+        }
+
+        .content-area h4 {
+            margin-bottom: 25px;
+            color: var(--deep-blue);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* ========== Detail Section Styles ========== */
+        .detail-section {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .detail-section h5 {
+            margin-bottom: 20px;
+            color: var(--deep-blue);
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--border-light);
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-pink);
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+
+        .detail-item p {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .detail-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .detail-btn {
+            background-color: var(--soft-blue);
+            color: var(--white);
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .detail-btn:hover {
+            background-color: var(--deep-blue);
+            transform: translateY(-2px);
+        }
+
+        .detail-btn.confirm { /* New style for confirm button */
+            background-color: #28a745; /* Green */
+        }
+        .detail-btn.confirm:hover {
+            background-color: #218838;
+        }
+        .detail-btn.delete {
+            background-color: #dc3545; /* Red for delete */
+        }
+        .detail-btn.delete:hover {
+            background-color: #c82333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3em 0.8em;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .status-badge.confirmed {
+            background-color: #d4edda;
+            color: #28a745;
+        }
+        .status-badge.pending {
+            background-color: #fff3cd;
+            color: #ffc107;
+        }
+        .status-badge.cancelled {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        .status-badge.completed {
+            background-color: #d1ecf1;
+            color: #17a2b8;
+        }
+
+        /* ========== Responsive Design ========== */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 20px;
+            }
+            .sidebar h5 {
+                display: block;
+                text-align: left;
+                padding-left: 15px;
+            }
+            .sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 0 10px;
+            }
+            .sidebar li {
+                flex: 1;
+                min-width: 120px;
+                margin-bottom: 5px;
+            }
+            .sidebar a {
+                justify-content: center;
+                text-align: center;
+                padding: 10px;
+            }
+            .sidebar a i {
+                margin-right: 5px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            .navbar {
+                justify-content: center;
+                padding: 15px;
+            }
+            .navbar .search-input {
+                width: calc(100% - 40px);
+                margin-bottom: 10px;
+                order: 1;
+            }
+            .user-dropdown {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 15px;
+            }
+            .sidebar ul {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .sidebar a {
+                justify-content: flex-start;
+                padding-left: 20px;
+            }
+            .sidebar h5 {
+                text-align: center;
+                padding-left: 0;
+            }
+            .detail-section {
+                padding: 20px;
+            }
+            .detail-section h5 {
+                font-size: 1.3rem;
+            }
+            .detail-item label {
+                font-size: 0.95rem;
+            }
+            .detail-item p {
+                font-size: 1rem;
+            }
+            .detail-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .detail-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content-area {
+                padding: 10px;
+            }
+            .navbar {
+                padding: 10px;
+            }
+            .search-input {
+                padding: 8px 12px;
+            }
+            .user-dropdown img {
+                width: 32px;
+                height: 32px;
+            }
+            .sidebar a {
+                font-size: 0.9rem;
+            }
+            .detail-section {
+                padding: 15px;
+            }
+            .detail-section h5 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+           <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
+                <li><a href="eiei.html" class="active"><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
+                <li><a href="confirmed_data.html" ><i class="bi bi-bell"></i> การนัดหมายทั้งหมด</a></li>
+                <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+        </div>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Navbar Header -->
+            <nav class="navbar">
+                <input type="search" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt="Avatar"> <!-- Placeholder image with PS text for Psychologist -->
+                    <strong>นักจิตวิทยา</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="Login.html">ออกจากระบบ</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- Content Area for Detail Section -->
+            <div class="content-area">
+                <section class="detail-section">
+                    <h5>รายละเอียดการนัดหมาย</h5>
+                    <div class="detail-content">
+                        <div class="detail-item">
+                            <label>รหัสการนัดหมาย:</label>
+                            <p id="appointmentId">APT-001</p>
+                        </div>
+                        <div class="detail-item">
+                            <label>ชื่อผู้ป่วย:</label>
+                            <p id="patientName">นายสมศักดิ์ จริงใจ</p>
+                        </div>
+                        <div class="detail-item">
+                            <label>วันที่:</label>
+                            <p id="appointmentDate">2025-06-20</p>
+                        </div>
+                        <div class="detail-item">
+                            <label>เวลา:</label>
+                            <p id="appointmentTime">09:00 - 10:00 น.</p>
+                        </div>
+                        <div class="detail-item">
+                            <label>หัวข้อการปรึกษา:</label>
+                            <p id="appointmentTopic">ความเครียดจากการทำงาน</p>
+                        </div>
+                        <div class="detail-item">
+                            <label>สถานะ:</label>
+                            <p><span id="appointmentStatus" class="status-badge pending">รอดำเนินการ</span></p>
+                        </div>
+                        <div class="detail-item">
+                            <label>บันทึกเพิ่มเติม:</label>
+                            <p id="appointmentNotes">ผู้ป่วยแจ้งว่ารู้สึกกดดันจากการทำงานที่หนักขึ้นและมีปัญหาในการนอนหลับ ต้องการคำแนะนำในการจัดการความเครียด</p>
+                        </div>
+                    </div>
+                    <div class="detail-actions">
+                        <a href="appointments.html" class="detail-btn">ย้อนกลับ</a>
+                        <button class="detail-btn" id="editBtn">แก้ไข</button>
+                        <button class="detail-btn confirm" id="confirmBtn">ยืนยันการนัดหมาย</button>
+                        <button class="detail-btn delete" id="cancelBtn">ยกเลิกนัดหมาย</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Dropdown functionality for user profile
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown) {
+                userDropdown.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+                // Close dropdown if clicked outside
+                window.addEventListener('click', function(e) {
+                    if (!userDropdown.contains(e.target)) {
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // Get elements for status update
+            const appointmentStatus = document.getElementById('appointmentStatus');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const editBtn = document.getElementById('editBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+
+            // Add event listener for the confirm button
+            if (confirmBtn && appointmentStatus) {
+                confirmBtn.addEventListener('click', function() {
+                    // Check if current status is pending before confirming
+                    if (appointmentStatus.classList.contains('pending')) {
+                        appointmentStatus.textContent = 'ยืนยันแล้ว';
+                        appointmentStatus.classList.remove('pending');
+                        appointmentStatus.classList.add('confirmed');
+
+                        // Disable the confirm button and other action buttons after confirmation
+                        confirmBtn.disabled = true;
+                        confirmBtn.style.opacity = '0.7'; // Visually indicate disabled state
+                        confirmBtn.style.cursor = 'not-allowed';
+                        confirmBtn.textContent = 'ยืนยันแล้ว'; // Change button text
+
+                        editBtn.disabled = true;
+                        editBtn.style.opacity = '0.7';
+                        editBtn.style.cursor = 'not-allowed';
+
+                        cancelBtn.disabled = true;
+                        cancelBtn.style.opacity = '0.7';
+                        cancelBtn.style.cursor = 'not-allowed';
+
+                        alert('การนัดหมายถูกยืนยันเรียบร้อยแล้ว!'); // User friendly message
+                    } else {
+                        alert('การนัดหมายนี้ได้รับการยืนยันแล้ว หรือไม่สามารถยืนยันได้');
+                    }
+                });
+            }
+
+            // Function to load appointment details based on ID (for demonstration)
+            // In a real application, you would fetch this from a database.
+            function loadAppointmentDetails(id) {
+                const appointments = {
+                    '001': {
+                        id: 'APT-001',
+                        patientName: 'นายสมศักดิ์ จริงใจ',
+                        date: '2025-06-20',
+                        time: '09:00 - 10:00 น.',
+                        topic: 'ความเครียดจากการทำงาน',
+                        status: 'pending', // Default to pending for demonstration
+                        notes: 'ผู้ป่วยแจ้งว่ารู้สึกกดดันจากการทำงานที่หนักขึ้นและมีปัญหาในการนอนหลับ ต้องการคำแนะนำในการจัดการความเครียด'
+                    },
+                    '002': {
+                        id: 'APT-002',
+                        patientName: 'นางสาวสุดาพร มีสุข',
+                        date: '2025-06-20',
+                        time: '10:30 - 11:30 น.',
+                        topic: 'ปัญหาความสัมพันธ์',
+                        status: 'confirmed', // Example of a confirmed one
+                        notes: 'ต้องการคำปรึกษาเรื่องความขัดแย้งกับคนรัก'
+                    },
+                    '003': {
+                        id: 'APT-003',
+                        patientName: 'เด็กชายเก่งกาจ กล้าหาญ',
+                        date: '2025-06-21',
+                        time: '14:00 - 15:00 น.',
+                        topic: 'ภาวะซึมเศร้าในวัยรุ่น',
+                        status: 'pending',
+                        notes: 'มีอาการเบื่ออาหารและไม่อยากทำกิจกรรมที่เคยชอบ'
+                    }
+                };
+
+                const appointment = appointments[id];
+                if (appointment) {
+                    document.getElementById('appointmentId').textContent = appointment.id;
+                    document.getElementById('patientName').textContent = appointment.patientName;
+                    document.getElementById('appointmentDate').textContent = appointment.date;
+                    document.getElementById('appointmentTime').textContent = appointment.time;
+                    document.getElementById('appointmentTopic').textContent = appointment.topic;
+                    document.getElementById('appointmentNotes').textContent = appointment.notes;
+
+                    // Set initial status
+                    appointmentStatus.classList.remove('confirmed', 'pending', 'cancelled', 'completed');
+                    appointmentStatus.textContent = ''; // Clear current text
+
+                    if (appointment.status === 'pending') {
+                        appointmentStatus.textContent = 'รอดำเนินการ';
+                        appointmentStatus.classList.add('pending');
+                        confirmBtn.disabled = false; // Enable confirm button if pending
+                        confirmBtn.style.opacity = '1';
+                        confirmBtn.style.cursor = 'pointer';
+                        confirmBtn.textContent = 'ยืนยันการนัดหมาย';
+                        editBtn.disabled = false;
+                        editBtn.style.opacity = '1';
+                        editBtn.style.cursor = 'pointer';
+                        cancelBtn.disabled = false;
+                        cancelBtn.style.opacity = '1';
+                        cancelBtn.style.cursor = 'pointer';
+                    } else if (appointment.status === 'confirmed') {
+                        appointmentStatus.textContent = 'ยืนยันแล้ว';
+                        appointmentStatus.classList.add('confirmed');
+                        confirmBtn.disabled = true; // Disable confirm button if already confirmed
+                        confirmBtn.style.opacity = '0.7';
+                        confirmBtn.style.cursor = 'not-allowed';
+                        confirmBtn.textContent = 'ยืนยันแล้ว';
+                        editBtn.disabled = false; // You might want to allow editing or cancelling confirmed appointments
+                        editBtn.style.opacity = '1';
+                        editBtn.style.cursor = 'pointer';
+                        cancelBtn.disabled = false;
+                        cancelBtn.style.opacity = '1';
+                        cancelBtn.style.cursor = 'pointer';
+                    }
+                    // You can add more status conditions (cancelled, completed) here
+                } else {
+                    document.getElementById('appointmentId').textContent = 'ไม่พบข้อมูล';
+                    document.getElementById('patientName').textContent = 'ไม่พบข้อมูล';
+                    // ... set other fields to 'N/A' or hide them
+                    appointmentStatus.textContent = 'ไม่พบข้อมูล';
+                    appointmentStatus.classList.remove('confirmed', 'pending', 'cancelled', 'completed');
+                    confirmBtn.disabled = true; // Disable buttons if no data
+                    editBtn.disabled = true;
+                    cancelBtn.disabled = true;
+                }
+            }
+
+            // Get appointment ID from URL (for demonstration purposes)
+            const urlParams = new URLSearchParams(window.location.search);
+            const appointmentId = urlParams.get('id');
+            if (appointmentId) {
+                loadAppointmentDetails(appointmentId);
+            } else {
+                // Load a default appointment if no ID is provided in URL, or show a message
+                loadAppointmentDetails('001'); // Load sample APT-001 by default
+            }
+        });
+    </script>
+</body>
+</html>
