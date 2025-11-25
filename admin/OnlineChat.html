@@ -811,18 +811,19 @@
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- Sidebar -->
         <div class="sidebar">
             <h5>LRU HeartCare</h5>
            <a href="index.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a>
-            <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
-            <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
-            <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
-            <a href="OnlineChat.html" class="active"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
-            <a href="ManageNews.html" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
-            <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
-            
+           <a href="manage_users.html"><i class="bi bi-people"></i> จัดการผู้ใช้งาน</a>
+           <a href="manage_psychologists.html"><i class="bi bi-person-vcard"></i> นักจิตวิทยา</a>
+           <a href="Appointments.html"><i class="bi bi-calendar-check"></i> การนัดหมาย</a>
+           <a href="OnlineChat.html" class="active"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a>
+           <a href="ManageNews.html" ><i class="bi bi-newspaper"></i> ข่าวสาร</a>
+           <a href="Reports.html"><i class="bi bi-bar-chart"></i> รายงาน</a>
         </div>
 
+        <!-- Main Content -->
         <div class="main-content">
             <nav class="navbar">
                 <div style="margin-left: auto; display: flex; align-items: center;">
@@ -844,6 +845,7 @@
                 <h4>บันทึกการแชทออนไลน์</h4>
 
                 <div class="content-container">
+                    <!-- Controls and Filters -->
                     <div class="controls-row">
                         <div class="search-input-group">
                             <input type="text" placeholder="ค้นหาในบันทึกแชท..." aria-label="Search chat logs">
@@ -859,7 +861,8 @@
                             <input type="date" id="chatDateFilter" class="form-control">
                         </div>
                     </div>
-
+                    
+                    <!-- Chat Log Table -->
                     <table class="data-table chat-log-table">
                         <thead>
                             <tr>
@@ -915,6 +918,7 @@
                         </tbody>
                     </table>
 
+                    <!-- Pagination -->
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <li class="page-item disabled">
@@ -933,6 +937,7 @@
         </div>
     </div>
 
+    <!-- View Chat Modal -->
     <div id="viewChatModal" class="modal">
         <div class="modal-dialog chat-modal-content">
             <div class="modal-content">
@@ -948,6 +953,14 @@
                         <p><strong>วันที่/เวลาเริ่ม:</strong> 2024-05-27 10:15 น.</p>
                         <p><strong>วันที่/เวลาสิ้นสุด:</strong> 2024-05-27 11:00 น.</p>
                         <p><strong>สถานะ:</strong> <span class="status-badge status-completed">เสร็จสิ้น</span></p>
+                        <!-- ADDED: Admin Summary as requested -->
+                        <p class="summary-note">
+                            <strong>สรุปผล:</strong> 
+                            ผู้ปรึกษามีความเครียดจากการสอบและมีปัญหาเรื่องการนอนหลับ 
+                            นักจิตวิทยาได้ให้คำแนะนำเกี่ยวกับการจัดสรรเวลาเรียนและการพักเบรกสั้นๆ 
+                            (เช่น เดินยืดเส้น ฟังเพลง) เพื่อช่วยลดความกังวลและฟื้นฟูสภาพจิตใจ
+                        </p>
+                        <!-- END ADDED CONTENT -->
                     </div>
 
                     <div class="info-section">
@@ -1001,7 +1014,7 @@
                                 <img src="https://via.placeholder.com/30/FFC0CB/4682B4?text=จ" alt="Psychologist Avatar" class="chat-avatar">
                             </div>
 
-                             <div class="chat-message student">
+                            <div class="chat-message student">
                                 <img src="https://via.placeholder.com/30/87CEEB/FFFFFF?text=น" alt="Student Avatar" class="chat-avatar">
                                 <div>
                                     <div class="message-bubble student">พอจะยกตัวอย่างได้ไหมคะคุณหมอว่าควรพักแบบไหนถึงจะช่วยคลายเครียดได้จริงๆ</div>
@@ -1025,7 +1038,7 @@
                                 </div>
                             </div>
 
-                             <div class="chat-message psychologist">
+                            <div class="chat-message psychologist">
                                 <div>
                                     <div class="message-bubble psychologist">นั่นเป็นเรื่องที่นักศึกษาหลายคนเป็นกันค่ะ แต่การพักผ่อนก็สำคัญไม่แพ้การอ่านหนังสือนะคะ อย่าลืมว่าร่างกายและจิตใจของเราก็ต้องการการดูแลเช่นกัน ลองนำวิธีนี้ไปปรับใช้ดูนะคะ แล้วค่อยๆ สังเกตการเปลี่ยนแปลงที่เกิดขึ้นกับตัวเองค่ะ</div>
                                     <div class="message-meta">นพ.สมชาย - 10:38 น.</div>
@@ -1033,7 +1046,7 @@
                                 <img src="https://via.placeholder.com/30/FFC0CB/4682B4?text=จ" alt="Psychologist Avatar" class="chat-avatar">
                             </div>
 
-                             <div class="chat-message student">
+                            <div class="chat-message student">
                                 <img src="https://via.placeholder.com/30/87CEEB/FFFFFF?text=น" alt="Student Avatar" class="chat-avatar">
                                 <div>
                                     <div class="message-bubble student">ขอบคุณมากค่ะคุณหมอ วันนี้ได้คุยแล้วรู้สึกดีขึ้นมากเลยค่ะ หนูจะลองเอาไปทำตามดูนะคะ</div>
@@ -1059,6 +1072,7 @@
     </div>
 
     <script>
+        // JavaScript for modal functionality
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('show');
         }
@@ -1067,16 +1081,16 @@
             document.getElementById(modalId).classList.remove('show');
         }
 
-        // Optional: Close dropdown if clicked outside
+        // JavaScript for user dropdown functionality
         document.addEventListener('click', function(event) {
             const userDropdown = document.querySelector('.user-dropdown');
-            const userDropdownMenu = document.querySelector('.user-dropdown-menu');
-            if (userDropdown && !userDropdown.contains(event.target) && userDropdown.classList.contains('active')) { // Check parent for active class
+            // Check if the click is outside the dropdown container AND the dropdown is active
+            if (userDropdown && !userDropdown.contains(event.target) && userDropdown.classList.contains('active')) {
                 userDropdown.classList.remove('active');
             }
         });
 
-        // Toggle user dropdown
+        // Toggle user dropdown when clicking the link
         document.querySelector('.user-dropdown > a').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default link behavior
             this.parentElement.classList.toggle('active');
