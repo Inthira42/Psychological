@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare | นัดหมายทั้งหมด</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <title>LRU HeartCare - การนัดหมายทั้งหมด (นักจิตวิทยา)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
@@ -18,29 +17,43 @@
             --white: #ffffff;
             --border-light: #e9ecef;
             --shadow-light: rgba(0, 0, 0, 0.08);
-            --button-gray: #f0f0f0;
-            --button-gray-hover: #e0e0e0;
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --success-green: #28a745;
+            --warning-orange: #ffc107;
+            --danger-red: #dc3545;
+            --info-blue: #17a2b8;
+            --pending-orange: #ff9800;
         }
 
-        body { font-family: 'Kanit', sans-serif; margin: 0; background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+        body { font-family: 'Sukhumvit Set', 'Kanit', sans-serif; margin: 0; padding: 0; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
         *, *::before, *::after { box-sizing: border-box; }
 
         .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: var(--deep-blue); color: var(--white); padding: 20px; box-shadow: 2px 0 10px var(--shadow-light); flex-shrink: 0; }
+         .sidebar { width: 250px; background: var(--deep-blue); color: var(--white); padding: 20px; box-shadow: 2px 0 10px var(--shadow-light); flex-shrink: 0; }
         .main-content { flex: 1; display: flex; flex-direction: column; }
         
         /* Sidebar */
         .sidebar h5 { text-align: center; margin-bottom: 30px; color: var(--light-pink); font-size: 1.5rem; font-weight: 700; }
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar a { display: flex; align-items: center; color: var(--white); text-decoration: none; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { background: var(--primary-pink); }
-        .sidebar a i { margin-right: 12px; }
+        .sidebar a { display: flex; align-items: center; color: var(--white); text-decoration: none; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; font-weight: 500; }
+        .sidebar a:hover, .sidebar a.active { background: var(--primary-pink); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+        .sidebar a i { margin-right: 12px; font-size: 1.1rem; }
 
         /* Navbar */
-        .navbar { background: var(--white); padding: 15px 25px; box-shadow: 0 2px 8px var(--shadow-light); display: flex; justify-content: flex-end; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; }
-        .search-input { border: 1px solid var(--border-light); padding: 8px 15px; border-radius: 8px; width: 200px; }
+        .navbar { background: var(--white); padding: 15px 25px; box-shadow: 0 2px 8px var(--shadow-light); display: flex; justify-content: flex-end; align-items: center; gap: 20px; flex-shrink: 0; }
+        .search-input { border: 1px solid var(--border-light); padding: 10px 15px; border-radius: 25px; max-width: 280px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--soft-blue); box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3); }
         .user-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
         .user-profile .avatar { font-weight: bold; background-color: var(--deep-blue); color: var(--white); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+        
+        /* User Dropdown */
+        .user-dropdown { position: relative; cursor: pointer; display: flex; align-items: center; }
+        .user-dropdown img { width: 38px; height: 38px; border-radius: 50%; margin-right: 10px; border: 2px solid var(--light-pink); }
+        .user-dropdown-menu { display: none; position: absolute; top: 50px; right: 0; background: var(--white); box-shadow: 0 5px 15px var(--shadow-medium); border-radius: 8px; min-width: 160px; padding: 8px 0; z-index: 1000; }
+        .user-dropdown.active .user-dropdown-menu { display: block; }
+        .user-dropdown-menu li { list-style: none; }
+        .user-dropdown-menu a { display: block; padding: 10px 18px; color: var(--text-dark); text-decoration: none; transition: 0.2s; }
+        .user-dropdown-menu a:hover { background: var(--light-pink); color: var(--white); }
         
         /* Content Area */
         .content-area { padding: 30px; }
@@ -50,9 +63,9 @@
         .filter-controls { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 25px; }
         .filter-group { display: flex; align-items: center; gap: 10px; }
         .filter-group label { font-weight: 500; color: var(--text-muted); }
-        .filter-group select, .filter-group input { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-family: 'Kanit', sans-serif; font-size: 0.95rem; }
-        .btn-filter, .btn-clear { padding: 8px 20px; border: 1px solid #ccc; border-radius: 6px; font-family: 'Kanit', sans-serif; font-size: 0.95rem; cursor: pointer; background-color: var(--button-gray); transition: background-color 0.2s; }
-        .btn-filter:hover, .btn-clear:hover { background-color: var(--button-gray-hover); }
+        .filter-group select, .filter-group input { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-light); font-family: 'Sukhumvit Set', 'Kanit', sans-serif; font-size: 0.95rem; }
+        .btn-filter, .btn-clear { padding: 8px 20px; border: 1px solid var(--border-light); border-radius: 8px; font-family: 'Sukhumvit Set', 'Kanit', sans-serif; font-size: 0.95rem; cursor: pointer; background-color: #f1f1f1; color: var(--text-dark); transition: background-color 0.2s; }
+        .btn-filter:hover, .btn-clear:hover { background-color: #e7e7e7; }
 
         /* Table */
         .table-container { background: var(--white); border-radius: 8px; box-shadow: 0 4px 15px var(--shadow-light); overflow: hidden; }
@@ -72,13 +85,13 @@
 
 
         /* Action Buttons Styling */
-        .btn-details { background-color: var(--button-gray); border: 1px solid #ccc; padding: 6px 15px; border-radius: 6px; font-family: 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; }
-        .btn-details:hover { background-color: var(--button-gray-hover); }
+        .btn-details { background-color: #f1f1f1; border: 1px solid var(--border-light); color: var(--text-dark); padding: 6px 15px; border-radius: 8px; font-family: 'Sukhumvit Set', 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; }
+        .btn-details:hover { background-color: #e7e7e7; }
         .btn-dynamic-action {
             padding: 6px 15px; 
             border: none; 
-            border-radius: 6px; 
-            font-family: 'Kanit', sans-serif; 
+            border-radius: 8px; 
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; 
             cursor: pointer; 
             font-weight: 500;
             transition: opacity 0.2s, background-color 0.2s;
@@ -111,17 +124,21 @@
             <h5>LRU HeartCare</h5>
             <ul>
                 <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
-                <li><a href="eiei.html" ><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
-                <li><a href="confirmed_data.html" class="active" ><i class="bi bi-bell"></i> การนัดหมายทั้งหมด</a></li>
+                <li><a href="eiei.html"><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
+                <li><a href="confirmed_data.html" class="active"><i class="bi bi-card-list"></i> การนัดหมายทั้งหมด</a></li>
                 <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
             </ul>
         </div>
         <div class="main-content">
             <nav class="navbar">
                 <input type="search" class="search-input" placeholder="ค้นหา...">
-                <div class="user-profile">
-                    <div class="avatar">PS</div>
-                    <span>นักจิตวิทยา</span>
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://via.placeholder.com/40" alt="Avatar">
+                    <strong>ดร. สมหญิง ใจดี</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
                 </div>
             </nav>
             <div class="content-area">
@@ -416,6 +433,13 @@ document.addEventListener('DOMContentLoaded', () => {
         allRows.forEach(row => row.style.display = '');
     });
     
+    // User Dropdown functionality
+    const userDropdown = document.getElementById('userDropdown');
+    if (userDropdown) {
+        userDropdown.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('active'); });
+    }
+    document.addEventListener('click', () => { if (userDropdown) userDropdown.classList.remove('active'); });
+
     // เริ่มการทำงานของปุ่มดำเนินการเมื่อโหลดหน้า
     initializeActionButtons();
 });

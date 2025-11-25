@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare Admin Dashboard</title>
-    <!-- Google Fonts: Kanit for Thai text -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Bootstrap Icons for a wide range of icons -->
+    <title>LRU HeartCare - หน้าหลัก (นักจิตวิทยา)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- FullCalendar CSS for the calendar view -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
@@ -29,12 +26,12 @@
 
         /* ========== Body ========== */
         body {
-            font-family: 'Kanit', sans-serif; /* Use Kanit for all text */
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif;
             margin: 0;
             padding: 0;
-            background: var(--bg-light);
+            background-color: var(--bg-light);
             color: var(--text-dark);
-            overflow-x: hidden; /* Prevent horizontal scrolling */
+            line-height: 1.6;
         }
 
         /* ========== Layout ========== */
@@ -49,17 +46,13 @@
             color: var(--white);
             padding: 20px;
             box-shadow: 2px 0 10px var(--shadow-light);
-            flex-shrink: 0; /* Prevent sidebar from shrinking */
-            transition: width 0.3s ease; /* Smooth transition for sidebar width */
-            overflow-y: auto; /* Allow sidebar to scroll if content overflows */
+            flex-shrink: 0;
         }
 
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden; /* Prevent horizontal scrolling within main content */
-            overflow-y: auto; /* Allow main content to scroll */
         }
 
         /* ========== Sidebar ========== */
@@ -71,15 +64,10 @@
             font-weight: 700;
         }
 
-        /* Added styles to remove list bullets */
         .sidebar ul {
-            list-style: none; /* Remove bullet points */
-            padding: 0; /* Remove default padding */
-            margin: 0; /* Remove default margin */
-        }
-
-        .sidebar li {
-            padding: 0; /* Ensure no extra padding from list items */
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .sidebar a {
@@ -114,10 +102,7 @@
             justify-content: flex-end;
             align-items: center;
             gap: 20px;
-            flex-wrap: wrap; /* Allow navbar items to wrap on smaller screens */
-            position: sticky; /* Make navbar sticky */
-            top: 0;
-            z-index: 100; /* Ensure it stays on top */
+            flex-shrink: 0;
         }
 
         /* ========== Search Input ========== */
@@ -126,8 +111,6 @@
             padding: 10px 15px;
             border-radius: 25px;
             max-width: 280px;
-            width: 100%; /* Ensure it takes full width when needed */
-            box-sizing: border-box; /* Include padding and border in the element's total width */
             outline: none;
             transition: 0.3s;
         }
@@ -163,12 +146,15 @@
             border-radius: 8px;
             min-width: 160px;
             padding: 8px 0;
-            z-index: 10; /* Ensure dropdown is above other content */
+            z-index: 1000;
         }
 
-        .user-dropdown.active .user-dropdown-menu,
-        .user-dropdown:hover .user-dropdown-menu {
+        .user-dropdown.active .user-dropdown-menu {
             display: block;
+        }
+
+        .user-dropdown-menu li {
+            list-style: none;
         }
 
         .user-dropdown-menu a {
@@ -189,7 +175,6 @@
             flex: 1;
             padding: 30px;
             background: var(--bg-light);
-            box-sizing: border-box; /* Include padding in element's total width */
         }
 
         .content-area h4 {
@@ -673,14 +658,14 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigation -->
         <div class="sidebar">
-                <h5>LRU HeartCare</h5>
-            <li><a href="Homepage.html"class="active"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
-                <li><a href="eiei.html" ><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
-                <li><a href="confirmed_data.html" ><i class="bi bi-bell"></i>การนัดหมายทั้งหมด</a></li>
-                <li><a href="chat.html"><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
+            <h5>LRU HeartCare</h5>
+            <ul>
+                <li><a href="Homepage.html" class="active"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
+                <li><a href="eiei.html"><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
+                <li><a href="confirmed_data.html"><i class="bi bi-card-list"></i> การนัดหมายทั้งหมด</a></li>
                 <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+            </ul>
         </div>
         <!-- Main Content Area -->
         <div class="main-content">
@@ -688,14 +673,11 @@
             <nav class="navbar">
                 <input type="search" class="search-input" placeholder="ค้นหา...">
                 <div class="user-dropdown" id="userDropdown">
-                    <img src="https://placehold.co/38x38/FFC0CB/4682B4?text=PS" alt="Avatar"> <!-- Placeholder image with PS text for Psychologist -->
-                    <strong>นักจิตวิทยา</strong>
+                    <img src="https://via.placeholder.com/40" alt="Avatar">
+                    <strong>ดร. สมหญิง ใจดี</strong>
                     <ul class="user-dropdown-menu">
-                                        <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
-                                        <li><a href="eiei.html" ><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
-                                        <li><a href="confirmed_data.html" ><i class="bi bi-bell"></i> การนัดหมายทั้งหมด</a></li>
-                                        <li><a href="/user/Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
-                                                
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
                     </ul>
                 </div>
             </nav>
