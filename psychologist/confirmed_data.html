@@ -212,13 +212,25 @@
         /* Modal (คงเดิม) */
         .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; }
         .modal.show { display: flex; }
-        .modal-content { background-color: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); max-width: 500px; width: 100%; animation: zoomIn 0.3s; }
+        .modal-content { background-color: var(--white); padding: 25px 30px; border-radius: 12px; box-shadow: 0 5px 20px var(--shadow-medium); max-width: 700px; width: 100%; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-header { text-align: center; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; margin-bottom: 20px; }
-        .modal-header h3 { margin: 0; font-size: 1.6rem; color: var(--deep-blue); }
-        .modal-body p { margin: 0 0 12px 0; display: flex; }
-        .modal-body p strong { color: var(--text-dark); width: 120px; flex-shrink: 0; font-weight: 500; }
-        .modal-footer { text-align: right; margin-top: 25px; }
+        .modal-header h2, .modal-header h3 { margin: 0; font-size: 1.8rem; color: var(--deep-blue); }
+        .modal-body { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 25px; }
+        .modal-body p { margin: 0; font-size: 0.95rem; }
+        .modal-body p strong { color: var(--deep-blue); display: block; margin-bottom: 4px; font-weight: 600; }
+        .modal-body p span { color: var(--text-dark); margin: 0; }
+        .detail-item.full-width { grid-column: 1 / -1; }
+        .assessment-box { background-color: var(--bg-light); padding: 15px; border-radius: 8px; text-align: center; grid-column: 1 / -1; }
+        .risk-tag { display: inline-block; padding: 8px 18px; border-radius: 25px; font-weight: 600; color: var(--white); }
+        .risk-medium { background-color: var(--warning-orange); }
+        .risk-high { background-color: var(--danger-red); }
+        .risk-low { background-color: var(--success-green); }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 25px; }
+        .modal-footer .btn { padding: 10px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: none; }
+        .btn-details { background-color: #f1f1f1; border: 1px solid #ddd; color: var(--text-dark); }
+        .btn-details:hover { background-color: #e7e7e7; }
 
         /* General Message Modal */
         #messageModal .modal-header h3 { color: var(--primary-pink); }
@@ -457,6 +469,33 @@
         </div>
     </div>
 
+    <!-- NEW: Consultation Details Modal (Read-Only) -->
+    <div id="consultationDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>รายละเอียดคำขอคำปรึกษา</h2>
+            </div>
+            <div class="modal-body">
+                <p><strong>รหัสคำขอ:</strong> <span id="cons-req-id"></span></p>
+                <p><strong>วันที่ส่ง:</strong> <span id="cons-req-date"></span></p>
+                <p><strong>ชื่อ-นามสกุล:</strong> <span id="cons-student-name"></span></p>
+                <p><strong>รหัสนักศึกษา:</strong> <span id="cons-student-id"></span></p>
+                <p><strong>สาขา:</strong> <span id="cons-major"></span></p>
+                <p><strong>คณะ:</strong> <span id="cons-faculty"></span></p>
+                <p class="detail-item full-width"><strong>รายละเอียดจากนักศึกษา:</strong> <span id="cons-details" style="white-space: pre-wrap;"></span></p>
+                <p><strong>ช่องทางการปรึกษา:</strong> <span id="cons-type"></span></p>
+                <div class="assessment-box">
+                    <strong>ผลการประเมินสุขภาพใจเบื้องต้น</strong>
+                    <p>คะแนนรวม : <span id="cons-score"></span></p>
+                    <div id="cons-risk-tag"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-details" data-close-consultation>ปิด</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal for Details -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
@@ -590,6 +629,80 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentAppointmentId = null;
     let currentStudentName = null;
 
+    // Consultation request data (read-only display)
+    const consultationDetailsData = {
+        'S001': {
+            reqId: "REQ001",
+            submissionDate: "2024-06-18",
+            fullName: "นายสมศักดิ์ ขยันดี",
+            studentId: "65011234",
+            major: "การตลาด",
+            faculty: "บริหารธุรกิจ",
+            topic: "ความเครียดจากการเรียน",
+            details: "ฉันรู้สึกเครียดมากกับการเรียนและรู้สึกกดดันจากความคาดหวังของครอบครัว อยากจะหาทางจัดการกับความรู้สึกเหล่านี้",
+            appointmentType: "ออนไลน์",
+            score: 20,
+            riskLevel: "ความเสี่ยงปานกลาง",
+            riskClass: "risk-medium"
+        },
+        'S002': {
+            reqId: "REQ002",
+            submissionDate: "2024-06-15",
+            fullName: "นางสาวมานี มีสุข",
+            studentId: "65011235",
+            major: "วิศวกรรมคอมพิวเตอร์",
+            faculty: "วิศวกรรมศาสตร์",
+            topic: "ปัญหาการปรับตัวกับเพื่อน",
+            details: "มีปัญหากับเพื่อนในกลุ่มโปรเจค ไม่สามารถทำงานร่วมกันได้ ทำให้ไม่มีสมาธิในการเรียน",
+            appointmentType: "คลีนิก",
+            score: 12,
+            riskLevel: "ความเสี่ยงต่ำ",
+            riskClass: "risk-low"
+        },
+        'S003': {
+            reqId: "REQ003",
+            submissionDate: "2024-06-12",
+            fullName: "นายปิติ ยินดี",
+            studentId: "65011236",
+            major: "วิทยาการข้อมูล",
+            faculty: "วิทยาศาสตร์",
+            topic: "หมดไฟ (Burnout)",
+            details: "รู้สึกไม่มีแรงจูงใจในการทำอะไรเลยในช่วงนี้ การบ้านก็ไม่อยากทำ เหมือนหมดไฟ",
+            appointmentType: "ออนไลน์",
+            score: 18,
+            riskLevel: "ความเสี่ยงปานกลาง",
+            riskClass: "risk-medium"
+        },
+        'S004': {
+            reqId: "REQ004",
+            submissionDate: "2024-06-10",
+            fullName: "นางสาวสุดา แจ่มใส",
+            studentId: "65011237",
+            major: "ภาษาอังกฤษ",
+            faculty: "มนุษยศาสตร์และสังคมศาสตร์",
+            topic: "ปัญหาเรื่องส่วนตัว",
+            details: "ต้องการปรึกษาเรื่องปัญหาส่วนตัวที่ส่งผลกระทบต่อการเรียน",
+            appointmentType: "คลีนิก",
+            score: 15,
+            riskLevel: "ความเสี่ยงปานกลาง",
+            riskClass: "risk-medium"
+        },
+        'S005': {
+            reqId: "REQ005",
+            submissionDate: "2024-06-08",
+            fullName: "นายเดชา มีชัย",
+            studentId: "65011238",
+            major: "บัญชี",
+            faculty: "บริหารธุรกิจ",
+            topic: "ความวิตกกังวล",
+            details: "มีความวิตกกังวลเกี่ยวกับอนาคต และรู้สึกกดดันจากสถานการณ์เศรษฐกิจ",
+            appointmentType: "ออนไลน์",
+            score: 16,
+            riskLevel: "ความเสี่ยงปานกลาง",
+            riskClass: "risk-medium"
+        }
+    };
+
     // --- Utility Functions: Storage (Simulation using localStorage) ---
 
     // เก็บข้อมูลสรุปผล/แชท
@@ -625,6 +738,69 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('[data-close-message-modal]').addEventListener('click', () => {
         hideModal(messageModal);
     });
+
+    // Handle consultation details modal close button
+    const consultationDetailsModal = document.getElementById('consultationDetailsModal');
+    const closeConsultationBtn = document.querySelector('[data-close-consultation]');
+    if (closeConsultationBtn) {
+        closeConsultationBtn.addEventListener('click', () => {
+            hideModal(consultationDetailsModal);
+        });
+    }
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === consultationDetailsModal) {
+            hideModal(consultationDetailsModal);
+        }
+        if (event.target === detailModal) {
+            hideModal(detailModal);
+            hideModal(summaryModal);
+        }
+        if (event.target === messageModal) {
+            hideModal(messageModal);
+        }
+    });
+
+    // --- Consultation Details Modal Helper ---
+    const openConsultationDetailsModal = (studentId) => {
+        const data = consultationDetailsData[studentId];
+        if (!data) {
+            showMessage('ไม่พบข้อมูล', 'ไม่พบข้อมูลคำขอคำปรึกษาสำหรับนักศึกษารหัสนี้');
+            return;
+        }
+
+        // Populate read-only fields
+        document.getElementById('cons-req-id').textContent = data.reqId || '';
+        document.getElementById('cons-req-date').textContent = data.submissionDate || '';
+        document.getElementById('cons-student-name').textContent = data.fullName || '';
+        document.getElementById('cons-student-id').textContent = data.studentId || '';
+        document.getElementById('cons-major').textContent = data.major || '';
+        document.getElementById('cons-faculty').textContent = data.faculty || '';
+        document.getElementById('cons-details').textContent = data.details || '';
+        document.getElementById('cons-type').textContent = data.appointmentType || '';
+        document.getElementById('cons-score').textContent = data.score != null ? data.score : '-';
+
+        // Set risk level color
+        const riskTag = document.getElementById('cons-risk-tag');
+        riskTag.textContent = data.riskLevel || '';
+        const riskMap = {
+            'risk-low': '#28a745',
+            'risk-medium': '#ffc107',
+            'risk-high': '#dc3545'
+        };
+        riskTag.style.backgroundColor = riskMap[data.riskClass] || '#28a745';
+
+        // Show modal
+        const modal = document.getElementById('consultationDetailsModal');
+        showModal(modal);
+    };
+
+    // Close consultation modal function
+    const closeConsultationModal = () => {
+        const modal = document.getElementById('consultationDetailsModal');
+        hideModal(modal);
+    };
 
     // --- Date/Time Utility ---
 
@@ -826,7 +1002,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!appt) return;
 
                 if (action === 'details') {
-                    showDetailsModal(appt);
+                    // Open consultation details modal with read-only fields
+                    openConsultationDetailsModal(appt.studentId);
                 } else if (action === 'chat') {
                     handleChatAction(id, name);
                 } else if (action === 'summary') {
