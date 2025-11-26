@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LRU HeartCare | นัดหมายทั้งหมด</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <title>LRU HeartCare - การนัดหมายทั้งหมด (นักจิตวิทยา)</title>
+    <!-- โหลด Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        /* --- CSS Variables (คงเดิม) --- */
         :root {
             --primary-pink: #FF69B4;
             --light-pink: #FFC0CB;
@@ -18,11 +19,16 @@
             --white: #ffffff;
             --border-light: #e9ecef;
             --shadow-light: rgba(0, 0, 0, 0.08);
-            --button-gray: #f0f0f0;
-            --button-gray-hover: #e0e0e0;
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --success-green: #28a745;
+            --warning-orange: #ffc107;
+            --danger-red: #dc3545;
+            --info-blue: #17a2b8;
+            --pending-orange: #ff9800;
         }
 
-        body { font-family: 'Kanit', sans-serif; margin: 0; background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+        /* --- Global Styles (คงเดิม) --- */
+        body { font-family: 'Sukhumvit Set', 'Kanit', sans-serif; margin: 0; padding: 0; background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
         *, *::before, *::after { box-sizing: border-box; }
 
         .dashboard-container { display: flex; min-height: 100vh; }
@@ -32,15 +38,29 @@
         /* Sidebar */
         .sidebar h5 { text-align: center; margin-bottom: 30px; color: var(--light-pink); font-size: 1.5rem; font-weight: 700; }
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar a { display: flex; align-items: center; color: var(--white); text-decoration: none; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { background: var(--primary-pink); }
-        .sidebar a i { margin-right: 12px; }
+        .sidebar a { display: flex; align-items: center; color: var(--white); text-decoration: none; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.3s; font-weight: 500; }
+        .sidebar a:hover, .sidebar a.active { background: var(--primary-pink); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+        .sidebar a i { margin-right: 12px; font-size: 1.1rem; }
 
         /* Navbar */
-        .navbar { background: var(--white); padding: 15px 25px; box-shadow: 0 2px 8px var(--shadow-light); display: flex; justify-content: flex-end; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; }
-        .search-input { border: 1px solid var(--border-light); padding: 8px 15px; border-radius: 8px; width: 200px; }
+        .navbar { background: var(--white); padding: 15px 25px; box-shadow: 0 2px 8px var(--shadow-light); display: flex; justify-content: flex-end; align-items: center; gap: 20px; flex-shrink: 0; }
+        .search-input { border: 1px solid var(--border-light); padding: 10px 15px; border-radius: 25px; max-width: 280px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--soft-blue); box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.3); }
         .user-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
         .user-profile .avatar { font-weight: bold; background-color: var(--deep-blue); color: var(--white); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+        
+        /* User Dropdown */
+        .user-dropdown { position: relative; cursor: pointer; display: flex; align-items: center; }
+        .user-dropdown img { width: 38px; height: 38px; border-radius: 50%; margin-right: 10px; border: 2px solid var(--light-pink); }
+        .user-dropdown-menu { display: none; position: absolute; top: 50px; right: 0; background: var(--white); box-shadow: 0 5px 15px var(--shadow-medium); border-radius: 8px; min-width: 160px; padding: 8px 0; z-index: 1000; }
+        .user-dropdown.active .user-dropdown-menu { display: block; }
+        .user-dropdown-menu li { list-style: none; }
+        .user-dropdown-menu a { display: block; padding: 10px 18px; color: var(--text-dark); text-decoration: none; transition: 0.2s; }
+        .user-dropdown-menu a:hover { background: var(--light-pink); color: var(--white); }
+        .page-header { background: linear-gradient(135deg, var(--soft-blue), var(--light-pink)); padding: 40px 0; color: var(--white); text-align: center; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .page-header h1 { font-size: 2.8rem; margin-bottom: 10px; color: var(--deep-blue); }
+        .page-header p { font-size: 1.1rem; color: var(--text-dark); max-width: 700px; margin: 0 auto; }
+        .container, .container-con { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
         /* Content Area */
         .content-area { padding: 30px; }
@@ -50,9 +70,9 @@
         .filter-controls { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 25px; }
         .filter-group { display: flex; align-items: center; gap: 10px; }
         .filter-group label { font-weight: 500; color: var(--text-muted); }
-        .filter-group select, .filter-group input { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-family: 'Kanit', sans-serif; font-size: 0.95rem; }
-        .btn-filter, .btn-clear { padding: 8px 20px; border: 1px solid #ccc; border-radius: 6px; font-family: 'Kanit', sans-serif; font-size: 0.95rem; cursor: pointer; background-color: var(--button-gray); transition: background-color 0.2s; }
-        .btn-filter:hover, .btn-clear:hover { background-color: var(--button-gray-hover); }
+        .filter-group select, .filter-group input { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-light); font-family: 'Sukhumvit Set', 'Kanit', sans-serif; font-size: 0.95rem; }
+        .btn-filter, .btn-clear { padding: 8px 20px; border: 1px solid var(--border-light); border-radius: 8px; font-family: 'Sukhumvit Set', 'Kanit', sans-serif; font-size: 0.95rem; cursor: pointer; background-color: #f1f1f1; color: var(--text-dark); transition: background-color 0.2s; }
+        .btn-filter:hover, .btn-clear:hover { background-color: #e7e7e7; }
 
         /* Table */
         .table-container { background: var(--white); border-radius: 8px; box-shadow: 0 4px 15px var(--shadow-light); overflow: hidden; }
@@ -64,12 +84,132 @@
         
         .status { font-weight: 500; }
         .status.confirmed { color: #28a745; }
-        .status.pending { color: #ffc107; }
+        .status.completed { color: #4682B4; /* ใช้สี deep-blue สำหรับ Completed */ }
+        
+        /* New Type Indicators */
+        .type-online { color: var(--soft-blue); font-weight: 600; }
+        .type-clinic { color: var(--primary-pink); font-weight: 600; }
 
-        .btn-details { background-color: var(--button-gray); border: 1px solid #ccc; padding: 6px 15px; border-radius: 6px; font-family: 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; }
-        .btn-details:hover { background-color: var(--button-gray-hover); }
 
-        /* Modal */
+        /* Action Buttons Styling */
+        .btn-details { background-color: #f1f1f1; border: 1px solid var(--border-light); color: var(--text-dark); padding: 6px 15px; border-radius: 8px; font-family: 'Sukhumvit Set', 'Kanit', sans-serif; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; }
+        .btn-details:hover { background-color: #e7e7e7; }
+        /* Action Button Group */
+        .actions-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        
+        .btn-action-primary {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        
+        .btn-view-details {
+            background-color: #e8e8e8;
+            color: var(--text-dark);
+            border: 1px solid #d0d0d0;
+        }
+        
+        .btn-view-details:hover {
+            background-color: #d8d8d8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn-action-chat {
+            background: linear-gradient(135deg, var(--soft-blue), #5dade2);
+            color: var(--white);
+            box-shadow: 0 3px 10px rgba(135, 206, 235, 0.3);
+        }
+        
+        .btn-action-chat:hover {
+            background: linear-gradient(135deg, #5dade2, #3498db);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.4);
+        }
+        
+        .btn-action-summary {
+            background: linear-gradient(135deg, var(--primary-pink), #e6529c);
+            color: var(--white);
+            box-shadow: 0 3px 10px rgba(255, 105, 180, 0.3);
+            white-space: nowrap; /* ป้องกันการขึ้นบรรทัดใหม่ */
+        }
+        
+        .btn-action-summary:hover {
+            background: linear-gradient(135deg, #e6529c, #d4367d);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+        
+        .btn-action-hidden {
+            display: none;
+        }
+
+        /* Request Actions (คงเดิม) */
+        .request-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--deep-blue);
+            cursor: pointer;
+            margin-right: 5px;
+            transition: color 0.2s ease;
+            padding: 5px 10px;
+        }
+
+        .btn-action:hover {
+            color: var(--primary-pink);
+        }
+
+        .btn-action.btn-view-details {
+            background-color: transparent;
+            color: var(--deep-blue);
+            border: none;
+            padding: 5px 10px;
+            font-size: 1rem;
+        }
+
+        .btn-action.btn-action-chat {
+            background: linear-gradient(135deg, var(--soft-blue), #5dade2);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-action.btn-action-chat:hover {
+            background: linear-gradient(135deg, #5dade2, #3498db);
+        }
+
+        .btn-action.btn-action-summary {
+            background: linear-gradient(135deg, var(--primary-pink), #e6529c);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-action.btn-action-summary:hover {
+            background: linear-gradient(135deg, #e6529c, #d4367d);
+        }
+
+
+        /* Modal (คงเดิม) */
         .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; }
         .modal.show { display: flex; }
         .modal-content { background-color: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); max-width: 500px; width: 100%; animation: zoomIn 0.3s; }
@@ -79,6 +219,168 @@
         .modal-body p { margin: 0 0 12px 0; display: flex; }
         .modal-body p strong { color: var(--text-dark); width: 120px; flex-shrink: 0; font-weight: 500; }
         .modal-footer { text-align: right; margin-top: 25px; }
+
+        /* General Message Modal */
+        #messageModal .modal-header h3 { color: var(--primary-pink); }
+        
+        /* ------------------------------------- */
+        /* --- NEW: Chat Modal Styles --- */
+        /* ------------------------------------- */
+        #chatModal .modal-content {
+            max-width: 800px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--deep-blue), var(--soft-blue));
+            color: var(--white);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .chat-header h3 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f7f9fc; /* พื้นหลังแชทอ่อนๆ */
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-light);
+            background-color: var(--white);
+            flex-shrink: 0;
+        }
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            margin-right: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .chat-input-area input:focus {
+            border-color: var(--soft-blue);
+            box-shadow: 0 0 5px rgba(135, 206, 235, 0.5);
+        }
+        .chat-input-area button {
+            background-color: var(--primary-pink);
+            color: var(--white);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .chat-input-area button:hover {
+            background-color: #e6529c;
+            transform: translateY(-1px);
+        }
+
+        /* Message Bubble Styles (Formal) */
+        .message-container { margin-bottom: 15px; display: flex; }
+        .message-bubble { 
+            padding: 10px 15px; 
+            border-radius: 18px; 
+            max-width: 70%; 
+            line-height: 1.4;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            word-break: break-word; /* ป้องกันข้อความล้น */
+        }
+
+        /* Student/User Message (Left) */
+        .message-student { justify-content: flex-start; }
+        .message-student .message-bubble {
+            background-color: var(--white);
+            color: var(--text-dark);
+            border-bottom-left-radius: 3px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* Psychologist Message (Right) */
+        .message-psychologist { justify-content: flex-end; }
+        .message-psychologist .message-bubble {
+            background-color: var(--soft-blue);
+            color: var(--white);
+            border-bottom-right-radius: 3px;
+        }
+        .message-info { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
+
+
+        /* ------------------------------------- */
+        /* --- NEW: Summary Modal Styles --- */
+        /* ------------------------------------- */
+        #summaryModal .modal-content {
+            max-width: 700px;
+            padding: 40px;
+        }
+        #summaryModal h3 { color: var(--primary-pink); }
+        #summaryModal label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: 600; color: var(--text-dark); }
+        #summaryModal textarea, #summaryModal input, #summaryModal select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .summary-actions { display: flex; justify-content: space-between; margin-top: 25px; }
+        .btn-submit-summary { background-color: var(--primary-pink); color: var(--white); padding: 10px 25px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; border: none; }
+        .btn-submit-summary:hover { background-color: #e6529c; }
+        .next-appointment-fields { border: 1px dashed var(--light-pink); padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .next-appointment-fields h4 { font-size: 1.1rem; color: var(--deep-blue); margin-top: 0; margin-bottom: 10px; }
+
+
+        /* ------------------------------------- */
+        /* --- NEW: Countdown Overlay --- */
+        /* ------------------------------------- */
+        #countdownOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            text-align: center;
+            transition: opacity 0.3s;
+        }
+        #countdownOverlay.show {
+            display: flex;
+        }
+        .countdown-number {
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--primary-pink);
+            animation: pulse 1s infinite;
+        }
+        .countdown-text {
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
     </style>
 </head>
 <body>
@@ -87,20 +389,27 @@
             <h5>LRU HeartCare</h5>
             <ul>
                 <li><a href="Homepage.html"><i class="bi bi-speedometer2"></i> หน้าหลัก</a></li>
-                <li><a href="eiei.html" ><i class="bi bi-bell"></i> การนัดหมาย</a></li>
-                <li><a href="confirmed_data.html" class="active" ><i class="bi bi-bell"></i> การนัดหมายทั้งหมด</a></li>
-                <li><a href="chat.html" ><i class="bi bi-chat-dots"></i> การแชทออนไลน์</a></li>
-                <li><a href="Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+                <li><a href="eiei.html"><i class="bi bi-bell"></i>จัดการข้อมูลการนัดหมาย</a></li>
+                <li><a href="confirmed_data.html" class="active"><i class="bi bi-card-list"></i> การนัดหมายทั้งหมด</a></li>
+                <li><a href="http://localhost/Psychological/user/Login.html"><i class="bi bi-box-arrow-right"></i> ออกจากระบบ</a></li>
+            </ul>
         </div>
         <div class="main-content">
             <nav class="navbar">
-                <input type="search" class="search-input" placeholder="ค้นหา...">
-                <div class="user-profile">
-                    <div class="avatar">PS</div>
-                    <span>นักจิตวิทยา</span>
+                <input type="search" id="searchAppointments" class="search-input" placeholder="ค้นหา...">
+                <div class="user-dropdown" id="userDropdown">
+                    <img src="https://via.placeholder.com/40" alt="Avatar">
+                    <strong>ดร. สมหญิง ใจดี</strong>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">โปรไฟล์</a></li>
+                        <li><a href="#">ออกจากระบบ</a></li>
+                    </ul>
                 </div>
             </nav>
             <div class="content-area">
+                <section class="page-header">
+                    <div class="container"><h1>ข้อมูลการนัดหมายทั้งหมด</h1><p>จัดการคำขอและติดตามสถานะการนัดหมายของนักศึกษาที่ส่งเข้ามาปรึกษา</p></div>
+                </section>
                 <h4>นัดหมายที่กำลังจะมาถึง</h4>
 
                 <div class="filter-controls">
@@ -127,50 +436,19 @@
 
                 <div class="table-container">
                     <div class="table-responsive">
-                        <table id="appointmentsTable">
+                        <table class="appointment-table">
                             <thead>
                                 <tr>
-                                    <th>วันที่</th>
-                                    <th>เวลา</th>
-                                    <th>ชื่อ-นามสกุล</th>
-                                    <th>หัวข้อ</th>
+                                    <th>รหัสนักศึกษา</th>
+                                    <th>ชื่อนักศึกษา</th>
+                                    <th>ประเภท</th>
+                                    <th>วัน/เวลานัดหมาย</th>
                                     <th>สถานะ</th>
                                     <th>การดำเนินการ</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr data-date="2025-10-02" data-status="confirmed" data-details='{"id":"N001","name":"นายสมศักดิ์ จริงใจ","topic":"ความเครียดจากการทำงาน","status":"ยืนยันแล้ว"}'>
-                                    <td>2025-10-02</td>
-                                    <td>09:00</td>
-                                    <td>นายสมศักดิ์ จริงใจ</td>
-                                    <td>ความเครียดจากการทำงาน</td>
-                                    <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
-                                </tr>
-                                <tr data-date="2025-10-02" data-status="confirmed" data-details='{"id":"N002","name":"นางสาวมานี มีสุข","topic":"ปัญหาความสัมพันธ์","status":"ยืนยันแล้ว"}'>
-                                    <td>2025-10-02</td>
-                                    <td>10:30</td>
-                                    <td>นางสาวมานี มีสุข</td>
-                                    <td>ปัญหาความสัมพันธ์</td>
-                                    <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
-                                </tr>
-                                 <tr data-date="2025-10-03" data-status="confirmed" data-details='{"id":"N003","name":"นายปิติ ยินดี","topic":"ความวิตกกังวล","status":"ยืนยันแล้ว"}'>
-                                    <td>2025-10-03</td>
-                                    <td>11:00</td>
-                                    <td>นายปิติ ยินดี</td>
-                                    <td>ความวิตกกังวล</td>
-                                    <td class="status confirmed">ยืนยันแล้ว</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
-                                </tr>
-                                <tr data-date="2025-09-28" data-status="completed" data-details='{"id":"N004","name":"นางสาวสุดา แจ่มใส","topic":"ภาวะซึมเศร้า","status":"เสร็จสิ้น"}'>
-                                    <td>2025-09-28</td>
-                                    <td>14:00</td>
-                                    <td>นางสาวสุดา แจ่มใส</td>
-                                    <td>ภาวะซึมเศร้า</td>
-                                    <td class="status">เสร็จสิ้น</td>
-                                    <td><button class="btn-details">ดูรายละเอียด</button></td>
-                                </tr>
+                            <tbody id="appointmentsTableBody">
+                                <!-- เนื้อหาตารางจะถูกสร้างโดย JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -179,99 +457,608 @@
         </div>
     </div>
 
+    <!-- Modal for Details -->
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>รายละเอียดนัดหมาย</h3>
+                <h3>รายละเอียดการนัดหมาย</h3>
             </div>
             <div class="modal-body">
-                <p><strong>รหัสนัดหมาย:</strong> <span id="modal-id"></span></p>
-                <p><strong>ชื่อ-นามสกุล:</strong> <span id="modal-name"></span></p>
-                <p><strong>วันที่:</strong> <span id="modal-date"></span></p>
-                <p><strong>เวลา:</strong> <span id="modal-time"></span></p>
-                <p><strong>หัวข้อ:</strong> <span id="modal-topic"></span></p>
-                <p><strong>สถานะ:</strong> <span id="modal-status"></span></p>
+                <p><strong>รหัสนักศึกษา:</strong> <span id="modal-id"></span></p>
+                <p><strong>ชื่อนักศึกษา:</strong> <span id="modal-name"></span></p>
+                <p><strong>ประเภท:</strong> <span id="modal-type"></span></p>
+                <p><strong>วัน/เวลานัดหมาย:</strong> <span id="modal-appointment-date"></span></p>
+                <p><strong>สถานะคำขอ:</strong> <span id="modal-status"></span></p>
+                <p id="modal-summary-content" style="display: none;"><strong style="width: auto;">สรุปผลการปรึกษา:</strong> <br><span id="modal-summary-text" style="white-space: pre-wrap; margin-top: 10px; display: block;"></span></p>
+                <div id="modal-next-app-content" style="display: none; border-top: 1px dashed var(--border-light); margin-top: 15px; padding-top: 15px;">
+                    <p style="margin-bottom: 0;"><strong>นัดครั้งถัดไป:</strong> <span id="modal-next-app-detail"></span></p>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn-details" data-close-modal>ปิด</button>
             </div>
         </div>
     </div>
+    
+    <!-- Modal for Dynamic Action Message (Replaces alert()) -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="msg-modal-title">ข้อความแจ้งเตือน</h3>
+            </div>
+            <div class="modal-body">
+                <p id="msg-modal-message" style="width: auto; margin-bottom: 0;"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-details" data-close-message-modal>ตกลง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Countdown Overlay -->
+    <div id="countdownOverlay">
+        <p class="countdown-text">กำลังเปิดช่องทางการปรึกษาออนไลน์...</p>
+        <div class="countdown-number" id="countdownTimer">3</div>
+    </div>
+
+    <!-- NEW: Chat Modal -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content">
+            <div class="chat-header">
+                <h3 id="chat-header-title">กำลังสนทนากับ: [ชื่อนักศึกษา]</h3>
+                <div>
+                    <button class="btn-action-primary" id="endChatBtn"><i class="bi bi-box-arrow-right"></i> สิ้นสุดการปรึกษา</button>
+                    <button class="btn-action-primary" id="closeChatBtn" style="background-color: transparent;"><i class="bi bi-x-lg"></i></button>
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Message will be appended here -->
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="พิมพ์ข้อความที่นี่..." />
+                <button id="sendMessageBtn"><i class="bi bi-send-fill"></i> ส่ง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Summary Modal -->
+    <div id="summaryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>สรุปผลการให้คำปรึกษา</h3>
+                <p class="text-muted" id="summary-student-info" style="font-size: 0.9rem;"></p>
+            </div>
+            <form id="summaryForm">
+                <label for="consultationSummary">บันทึกสรุปผลการให้คำปรึกษา:</label>
+                <textarea id="consultationSummary" rows="6" placeholder="ระบุประเด็นสำคัญ, การวินิจฉัยเบื้องต้น, และแผนการรักษา..." required></textarea>
+                
+                <div class="next-appointment-fields">
+                    <h4>การนัดหมายครั้งต่อไป (ถ้ามี)</h4>
+                    <label for="nextAppDate">วันที่นัดหมาย:</label>
+                    <input type="date" id="nextAppDate" />
+
+                    <label for="nextAppTime">เวลานัดหมาย:</label>
+                    <input type="time" id="nextAppTime" />
+                    
+                    <label for="nextAppType">ประเภท:</label>
+                    <select id="nextAppType">
+                        <option value="">- ไม่มีนัดหมายถัดไป -</option>
+                        <option value="online">ออนไลน์</option>
+                        <option value="clinic">ที่คลินิก</option>
+                    </select>
+                </div>
+                
+                <div class="summary-actions">
+                    <button type="button" class="btn-details" data-close-modal>ยกเลิก</button>
+                    <button type="submit" class="btn-submit-summary"><i class="bi bi-check-circle-fill"></i> บันทึกและเสร็จสิ้น</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 <script>
+// --- Global Constants and Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    const tableBody = document.querySelector('#appointmentsTable tbody');
+    // เวลาจำลองปัจจุบัน (สามารถเปลี่ยนเพื่อทดสอบสถานการณ์ต่างๆ ได้)
+    // สำหรับการสาธิตนี้ จะตั้งให้เลยเวลานัดหมาย N001 (09:00) และ N002 (09:45)
+    // และก่อน N003 (11:00) เพื่อให้ปุ่ม "เริ่มปรึกษา" และ "สรุปผล" ปรากฏ
+    const now = new Date('2025-10-02T10:00:00'); 
+    console.log(`เวลาจำลองปัจจุบัน: ${now.toLocaleString('th-TH')}`);
+    
+    // ข้อมูลการนัดหมายเริ่มต้น (จะถูกรีเซ็ตเมื่อรีเฟรช ตามความต้องการของผู้ใช้)
+    let appointments = [
+        { id: 'N001', studentId: 'S001', studentName: 'นายสมศักดิ์ จริงใจ', type: 'online', date: '2025-10-02', time: '09:00', status: 'confirmed' },
+        { id: 'N002', studentId: 'S002', studentName: 'นางสาวมานี มีสุข', type: 'clinic', date: '2025-10-02', time: '09:45', status: 'confirmed' },
+        { id: 'N003', studentId: 'S003', studentName: 'นายปิติ ยินดี', type: 'online', date: '2025-10-03', time: '11:00', status: 'confirmed' },
+        { id: 'N004', studentId: 'S004', studentName: 'นางสาวสุดา แจ่มใส', type: 'clinic', date: '2025-09-28', time: '14:00', status: 'completed' },
+        { id: 'N005', studentId: 'S005', studentName: 'นายเดชา มีชัย', type: 'online', date: '2025-10-02', time: '10:30', status: 'confirmed' }, // เพิ่มนัดหมายใหม่
+    ];
+
+    // Selectors
+    const tableBody = document.getElementById('appointmentsTableBody');
     const detailModal = document.getElementById('detailModal');
-    const filterBtn = document.getElementById('filterBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const allRows = Array.from(tableBody.querySelectorAll('tr'));
+    const messageModal = document.getElementById('messageModal');
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const chatModal = document.getElementById('chatModal');
+    const summaryModal = document.getElementById('summaryModal');
+    const summaryForm = document.getElementById('summaryForm');
+    const dateFilter = document.getElementById('dateFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('searchAppointments');
+    
+    let currentAppointmentId = null;
+    let currentStudentName = null;
 
-    // --- Modal Logic ---
-    tableBody.addEventListener('click', (event) => {
-        if (event.target.classList.contains('btn-details')) {
-            const row = event.target.closest('tr');
-            const details = JSON.parse(row.dataset.details);
+    // --- Utility Functions: Storage (Simulation using localStorage) ---
+
+    // เก็บข้อมูลสรุปผล/แชท
+    const saveAppointmentData = (id, data) => {
+        const key = `appointment_data_${id}`;
+        try {
+            const existingData = getAppointmentData(id);
+            localStorage.setItem(key, JSON.stringify({ ...existingData, ...data }));
+        } catch (error) {
+            console.error('Error saving data to localStorage:', error);
+        }
+    };
+
+    // ดึงข้อมูลสรุปผล/แชท
+    const getAppointmentData = (id) => {
+        const key = `appointment_data_${id}`;
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : { summary: null, chatHistory: [], nextAppointment: null };
+    };
+
+    // --- Modal Control Functions ---
+    const showModal = (modalElement) => modalElement.classList.add('show');
+    const hideModal = (modalElement) => modalElement.classList.remove('show');
+
+    // Handle all modal closing buttons
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            hideModal(detailModal);
+            hideModal(summaryModal);
+        });
+    });
+
+    document.querySelector('[data-close-message-modal]').addEventListener('click', () => {
+        hideModal(messageModal);
+    });
+
+    // --- Date/Time Utility ---
+
+    /**
+     * แปลง date/time string ให้เป็นวัตถุ Date เพื่อเปรียบเทียบ
+     * @param {string} date - รูปแบบ YYYY-MM-DD
+     * @param {string} time - รูปแบบ HH:mm
+     * @returns {Date}
+     */
+    const getAppointmentDateTime = (date, time) => {
+        // ใช้เวลาปัจจุบัน (now) เพื่อกำหนดปี/เดือน/วันที่แน่นอนของ Appointment Date
+        // เนื่องจากข้อมูลตัวอย่างใช้ปี 2025 แต่เราต้องเทียบกับเวลาจำลอง
+        return new Date(`${date}T${time}:00`);
+    };
+
+    /**
+     * แสดง Modal ข้อความทั่วไป
+     * @param {string} title - หัวข้อ
+     * @param {string} message - ข้อความ
+     */
+    const showMessage = (title, message) => {
+        document.getElementById('msg-modal-title').textContent = title;
+        document.getElementById('msg-modal-message').innerHTML = message;
+        showModal(messageModal);
+    };
+
+    // --- Core Rendering Function ---
+
+    /**
+     * สร้างแถว HTML สำหรับการนัดหมายแต่ละรายการ
+     * @param {object} appt - ข้อมูลการนัดหมาย
+     * @returns {string} HTML string
+     */
+    const createAppointmentRow = (appt) => {
+        const appointmentDateTime = getAppointmentDateTime(appt.date, appt.time);
+        const timeDiff = appointmentDateTime.getTime() - now.getTime();
+        const isPastDue = timeDiff < 0; // นัดหมายที่เลยเวลาแล้ว
+        const isToday = appointmentDateTime.toDateString() === now.toDateString();
+
+        let actionButtons = '';
+        let statusText = '';
+        let statusClass = '';
+        let typeText = '';
+        let typeClass = '';
+        
+        const storedData = getAppointmentData(appt.id);
+        const currentStatus = appt.status; // ใช้สถานะจาก Array หลัก
+
+        // สถานะ
+        if (currentStatus === 'completed') {
+            statusText = 'เสร็จสิ้น';
+            statusClass = 'completed';
+        } else if (currentStatus === 'confirmed') {
+            statusText = 'ยืนยันแล้ว';
+            statusClass = 'confirmed';
+        } else {
+            statusText = 'รอการยืนยัน';
+            statusClass = 'pending';
+        }
+
+        // ประเภท
+        if (appt.type === 'online') {
+            typeText = 'ออนไลน์';
+            typeClass = 'type-online';
+        } else {
+            typeText = 'ที่คลินิก';
+            typeClass = 'type-clinic';
+        }
+
+        // การดำเนินการ
+        if (currentStatus === 'completed') {
+            // ปุ่มสำหรับ Completed
+            actionButtons = `
+                <button class="btn-action btn-view-details" data-action="details" data-id="${appt.id}" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                <button class="btn-action btn-action-summary" data-action="view-summary" data-id="${appt.id}" title="ดูสรุปผล"><i class="bi bi-file-earmark-text-fill"></i> ดูสรุปผล</button>
+            `;
+        } else if (currentStatus === 'confirmed') {
+            // ปุ่มสำหรับ Confirmed
             
-            document.getElementById('modal-id').textContent = details.id;
-            document.getElementById('modal-name').textContent = details.name;
-            document.getElementById('modal-date').textContent = row.cells[0].textContent;
-            document.getElementById('modal-time').textContent = row.cells[1].textContent;
-            document.getElementById('modal-topic').textContent = details.topic;
-            document.getElementById('modal-status').textContent = details.status;
+            // Check if the current time is at or past the appointment time
+            if (isToday && isPastDue) {
+                if (appt.type === 'online') {
+                    // ออนไลน์: ถึงเวลาแล้ว -> เริ่มปรึกษา (Chat)
+                    actionButtons = `
+                        <button class="btn-action btn-view-details" data-action="details" data-id="${appt.id}" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                        <button class="btn-action btn-action-chat" data-action="chat" data-id="${appt.id}" data-name="${appt.studentName}" title="แชท/เริ่มปรึกษา"><i class="bi bi-chat-dots-fill"></i> เริ่มปรึกษา</button>
+                    `;
+                } else {
+                    // ที่คลินิก: ถึงเวลาแล้ว -> สรุปผล (Summary)
+                    actionButtons = `
+                        <button class="btn-action btn-view-details" data-action="details" data-id="${appt.id}" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                        <button class="btn-action btn-action-summary" data-action="summary" data-id="${appt.id}" data-name="${appt.studentName}" title="สรุปผล"><i class="bi bi-file-text-fill"></i> สรุปผล</button>
+                    `;
+                }
+            } else {
+                // ยังไม่ถึงเวลา -> แค่ดูรายละเอียด
+                const timeUntil = Math.ceil(timeDiff / (1000 * 60)); // เวลาที่เหลือก่อนถึงนาที
+                const timeString = timeUntil > 0 
+                    ? `เหลือ ${timeUntil} นาที`
+                    : 'เลยเวลาแล้ว';
 
-            detailModal.classList.add('show');
+                actionButtons = `
+                    <button class="btn-action btn-view-details" data-action="details" data-id="${appt.id}" title="ดูรายละเอียด"><i class="bi bi-eye-fill"></i></button>
+                    <span class="text-muted" style="font-size: 0.85rem;">(รอ ${appt.time} น.)</span>
+                `;
+            }
         }
-    });
+        
+        return `
+            <tr data-id="${appt.id}" data-student-id="${appt.studentId}" data-date="${appt.date}" data-time="${appt.time}" data-type="${appt.type}" data-status="${currentStatus}">
+                <td data-label="รหัสนักศึกษา">${appt.studentId}</td>
+                <td data-label="ชื่อนักศึกษา">${appt.studentName}</td>
+                <td data-label="ประเภท"><span class="${typeClass}">${typeText}</span></td>
+                <td data-label="วัน/เวลานัดหมายที่ขอ">${appt.date}, ${appt.time} น.</td>
+                <td data-label="สถานะ"><span class="status ${statusClass}">${statusText}</span></td>
+                <td data-label="การดำเนินการ" class="request-actions">
+                    ${actionButtons}
+                </td>
+            </tr>
+        `;
+    };
 
-    detailModal.addEventListener('click', (event) => {
-        if (event.target === detailModal || event.target.hasAttribute('data-close-modal')) {
-            detailModal.classList.remove('show');
-        }
-    });
+    /**
+     * กรองและแสดงผลการนัดหมายในตาราง
+     */
+    const renderAppointments = () => {
+        const dateFilterValue = dateFilter.value;
+        const statusFilterValue = statusFilter.value;
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        let filteredAppointments = appointments.filter(appt => {
+            // 1. Filter by Status
+            if (statusFilterValue !== 'all' && appt.status !== statusFilterValue) {
+                return false;
+            }
 
-    // --- Filter Logic ---
-    const applyFilters = () => {
-        const dateFilter = document.getElementById('dateFilter').value;
-        const statusFilter = document.getElementById('statusFilter').value;
-        const now = new Date('2025-10-02T10:00:00'); // Using a fixed date for consistent demo
+            // 2. Filter by Date Range
+            if (dateFilterValue !== 'all') {
+                const apptDate = getAppointmentDateTime(appt.date, appt.time);
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay()); // Start of Sunday
+                startOfWeek.setHours(0, 0, 0, 0);
 
-        allRows.forEach(row => {
-            let dateMatch = true;
-            let statusMatch = true;
-
-            // Date filtering
-            if (dateFilter !== 'all') {
-                const rowDate = new Date(row.dataset.date);
-                if (dateFilter === 'today') {
-                    dateMatch = rowDate.toDateString() === now.toDateString();
-                } else if (dateFilter === 'this_week') {
-                    const weekStart = new Date(now);
-                    weekStart.setDate(now.getDate() - now.getDay());
-                    const weekEnd = new Date(weekStart);
-                    weekEnd.setDate(weekStart.getDate() + 6);
-                    dateMatch = rowDate >= weekStart && rowDate <= weekEnd;
-                } else if (dateFilter === 'this_month') {
-                    dateMatch = rowDate.getMonth() === now.getMonth() && rowDate.getFullYear() === now.getFullYear();
+                const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                endOfMonth.setHours(23, 59, 59, 999);
+                
+                if (dateFilterValue === 'today' && apptDate.toDateString() !== now.toDateString()) {
+                    return false;
+                }
+                if (dateFilterValue === 'this_week' && (apptDate < startOfWeek || apptDate > new Date(startOfWeek.getTime() + (7 * 24 * 60 * 60 * 1000)))) {
+                    return false;
+                }
+                if (dateFilterValue === 'this_month' && (apptDate.getMonth() !== now.getMonth() || apptDate.getFullYear() !== now.getFullYear())) {
+                    return false;
                 }
             }
 
-            // Status filtering
-            if (statusFilter !== 'all') {
-                statusMatch = row.dataset.status === statusFilter;
+            // 3. Filter by Search Term (ID or Name)
+            if (searchTerm) {
+                return appt.studentId.toLowerCase().includes(searchTerm) || 
+                       appt.studentName.toLowerCase().includes(searchTerm);
             }
 
-            // Show/hide row
-            row.style.display = (dateMatch && statusMatch) ? '' : 'none';
+            return true;
+        });
+        
+        // เรียงลำดับ: Confirmed/Online ที่เลยเวลาแล้ว > Confirmed > Completed
+        filteredAppointments.sort((a, b) => {
+            const statusA = a.status;
+            const statusB = b.status;
+            const dateA = getAppointmentDateTime(a.date, a.time);
+            const dateB = getAppointmentDateTime(b.date, b.time);
+            
+            // ให้ Confirmed/Online ที่เลยเวลามาอยู่หน้าสุด
+            const isReadyA = statusA === 'confirmed' && a.type === 'online' && (dateA.getTime() < now.getTime());
+            const isReadyB = statusB === 'confirmed' && b.type === 'online' && (dateB.getTime() < now.getTime());
+
+            if (isReadyA && !isReadyB) return -1;
+            if (!isReadyA && isReadyB) return 1;
+
+            // ต่อมาเรียงตามเวลาที่กำลังจะมาถึง
+            return dateA.getTime() - dateB.getTime();
+        });
+
+        tableBody.innerHTML = filteredAppointments.map(createAppointmentRow).join('');
+        attachEventListeners();
+    };
+
+    // --- Action Event Listeners ---
+
+    const attachEventListeners = () => {
+        tableBody.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const action = e.currentTarget.getAttribute('data-action');
+                const id = e.currentTarget.getAttribute('data-id');
+                const name = e.currentTarget.getAttribute('data-name');
+                const appt = appointments.find(a => a.id === id);
+
+                if (!appt) return;
+
+                if (action === 'details') {
+                    showDetailsModal(appt);
+                } else if (action === 'chat') {
+                    handleChatAction(id, name);
+                } else if (action === 'summary') {
+                    showSummaryModal(id, name);
+                } else if (action === 'view-summary') {
+                    showDetailsModal(appt, true); // True to force show summary
+                }
+            });
         });
     };
 
-    filterBtn.addEventListener('click', applyFilters);
+    // --- Detail Modal Logic (รวม View Summary) ---
+    const showDetailsModal = (appt, forceSummaryView = false) => {
+        const storedData = getAppointmentData(appt.id);
+        const summaryContent = document.getElementById('modal-summary-content');
+        const nextAppContent = document.getElementById('modal-next-app-content');
+        
+        document.getElementById('modal-id').textContent = appt.studentId;
+        document.getElementById('modal-name').textContent = appt.studentName;
+        document.getElementById('modal-type').textContent = appt.type === 'online' ? 'ออนไลน์' : 'ที่คลินิก';
+        document.getElementById('modal-appointment-date').textContent = `${appt.date}, ${appt.time} น.`;
+        document.getElementById('modal-status').textContent = appt.status === 'completed' ? 'เสร็จสิ้น' : 'ยืนยันแล้ว';
 
-    clearBtn.addEventListener('click', () => {
-        document.getElementById('dateFilter').value = 'all';
-        document.getElementById('statusFilter').value = 'all';
-        allRows.forEach(row => row.style.display = '');
+        // Summary content logic
+        if (appt.status === 'completed' || forceSummaryView) {
+            if (storedData.summary) {
+                document.getElementById('modal-summary-text').textContent = storedData.summary;
+                summaryContent.style.display = 'block';
+
+                if (storedData.nextAppointment && storedData.nextAppointment.type) {
+                    document.getElementById('modal-next-app-detail').textContent = 
+                        `${storedData.nextAppointment.date} เวลา ${storedData.nextAppointment.time} (${storedData.nextAppointment.type === 'online' ? 'ออนไลน์' : 'ที่คลินิก'})`;
+                    nextAppContent.style.display = 'block';
+                } else {
+                    document.getElementById('modal-next-app-detail').textContent = 'ไม่มีการนัดหมายครั้งต่อไป';
+                    nextAppContent.style.display = 'block';
+                }
+            } else {
+                document.getElementById('modal-summary-text').textContent = 'ไม่มีบันทึกสรุปผล';
+                summaryContent.style.display = 'block';
+                nextAppContent.style.display = 'none';
+            }
+        } else {
+            summaryContent.style.display = 'none';
+            nextAppContent.style.display = 'none';
+        }
+
+        showModal(detailModal);
+    };
+
+
+    // --- Chat Modal Logic ---
+
+    const handleChatAction = (id, name) => {
+        currentAppointmentId = id;
+        currentStudentName = name;
+        document.getElementById('chat-header-title').textContent = `กำลังสนทนากับ: ${name}`;
+        
+        // 1. Start Countdown
+        startCountdown(() => {
+            // 2. Open Chat Modal after countdown
+            showModal(chatModal);
+            initializeChat(id);
+        });
+    };
+
+    const startCountdown = (callback) => {
+        showModal(countdownOverlay);
+        let count = 3;
+        document.getElementById('countdownTimer').textContent = count;
+
+        const interval = setInterval(() => {
+            count--;
+            document.getElementById('countdownTimer').textContent = count;
+
+            if (count === 0) {
+                clearInterval(interval);
+                hideModal(countdownOverlay);
+                callback();
+            }
+        }, 1000);
+    };
+
+    const initializeChat = (id) => {
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = ''; // Clear previous chat
+        
+        const storedData = getAppointmentData(id);
+        let chatHistory = storedData.chatHistory;
+
+        if (chatHistory.length === 0) {
+            // Add initial welcome message if no history
+            chatHistory.push({ 
+                sender: 'psychologist', 
+                text: 'สวัสดีค่ะ/ครับ ยินดีที่ได้พูดคุยในวันนี้ ดิฉัน/ผม ดร. สมหญิง ใจดี ค่ะ/ครับ โปรดเริ่มการสนทนาได้เลยค่ะ/ครับ',
+                time: now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })
+            });
+        }
+        
+        chatHistory.forEach(msg => appendMessage(msg.sender, msg.text, msg.time));
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+    };
+
+    const appendMessage = (sender, text, time) => {
+        const chatMessages = document.getElementById('chatMessages');
+        const container = document.createElement('div');
+        container.className = `message-container message-${sender}`;
+        container.innerHTML = `
+            <div class="message-bubble">
+                ${text}
+            </div>
+        `;
+        // ไม่ต้องแสดงเวลาในข้อความนี้ เนื่องจากเป็นการจำลองง่ายๆ
+
+        chatMessages.appendChild(container);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const sendMessage = () => {
+        const chatInput = document.getElementById('chatInput');
+        const text = chatInput.value.trim();
+
+        if (text && currentAppointmentId) {
+            const time = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+            appendMessage('psychologist', text, time); // Simulate sending as psychologist
+            
+            // Save to localStorage (simulate persistence)
+            const newMessage = { sender: 'psychologist', text: text, time: time };
+            const storedData = getAppointmentData(currentAppointmentId);
+            storedData.chatHistory.push(newMessage);
+            saveAppointmentData(currentAppointmentId, { chatHistory: storedData.chatHistory });
+
+            chatInput.value = '';
+            chatInput.focus();
+        }
+    };
+
+    // Event listeners for Chat
+    document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
     });
+
+    document.getElementById('closeChatBtn').addEventListener('click', () => {
+        hideModal(chatModal);
+        currentAppointmentId = null;
+    });
+
+    document.getElementById('endChatBtn').addEventListener('click', () => {
+        hideModal(chatModal);
+        // เมื่อสิ้นสุดการแชท (ปรึกษาออนไลน์) ให้เปิด Summary Modal ทันที
+        if (currentAppointmentId && currentStudentName) {
+            showSummaryModal(currentAppointmentId, currentStudentName);
+        } else {
+            showMessage('ข้อผิดพลาด', 'ไม่พบข้อมูลการนัดหมายปัจจุบันสำหรับการสรุปผล');
+        }
+    });
+
+    // --- Summary Modal Logic ---
+    const showSummaryModal = (id, name) => {
+        currentAppointmentId = id;
+        currentStudentName = name;
+        
+        document.getElementById('summary-student-info').textContent = 
+            `รหัสนักศึกษา: ${appointments.find(a => a.id === id).studentId} | ชื่อ: ${name}`;
+        
+        // Clear previous input values
+        summaryForm.reset();
+
+        showModal(summaryModal);
+    };
+
+    summaryForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const summaryText = document.getElementById('consultationSummary').value.trim();
+        const nextDate = document.getElementById('nextAppDate').value;
+        const nextTime = document.getElementById('nextAppTime').value;
+        const nextType = document.getElementById('nextAppType').value;
+
+        if (!summaryText) {
+            showMessage('ข้อมูลไม่ครบถ้วน', 'โปรดระบุบันทึกสรุปผลการให้คำปรึกษา');
+            return;
+        }
+
+        let nextAppointment = null;
+        if (nextType) {
+            if (!nextDate || !nextTime) {
+                showMessage('ข้อมูลนัดหมายถัดไปไม่ครบถ้วน', 'โปรดระบุวันที่และเวลาสำหรับการนัดหมายครั้งต่อไป');
+                return;
+            }
+            nextAppointment = { date: nextDate, time: nextTime, type: nextType };
+        }
+
+        // 1. Update appointment status in the main array
+        const apptIndex = appointments.findIndex(a => a.id === currentAppointmentId);
+        if (apptIndex !== -1) {
+            appointments[apptIndex].status = 'completed';
+        }
+
+        // 2. Save summary and next appointment data to localStorage
+        saveAppointmentData(currentAppointmentId, {
+            summary: summaryText,
+            nextAppointment: nextAppointment,
+        });
+
+        // 3. Re-render table to reflect status change
+        renderAppointments();
+
+        // 4. Close modal and show success message
+        hideModal(summaryModal);
+        showMessage('สำเร็จ', `บันทึกสรุปผลการปรึกษาของ ${currentStudentName} เรียบร้อยแล้ว สถานะเปลี่ยนเป็น "เสร็จสิ้น"`);
+
+        // Reset global tracking
+        currentAppointmentId = null;
+        currentStudentName = null;
+    });
+
+    // --- Filter and Search Event Listeners ---
+    document.getElementById('filterBtn').addEventListener('click', renderAppointments);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        dateFilter.value = 'all';
+        statusFilter.value = 'all';
+        searchInput.value = '';
+        renderAppointments();
+    });
+    searchInput.addEventListener('input', renderAppointments);
+
+
+    // --- Initial Load ---
+    renderAppointments();
+
 });
 </script>
 </body>

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LRU HeartCare | เข้าสู่ระบบ</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sukhumvit+Set:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
-        /* ========== Variables - ตัวแปรสีและเงา ========== */
+        /* ... (โค้ด CSS ทั้งหมดเหมือนเดิม) ... */
         :root {
             --primary-pink: #FF69B4; /* ชมพูหลัก */
             --light-pink: #FFC0CB; /* ชมพูอ่อน */
@@ -20,29 +20,28 @@
             --white: #ffffff; /* สีขาว */
             --border-light: #e9ecef; /* สีเส้นขอบอ่อน */
             --shadow-medium: rgba(0, 0, 0, 0.15); /* เงาปานกลาง */
+            --role-button-shadow: rgba(0, 0, 0, 0.1); /* เงาสำหรับปุ่มบทบาท */
         }
-
-        /* ========== Body - พื้นฐานของหน้าเว็บทั้งหมด ========== */
+        
         body {
-            font-family: 'Sukhumvit Set', 'Kanit', sans-serif; /* ฟอนต์หลักของเว็บไซต์ */
+            font-family: 'Sukhumvit Set', 'Kanit', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #EBF5FF 0%, #FFF5FB 100%); /* ฟ้าอ่อนมากไปชมพูอ่อนมาก */
-            color: var(--text-dark); /* สีข้อความเริ่มต้น */
-            line-height: 1.6; /* ระยะห่างบรรทัด */
-            box-sizing: border-box; /* ทำให้ padding และ border ไม่เพิ่มขนาดของ element */
+            background: linear-gradient(135deg, #EBF5FF 0%, #FFF5FB 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            box-sizing: border-box;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
-        /* เพิ่ม box-sizing ให้กับทุกองค์ประกอบ */
         *, *::before, *::after {
             box-sizing: border-box;
         }
 
-        /* ========== Container - สำหรับหน้า Login ทั้งหมด ========== */
         .login-container {
             display: flex;
             background-color: var(--white);
@@ -50,10 +49,10 @@
             box-shadow: 0 15px 40px var(--shadow-medium);
             overflow: hidden;
             max-width: 900px;
-            width: 95%; /* Responsive width */
+            width: 95%;
+            margin-bottom: 20px;
         }
 
-        /* ========== Login Form Side ========== */
         .login-form-side {
             flex: 1;
             padding: 40px 30px;
@@ -79,7 +78,7 @@
 
         .input-box input {
             width: 100%;
-            padding: 12px 12px 12px 45px; /* Adjust padding for icon */
+            padding: 12px 12px 12px 45px;
             background: var(--bg-light);
             border: 1px solid var(--border-light);
             border-radius: 10px;
@@ -97,13 +96,13 @@
         .input-box label {
             position: absolute;
             top: 50%;
-            left: 45px; /* Align with input text */
+            left: 45px;
             transform: translateY(-50%);
             color: var(--text-muted);
             font-size: 1rem;
             pointer-events: none;
             transition: 0.3s ease;
-            background-color: transparent; /* Default transparent */
+            background-color: transparent;
             padding: 0;
             border-radius: 0;
             z-index: 0;
@@ -111,15 +110,15 @@
 
         .input-box input:focus + label,
         .input-box input:valid + label,
-        .input-box input.has-content + label { /* Added .has-content for pre-filled inputs */
+        .input-box input.has-content + label {
             top: 0;
-            left: 10px; /* Move label to top-left of input */
+            left: 10px;
             font-size: 0.8rem;
             color: var(--primary-pink);
-            background-color: var(--bg-light); /* Background for label when floating */
+            background-color: var(--bg-light);
             padding: 0 5px;
             border-radius: 5px;
-            z-index: 1; /* Ensure label is above input */
+            z-index: 1;
         }
 
         .input-box .icon {
@@ -129,7 +128,7 @@
             transform: translateY(-50%);
             color: var(--deep-blue);
             font-size: 1.2rem;
-            z-index: 2; /* Ensure icon is above label */
+            z-index: 2;
         }
 
         .remember-forgot {
@@ -151,7 +150,7 @@
 
         .remember-forgot input[type="checkbox"] {
             margin-right: 5px;
-            accent-color: var(--primary-pink); /* Style checkbox */
+            accent-color: var(--primary-pink);
         }
 
         .remember-forgot a {
@@ -202,10 +201,9 @@
             color: var(--primary-pink);
         }
 
-        /* ========== Explanation Side (Image & Text) ========== */
         .explanation-side {
             flex: 1;
-            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--soft-blue) 100%); /* ฟ้าเดิม */
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--soft-blue) 100%);
             color: var(--white);
             padding: 40px;
             display: flex;
@@ -242,15 +240,48 @@
             opacity: 0.9;
         }
 
-        /* ========== Responsive Adjustments ========== */
+        .login-role-links {
+            width: 95%;
+            max-width: 900px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 0 10px;
+        }
+
+        .btn-role {
+            flex: 1;
+            max-width: 250px;
+            padding: 12px 20px;
+            border: 2px solid var(--deep-blue);
+            border-radius: 30px;
+            color: var(--deep-blue);
+            background-color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px var(--role-button-shadow);
+        }
+
+        .btn-role:hover {
+            background-color: var(--deep-blue);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px var(--shadow-medium);
+        }
+
+        /* ... (โค้ด Responsive CSS เหมือนเดิม) ... */
         @media (max-width: 768px) {
             .login-container {
-                flex-direction: column; /* Stack login and explanation vertically */
-                max-width: 450px; /* Smaller max-width for stacked layout */
+                flex-direction: column;
+                max-width: 450px;
             }
 
             .explanation-side {
-                border-radius: 0 0 20px 20px; /* Adjust border-radius for bottom */
+                border-radius: 0 0 20px 20px;
                 padding: 30px;
             }
 
@@ -274,6 +305,15 @@
 
             .explanation-side p {
                 font-size: 0.9rem;
+            }
+            
+            .login-role-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-role {
+                max-width: 100%;
             }
         }
 
@@ -307,6 +347,10 @@
                 padding: 12px 0;
                 font-size: 1rem;
             }
+            .btn-role {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -331,7 +375,11 @@
                 </label>
                 <a href="#">ลืมรหัสผ่าน?</a>
             </div>
-            <button type="button" class="btn-login" onclick="window.location.href='index.html'">เข้าสู่ระบบ</button>
+            
+            <button type="button" class="btn-login" onclick="window.location.href='index.html'">
+                เข้าสู่ระบบ (สำหรับนักศึกษา)
+            </button>
+
             <div class="register-link">
                 <p>ผู้ใช้ใหม่ <a href="Sign-up.html">ลงทะเบียน</a></p>
             </div>
@@ -345,11 +393,36 @@
         </div>
     </div>
     
+    <div class="login-role-links">
+        <a href="../psychologist/Homepage.html" class="btn-role">
+            <i class="fa-solid fa-user-doctor"></i> นักจิตวิทยา
+        </a>
+        <a href="../admin/index.html" class="btn-role">
+            <i class="fa-solid fa-user-gear"></i> แอดมิน
+        </a>
+    </div>
+    
     <script>
-      function togglePassword() {
-        const pw = document.getElementById("password");
-        pw.type = pw.type === "password" ? "text" : "password";
-      }
+        function togglePassword() {
+            const pw = document.getElementById("password");
+            pw.type = pw.type === "password" ? "text" : "password";
+        }
+
+        // เพิ่มฟังก์ชันเพื่อตรวจสอบว่ามีเนื้อหาใน Input แล้วหรือไม่
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.input-box input').forEach(input => {
+                if (input.value) {
+                    input.classList.add('has-content');
+                }
+                input.addEventListener('input', () => {
+                    if (input.value) {
+                        input.classList.add('has-content');
+                    } else {
+                        input.classList.remove('has-content');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
